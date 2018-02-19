@@ -1,4 +1,4 @@
-package edu.harvard.pallmall;
+package h2ms.spring.mvc.web.init;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

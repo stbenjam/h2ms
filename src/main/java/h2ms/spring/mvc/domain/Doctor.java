@@ -1,10 +1,11 @@
-package edu.harvard.pallmall;
+package h2ms.spring.mvc.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+//fixme design data model for all entities and attributes
 @Entity
 public class Doctor {
 
