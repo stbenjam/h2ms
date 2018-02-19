@@ -1,16 +1,13 @@
 package h2ms.spring.mvc.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.io.Serializable;
 
 //fixme design data model for all entities and attributes
 @Entity
-public class Doctor {
+@Table(name = "doctor")
+public class Doctor implements Serializable {
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	private String firstName;
 	private String lastName;
@@ -22,6 +19,17 @@ public class Doctor {
 		this.lastName = lastName;
 	}
 
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@Column(name = "FIRST_NAME")
 	public String getFirstName() {
 		return firstName;
 	}
@@ -30,6 +38,7 @@ public class Doctor {
 		this.firstName = firstName;
 	}
 
+	@Column(name = "LAST_NAME")
 	public String getLastName() {
 		return lastName;
 	}
