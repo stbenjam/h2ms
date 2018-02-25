@@ -2,7 +2,8 @@
 version: '3.1'
 services:
   pallmallweb:
-    image: cscie599/pallmall
+#    image: cscie599/pallmall
+    build: .
     ports:
       # external:internal
       - "8080:8080"

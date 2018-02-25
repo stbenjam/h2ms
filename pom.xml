@@ -186,7 +186,8 @@
                 <version>${maven.war.plugin.version}</version>
                 <configuration>
                     <!-- NOTE: specify your Tomcat installation webapps directory location! -->
-                    <outputDirectory>C:\apache-tomcat-8.5.20\webapps\</outputDirectory>
+                    <!-- <outputDirectory>C:\apache-tomcat-8.5.20\webapps\</outputDirectory> -->
+                    <outputDirectory>/usr/local/tomcat/webapps/</outputDirectory>
                 </configuration>
             </plugin>
         </plugins>
