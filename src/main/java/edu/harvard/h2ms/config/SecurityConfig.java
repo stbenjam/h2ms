@@ -7,55 +7,47 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-/**
- *
- * Reference: https://spring.io/guides/gs/securing-web/
- *
- */
+/** Reference: https://spring.io/guides/gs/securing-web/ */
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter{
-	
-    private static final String[] AUTH_WHITELIST = {
-            // Front page
-            "/",
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-            // swagger ui
-            "/swagger-resources/**",
-            "/swagger-ui.html",
-            "/v2/api-docs",
-            "/events",
-            "/users",
-            "/webjars/**"
-    };
+  private static final String[] AUTH_WHITELIST = {
+    // Front page
+    "/",
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-    	
-    	// disable csrf to enable non-browser API call
-    	http.csrf().disable();
-    	
-        http.authorizeRequests()
-            .antMatchers(AUTH_WHITELIST).permitAll()
-            .anyRequest().authenticated()
-            .and()
+    // swagger ui
+    "/swagger-resources/**",
+    "/swagger-ui.html",
+    "/v2/api-docs",
+    "/events",
+    "/users",
+    "/webjars/**"
+  };
+
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+
+    // disable csrf to enable non-browser API call
+    http.csrf().disable();
+
+    http.authorizeRequests()
+        .antMatchers(AUTH_WHITELIST)
+        .permitAll()
+        .anyRequest()
+        .authenticated()
+        .and()
         .formLogin()
-            .loginPage("/login")
-            .permitAll()
-            .and()
+        .loginPage("/login")
+        .permitAll()
+        .and()
         .logout()
-            .permitAll();
-    }
+        .permitAll();
+  }
 
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-            .inMemoryAuthentication()
-                .withUser("user").password("password").roles("USER");
-        auth
-            .inMemoryAuthentication()
-                .withUser("admin").password("password").roles("ADMIN");
-    }
-
+  @Autowired
+  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    auth.inMemoryAuthentication().withUser("user").password("password").roles("USER");
+    auth.inMemoryAuthentication().withUser("admin").password("password").roles("ADMIN");
+  }
 }

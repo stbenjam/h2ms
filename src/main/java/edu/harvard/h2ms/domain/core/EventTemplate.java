@@ -2,8 +2,6 @@ package edu.harvard.h2ms.domain.core;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,72 +12,63 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
-/**
- * An EventTemplate describes which custom fields are used for an Event.
- */
+/** An EventTemplate describes which custom fields are used for an Event. */
 @Entity
 public class EventTemplate {
 
-    /* Properties */
+  /* Properties */
 
-	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO)
-    @Column
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column
+  private Long id;
 
-	@NotNull
-	@Column
-    private String name;
+  @NotNull @Column private String name;
 
-	@OneToMany(fetch = FetchType.LAZY,
-			cascade = CascadeType.ALL,
-			mappedBy = "eventTemplate")
-	private Set<Question> questions = new HashSet<>();
+  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "eventTemplate")
+  private Set<Question> questions = new HashSet<>();
 
-	@OneToMany(fetch = FetchType.LAZY,
-			cascade = CascadeType.ALL,
-			mappedBy = "eventTemplate")
-	private Set<Event> events = new HashSet<>();
-	
-    public Set<Event> getEvents() {
-		return events;
-	}
+  @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "eventTemplate")
+  private Set<Event> events = new HashSet<>();
 
-	public void setEvents(Set<Event> events) {
-		this.events = events;
-	}
+  public Set<Event> getEvents() {
+    return events;
+  }
 
-	public EventTemplate() {
-        super();
-    }
+  public void setEvents(Set<Event> events) {
+    this.events = events;
+  }
 
-	public EventTemplate(String name) {
-		super();
-		this.name = name;
-	}
+  public EventTemplate() {
+    super();
+  }
 
-	public Long getId() {
-		return id;
-	}
+  public EventTemplate(String name) {
+    super();
+    this.name = name;
+  }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+  public Long getId() {
+    return id;
+  }
 
-	public String getName() {
-		return name;
-	}
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public Set<Question> getQuestions() {
-		return questions;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public void setQuestions(Set<Question> questions) {
-		this.questions = questions;
-	}
-	
+  public Set<Question> getQuestions() {
+    return questions;
+  }
+
+  public void setQuestions(Set<Question> questions) {
+    this.questions = questions;
+  }
 }
