@@ -2,9 +2,7 @@ package edu.harvard.h2ms.domain.core;
 
 import javax.persistence.*;
 
-/**
- * A Wrist Band is..
- */
+/** A Wrist Band is.. */
 @Entity
 @Table(name = "WRIST_BAND")
 public class WristBand {
@@ -18,7 +16,7 @@ public class WristBand {
     private boolean laserEngraved;
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
     public Long getId() {
         return id;
@@ -75,8 +73,17 @@ public class WristBand {
 
     @Override
     public String toString() {
-        return "Wrist Band - Id: " + id + ", SKU: " + sku + ", Bit Format: " + bitFormat
-                + ", Color: " + color + ", Order Number: " + orderNumber + ", Laser Engraved: " + laserEngraved;
+        return "Wrist Band - Id: "
+                + id
+                + ", SKU: "
+                + sku
+                + ", Bit Format: "
+                + bitFormat
+                + ", Color: "
+                + color
+                + ", Order Number: "
+                + orderNumber
+                + ", Laser Engraved: "
+                + laserEngraved;
     }
-
 }

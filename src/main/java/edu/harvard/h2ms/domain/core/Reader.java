@@ -2,9 +2,7 @@ package edu.harvard.h2ms.domain.core;
 
 import javax.persistence.*;
 
-/**
- * A Reader is..
- */
+/** A Reader is.. */
 @Entity
 @Table(name = "READER")
 public class Reader {
@@ -19,7 +17,7 @@ public class Reader {
     private String chargeTime;
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "ID")
     public Long getId() {
         return id;
@@ -85,9 +83,19 @@ public class Reader {
 
     @Override
     public String toString() {
-        return "Reader - Id: " + id + ", Order Number: " + orderNumber + ", Brand Name: " + brandName
-                + ", Model Number: " + modelNumber + ", Capacity: " + capacity
-                + ", Voltage: " + voltage + ", Charge Time: " + chargeTime;
+        return "Reader - Id: "
+                + id
+                + ", Order Number: "
+                + orderNumber
+                + ", Brand Name: "
+                + brandName
+                + ", Model Number: "
+                + modelNumber
+                + ", Capacity: "
+                + capacity
+                + ", Voltage: "
+                + voltage
+                + ", Charge Time: "
+                + chargeTime;
     }
-
 }

@@ -1,8 +1,6 @@
 package edu.harvard.h2ms.domain.admin;
 
-/**
- * An Email is...
- */
+/** An Email is... */
 public class Email {
 
     private String to;
@@ -41,5 +39,4 @@ public class Email {
     public void setText(String text) {
         this.text = text;
     }
-
 }

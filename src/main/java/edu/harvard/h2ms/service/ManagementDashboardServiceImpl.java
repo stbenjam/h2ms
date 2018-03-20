@@ -1,27 +1,22 @@
 package edu.harvard.h2ms.service;
 
+import edu.harvard.h2ms.domain.admin.Email;
+import edu.harvard.h2ms.domain.core.Event;
+import edu.harvard.h2ms.repository.*;
+import java.util.*;
+import javax.activation.*;
+import javax.mail.*;
+import javax.mail.internet.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import edu.harvard.h2ms.domain.admin.Email;
-import edu.harvard.h2ms.domain.core.Event;
-import edu.harvard.h2ms.repository.*;
-
-import java.util.*;
-import javax.mail.*;
-import javax.mail.internet.*;
-import javax.activation.*;
-
-/**
- * The Management Dashboard Service Implementor...
- */
+/** The Management Dashboard Service Implementor... */
 @Service("managementDashboardService")
 @Repository
 @Transactional
 public class ManagementDashboardServiceImpl implements ManagementDashboardService {
-
 
     private EventRepository eventRepository;
     private LocationRepository locationRepository;
@@ -49,19 +44,16 @@ public class ManagementDashboardServiceImpl implements ManagementDashboardServic
         this.wristBandRepository = wristBandRepository;
     }
 
-    //TODO add the ability to search for anything - this may be covered by tableau
+    // TODO add the ability to search for anything - this may be covered by tableau
     // Finds all Events
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     public Iterable<Event> findAllEvents() {
         return eventRepository.findAll();
     }
 
-    /**
-     *
-     * @param email
-     */
+    /** @param email */
     public void sendEmail(Email email) {
-        //fixme tomcat not have smtp?
+        // fixme tomcat not have smtp?
         String host = "localhost";
         Properties properties = System.getProperties();
         properties.setProperty("mail.smtp.host", host);
@@ -79,6 +71,4 @@ public class ManagementDashboardServiceImpl implements ManagementDashboardServic
             mex.printStackTrace();
         }
     }
-
-
 }
