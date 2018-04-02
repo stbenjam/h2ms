@@ -1,6 +1,5 @@
 package edu.harvard.h2ms.domain.core;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -10,16 +9,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 
-import java.util.HashSet;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import edu.harvard.h2ms.annotations.ValidQuestion;
+
 import java.util.List;
-import java.util.Set;
 
 /**
  * A Question
  */
+@ValidQuestion
 @Entity
 public class Question {
 
@@ -36,6 +37,7 @@ public class Question {
     @ElementCollection
     private List<String> options;
 
+    @NotEmpty
     @NotNull
     @Column
     private String question;
@@ -44,18 +46,23 @@ public class Question {
 	@Column
     private Boolean required;
 
+    @Column
+    private String defaultValue;
+
+    @NotEmpty
     @NotNull
     @Column
     private String answerType;
 
+	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "event_template_id")
 	private EventTemplate eventTemplate;
-	
+
 	public Question() {
-        super();
-    }
-	
+		super();
+	}
+
 	public Question(String question, String answerType, List<String> options, Boolean required, Integer priority, EventTemplate eventTemplate) {
 		super();
 		this.question = question;
@@ -64,6 +71,11 @@ public class Question {
 		this.required = required;
 		this.priority = priority;
 		this.eventTemplate = eventTemplate;
+	}
+
+	public Question(String question, String answerType, List<String> options, Boolean required, Integer priority, EventTemplate eventTemplate, String defaultValue) {
+		this(question, answerType, options, required, priority, eventTemplate);
+		this.defaultValue = defaultValue;
 	}
 
 	public String getQuestion() {
@@ -124,5 +136,11 @@ public class Question {
 		this.answerType = answerType;
 	}
 
+	public String getDefaultValue() {
+		return defaultValue;
+	}
 
+	public void setDefaultValue(String defaultValue) {
+		this.defaultValue = defaultValue;
+	}
 }

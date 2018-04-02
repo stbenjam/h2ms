@@ -103,8 +103,10 @@ public class UserControllerTests {
         Question question = new Question();
         question.setPriority(1);
         question.setRequired(TRUE);
-        question.setAnswerType("Boolean");
+        question.setAnswerType("boolean");
         question.setQuestion("Washed?");
+        question.setEventTemplate(eventTemplateRepository.findByName("Handwashing Event"));
+        
         answer.setQuestion(question);
         answer.setValue("true");
         answers.add(answer);

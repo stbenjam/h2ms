@@ -54,7 +54,8 @@ public class HandwashEventTemplateSeeder {
     					null,
     					true,
     					3,
-    					template
+    					template,
+    					"false"
     					),
 
     			new Question(

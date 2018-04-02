@@ -16,7 +16,6 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 public class Answer {
-
     /* Properties */
 	@Id
 	@GeneratedValue(strategy= GenerationType.AUTO)
@@ -38,6 +37,15 @@ public class Answer {
 	@JoinColumn(name = "event_id")
 	private Event event;
 
+	public Answer() {
+		
+	}
+	
+	public Answer(Question question, String value) {
+		this.setQuestion(question);
+		this.setValue(value);
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -45,7 +53,7 @@ public class Answer {
 				.append(answerType).append(", value=").append(value).append("]");
 		return builder.toString();
 	}
-
+	
 	public Event getEvent() {
 		return event;
 	}
@@ -69,6 +77,10 @@ public class Answer {
 	public void setQuestion(Question question) {
 		this.question = question;
 		this.answerType = question.getAnswerType();
+		
+		// If we don't have an answer yet, set it to default value
+		if(this.value == null)
+			setValue(question.getDefaultValue());
 	}
 
 	public String getValue() {
@@ -76,7 +88,8 @@ public class Answer {
 	}
 
 	public void setValue(String value) {
-		this.value = value;
+		if(value != "")
+			this.value = value;
 	}
 	
     public String getAnswerType() {
