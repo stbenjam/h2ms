@@ -14,14 +14,19 @@ import {
     MatIconModule,
     MatInputModule,
     MatListModule,
-    MatSidenavModule,
-    MatToolbarModule,
-    MatTabsModule,
+    MatPaginatorModule,
+    MatProgressBarModule,
     MatSelectModule,
-    MatProgressBarModule
+    MatSidenavModule,
+    MatTableModule,
+    MatTabsModule,
+    MatToolbarModule
 } from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {DynamicFormComponent, FormSubmissionDialogComponent} from './dynamic-form/dynamic-form.component';
+import {
+    DynamicFormComponent,
+    FormSubmissionDialogComponent
+} from './dynamic-form/dynamic-form.component';
 import {DynamicFormQuestionComponent} from './dynamic-form-question/dynamic-form-question.component';
 import {LoginComponent} from './login/login.component';
 import {PrivacyComponent} from './privacy/privacy.component';
@@ -37,8 +42,10 @@ import {LocationEntityService} from './api/locationEntity.service';
 import {UserEntityService} from './api/userEntity.service';
 import {ReportsComponent} from './reports/reports.component';
 import {ReportsService} from './reports/reports.service';
-import { AboutComponent } from './about/about.component';
+import {AboutComponent} from './about/about.component';
 import {UserEmailService} from "./user/service/user-email.service";
+import {LocationComponent} from './location/location.component';
+import {LocationEditComponent} from './location-edit/location-edit.component';
 
 @NgModule({
     declarations: [
@@ -51,7 +58,9 @@ import {UserEmailService} from "./user/service/user-email.service";
         ExportComponent,
         ReportsComponent,
         FormSubmissionDialogComponent,
-        AboutComponent
+        AboutComponent,
+        LocationComponent,
+        LocationEditComponent
     ],
     imports: [
         BrowserModule,
@@ -73,7 +82,9 @@ import {UserEmailService} from "./user/service/user-email.service";
         MatTabsModule,
         MatSelectModule,
         MatProgressBarModule,
-        MatDialogModule
+        MatDialogModule,
+        MatTableModule,
+        MatPaginatorModule
     ],
     entryComponents: [FormSubmissionDialogComponent],
     providers: [MediaMatcher,

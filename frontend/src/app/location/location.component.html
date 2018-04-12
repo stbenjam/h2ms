@@ -1,0 +1,67 @@
+<div class="row">
+    <mat-card class="card">
+        <mat-card-content>
+            <mat-card-title class="text-center">Locations</mat-card-title>
+            <div class="example-header">
+                <mat-form-field>
+                    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search">
+                </mat-form-field>
+            </div>
+
+            <div class="example-container mat-elevation-z8">
+                <mat-table [dataSource]="dataSource" matSort>
+
+                    <ng-container matColumnDef="name">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Name</mat-header-cell>
+                        <mat-cell *matCellDef="let location"> {{location.name}}</mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="address">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Address
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let location"> {{location.address}}</mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="parent">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Inside
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let location"> {{location.parent}}</mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="buttons">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let location" class="text-right">
+
+                            <!--TODO: Fix this link, locations don't actually have ids, so this will need to be something else-->
+                            <a href="/locations/{{ location.id}}">
+                                <button mat-icon-button>
+                                    <i class="material-icons">edit</i>
+                                </button>
+                            </a>
+                            <button mat-icon-button (click)="delete(location)">
+                                <i class="material-icons">delete</i>
+                            </button>
+                        </mat-cell>
+                    </ng-container>
+
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;">
+                    </mat-row>
+                </mat-table>
+
+                <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+            </div>
+
+            <div class="text-right div-under-table">
+                <button (click)="submit(email.value, password.value)" mat-raised-button
+                        color="primary">
+                    Add Location
+                </button>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+</div>
+
+
