@@ -11,8 +11,10 @@ import {UserResolverService} from './user/service/user-resolver.service';
 import {QuestionResolverService} from './questions/service/question-resolver.service';
 import {ReportsComponent} from './reports/reports.component';
 import {AboutComponent} from './about/about.component';
-import {LocationComponent} from "./location/location.component";
-import {LocationEditComponent} from "./location-edit/location-edit.component";
+import {LocationComponent} from './location/location.component';
+import {LocationEditComponent} from './location-edit/location-edit.component';
+import {ForgotPasswordComponent} from './forgot-password/forgot-password.component';
+import {ResetPasswordComponent} from './reset-password/reset-password.component';
 
 /**
  * The actual available routes. Which links are routed to which components.
@@ -51,8 +53,8 @@ const routes: Routes = [
     },
     // TODO: route dashboard to the DashboardComponent when it is created.
     {path: 'dashboard', redirectTo: 'reports', pathMatch: 'full', canActivate: [AuthGuardService]}, // a protected page
-    // TODO: route password-recovery to the PasswordRecoveryComponent when it is created.
-    {path: 'password-recovery', pathMatch: 'full', redirectTo: 'privacy'}, // an unprotected page just for testing
+    {path: 'forgot-password', component: ForgotPasswordComponent},
+    {path: 'reset-password/:email/:resetToken', component: ResetPasswordComponent},
     // todo: route route to dashboard when made
     {path: '', redirectTo: 'login', pathMatch: 'full'}
 ];

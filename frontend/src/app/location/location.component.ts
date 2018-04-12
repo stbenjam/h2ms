@@ -2,6 +2,7 @@ import {AfterViewInit, Component, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Location} from '../model/location';
 import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
+import {HttpClient} from "@angular/common/http";
 
 @Component({
     selector: 'app-location',
@@ -17,14 +18,20 @@ export class LocationComponent implements AfterViewInit {
     displayedColumns = ['name', 'address', 'parent', 'buttons'];
     dataSource: MatTableDataSource<Location>;
 
-    constructor(private actr: ActivatedRoute) {
+    constructor(private actr: ActivatedRoute, private http: HttpClient) {
         const locationResolver = this.actr.snapshot.data.locationResolver;
         this.locations = locationResolver._embedded.locations;
         this.dataSource = new MatTableDataSource(this.locations);
     }
 
-    delete(location: Location) {
+    delete(location) {
         alert('About to delete ' + location.name);
+        // location._links.self.href;
+        // return this.http.delete(location._links.self.href,)
+        //     .pipe(
+        //         catchError(this.handleError('deleteHero'))
+        //     );
+
     }
 
     ngAfterViewInit() {

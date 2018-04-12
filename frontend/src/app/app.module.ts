@@ -43,9 +43,17 @@ import {UserEntityService} from './api/userEntity.service';
 import {ReportsComponent} from './reports/reports.component';
 import {ReportsService} from './reports/reports.service';
 import {AboutComponent} from './about/about.component';
-import {UserEmailService} from "./user/service/user-email.service";
 import {LocationComponent} from './location/location.component';
 import {LocationEditComponent} from './location-edit/location-edit.component';
+import {
+    ResetPasswordComponent,
+    SuccessfullyResetPasswordComponent
+} from './reset-password/reset-password.component';
+import {
+    ForgotPasswordComponent,
+    SuccessfullySentPasswordRecoveryEmailComponent
+} from './forgot-password/forgot-password.component';
+import {UserEmailService} from './user/service/user-email.service';
 
 @NgModule({
     declarations: [
@@ -58,9 +66,13 @@ import {LocationEditComponent} from './location-edit/location-edit.component';
         ExportComponent,
         ReportsComponent,
         FormSubmissionDialogComponent,
-        AboutComponent,
         LocationComponent,
-        LocationEditComponent
+        LocationEditComponent,
+        SuccessfullySentPasswordRecoveryEmailComponent,
+        SuccessfullyResetPasswordComponent,
+        AboutComponent,
+        ForgotPasswordComponent,
+        ResetPasswordComponent
     ],
     imports: [
         BrowserModule,
@@ -86,13 +98,17 @@ import {LocationEditComponent} from './location-edit/location-edit.component';
         MatTableModule,
         MatPaginatorModule
     ],
-    entryComponents: [FormSubmissionDialogComponent],
-    providers: [MediaMatcher,
+    entryComponents: [
+        FormSubmissionDialogComponent,
+        SuccessfullySentPasswordRecoveryEmailComponent,
+        SuccessfullyResetPasswordComponent
+    ],
+    providers: [
+        MediaMatcher,
         ConfigService,
         AuthService,
         AuthGuardService,
-        UserEmailService,
-        {
+        UserEmailService, {
             provide: HTTP_INTERCEPTORS,
             useClass: TokenInterceptor,
             multi: true
