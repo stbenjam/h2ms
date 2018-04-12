@@ -1,44 +1,43 @@
 <div class="row">
     <mat-card class="card">
-        <mat-card-title>Reports</mat-card-title>
-        <mat-card-subtitle align="center">{{chartTitle}}</mat-card-subtitle>
-        <div class="div-chart" id="{{chartName}}">
+        <div id="chart">
             <img class="placeholder-img" mat-card-image src="assets/images/chart-placeholder.png">
         </div>
         <mat-card-content class="text-center">
             <mat-progress-bar mode="indeterminate" hidden="progressBarIsHidden"></mat-progress-bar>
             <mat-error *ngIf="emptyJSONReturned">There is no data for the selected plot!</mat-error>
-                <section class="plotSelectionSection">
-                    <mat-card-subtitle class="chart-select-title" align="left">Select chart</mat-card-subtitle>
-                    <mat-form-field>
-                        <mat-select placeholder="chart"
-                                    [(value)]="selectedChart" required
-                                    name="chart">
-                            <mat-option *ngFor="let chart of charts" [value]="chart">
-                                {{chart.value}}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="plotFormControl.hasError('required')">
-                            plot is <strong>required</strong>
-                        </mat-error>
-                    </mat-form-field>
-                    <mat-form-field>
-                        <mat-select placeholder="grouped by" required [(value)]="selectedGrouping">
-                            <mat-optgroup *ngFor="let groupCluster of selectedChart.groupClusters"
-                                          [label]="groupCluster.name"
-                                          [hidden]="groupCluster.disabled">
-                                    <mat-option *ngFor="let group of groupCluster.groupings" [value]="group">
-                                        {{group.value}}
-                                    </mat-option>
-                            </mat-optgroup>
-                        </mat-select>
-                        <mat-error *ngIf="groupingFormControl.hasError('required')">
-                            grouped by is <strong>required</strong>
-                        </mat-error>
-                    </mat-form-field>
-                </section>
+            <mat-tab-group>
+                <!--tab group used to support Narrow Results tab later-->
+                <mat-tab label="Select Plot">
+                    <section class="plotSelectionSection">
+                        <mat-form-field>
+                            <mat-select placeholder="plot" #selectedPlot
+                                        [formControl]="plotFormControl" required>
+                                <mat-option *ngFor="let plot of plots" [value]="plot.value">
+                                    {{ plot.viewValue }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="plotFormControl.hasError('required')">
+                                plot is <strong>required</strong>
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-select placeholder="grouped by" #selectedGrouping
+                                        [formControl]="groupingFormControl" required>
+                                <mat-option *ngFor="let grouping of groupings"
+                                            [value]="grouping.value">
+                                    {{ grouping.viewValue }}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="groupingFormControl.hasError('required')">
+                                grouped by is <strong>required</strong>
+                            </mat-error>
+                        </mat-form-field>
+                    </section>
+                </mat-tab>
+            </mat-tab-group>
             <mat-card-actions>
-                <button (click)="submit()"
+                <button (click)="submit(selectedPlot.value, selectedGrouping.value)"
                         mat-raised-button color="primary">
                     Submit
                 </button>
