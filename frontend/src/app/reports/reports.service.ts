@@ -31,7 +31,14 @@ export class ReportsService {
         'March (2017)': 300,
         'April (2017)': 400,
         'May (2017)': 500,
-        'January (2018)': 600
+        'June (2017)': 400,
+        'July (2017)': 450,
+        'August (2017)': 500,
+        'September (2017)': 450,
+        'October (2017)': 600,
+        'November (2017)': 200,
+        'December (2017)': 300,
+        'January (2018)': 650
     };
 
     numObsByWeek = {
@@ -40,7 +47,7 @@ export class ReportsService {
         '3rd (2017)': 300,
         '4th (2017)': 400,
         '1st (2018)': 500,
-        '4th (2018)': 600
+        '2nd (2018)': 600
     };
 
     constructor(private http: HttpClient, private configService: ConfigService) {
