@@ -24,7 +24,7 @@
                         <mat-form-field>
                             <mat-select placeholder="grouped by" #selectedGrouping
                                         [formControl]="groupingFormControl" required>
-                                <mat-option *ngFor="let grouping of timeGroupings"
+                                <mat-option *ngFor="let grouping of groupings"
                                             [value]="grouping.value">
                                     {{ grouping.viewValue }}
                                 </mat-option>
