@@ -19,6 +19,7 @@ export class ReportsComponent implements OnInit {
 
 
     config: Config;
+    chartName = 'chart';
     plots;
     groupings;
     // make progressBarIsHidden false when retrieving data from backend
@@ -73,7 +74,8 @@ export class ReportsComponent implements OnInit {
                             this.emptyJSONReturned = true;
                         } else {
                             this.emptyJSONReturned = false;
-                            this.reportsChartService.makeBarPlot(selectedPlot, selectedGrouping, response);
+                            this.reportsChartService.makeBarPlot(this.chartName,
+                                selectedPlot, selectedGrouping, response);
                         }
                     },
                     error => {
