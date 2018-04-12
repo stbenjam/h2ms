@@ -1,8 +1,8 @@
 import {AfterViewInit, Component, ViewChild} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Location} from '../model/location';
-import {MatPaginator, MatSort, MatTableDataSource} from "@angular/material";
-import {HttpClient} from "@angular/common/http";
+import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
     selector: 'app-location',
@@ -24,14 +24,11 @@ export class LocationComponent implements AfterViewInit {
         this.dataSource = new MatTableDataSource(this.locations);
     }
 
-    delete(location) {
+    delete(location: Location) {
         alert('About to delete ' + location.name);
-        // location._links.self.href;
-        // return this.http.delete(location._links.self.href,)
-        //     .pipe(
-        //         catchError(this.handleError('deleteHero'))
-        //     );
-
+        // TODO: Maybe add a "Are you sure?" prompt
+        // TODO: Move to service
+        return this.http.delete(location._links.self.href, undefined).subscribe();
     }
 
     ngAfterViewInit() {
