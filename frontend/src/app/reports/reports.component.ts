@@ -106,7 +106,7 @@ export class ReportsComponent implements OnInit {
      */
     makeBarPlotNumObsByYear(data: Object) {
         const columns: string[] = new Array();
-        const values: [[string | number]] = [['obs']];
+        const values: [[string | number]] = [['Value']];
 
         for (const key of Object.keys(data)) {
             columns.push(key);
