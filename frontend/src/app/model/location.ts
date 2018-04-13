@@ -10,16 +10,6 @@
  * Do not edit the class manually.
  */
 
-export interface Link {
-    href: string;
-}
-
-export interface Links {
-    self?: Link;
-    location?: Link;
-    children?: Link;
-    parent?: Link;
-}
 
 export interface Location {
     address?: string;
@@ -30,5 +20,4 @@ export interface Location {
     parent?: Location;
     type?: string;
     zip?: string;
-    _links?: Links;
 }

@@ -3,6 +3,8 @@ import {ActivatedRoute} from '@angular/router';
 import {Location} from '../model/location';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {HttpClient} from '@angular/common/http';
+import {getLinks} from '../api-utils';
+import {getId} from '../api-utils';
 
 @Component({
     selector: 'app-location',
@@ -14,6 +16,7 @@ export class LocationComponent implements AfterViewInit {
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort;
 
+    getIdForHtml = getId;
     locations: Location[];
     displayedColumns = ['name', 'address', 'parent', 'buttons'];
     dataSource: MatTableDataSource<Location>;
@@ -24,11 +27,12 @@ export class LocationComponent implements AfterViewInit {
         this.dataSource = new MatTableDataSource(this.locations);
     }
 
+
     delete(location: Location) {
         alert('About to delete ' + location.name);
         // TODO: Maybe add a "Are you sure?" prompt
         // TODO: Move to service
-        return this.http.delete(location._links.self.href, undefined).subscribe();
+        return this.http.delete(getLinks(location).self.href, undefined).subscribe();
     }
 
     ngAfterViewInit() {
@@ -42,3 +46,5 @@ export class LocationComponent implements AfterViewInit {
         this.dataSource.filter = filterValue;
     }
 }
+
+

@@ -34,7 +34,7 @@
                         <mat-cell *matCellDef="let location" class="text-right">
 
                             <!--TODO: Fix this link, locations don't actually have ids, so this will need to be something else-->
-                            <a href="/locations/{{ location.id}}">
+                            <a href="/locations/{{ getIdForHtml(location)}}">
                                 <button mat-icon-button>
                                     <i class="material-icons">edit</i>
                                 </button>

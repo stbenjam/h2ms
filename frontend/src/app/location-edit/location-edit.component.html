@@ -1,1 +1,22 @@
-{{ location.name }}
+<div class="row">
+    <mat-card class="card">
+        <mat-card-title>{{location.name}}</mat-card-title>
+
+        <mat-card-content class="text-center">
+            <mat-form-field class="col">
+                <input matInput #name placeholder="Name" required [value]="location.name"
+                       [formControl]="nameFormControl">
+                <mat-error *ngIf="nameFormControl.invalid">{{nameErrorMessage()}}
+                </mat-error>
+            </mat-form-field>
+
+            <mat-card-actions>
+                <button (click)="submit(name.value)" mat-raised-button
+                        color="primary">
+                    <!--color="primary" [disabled]="emailFormControl.invalid">-->
+                    Send Recovery Email
+                </button>
+            </mat-card-actions>
+        </mat-card-content>
+    </mat-card>
+</div>
