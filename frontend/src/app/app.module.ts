@@ -52,7 +52,6 @@ import {
     ResetPasswordComponent,
     SuccessfullyResetPasswordComponent
 } from './reset-password/reset-password.component';
-import {UserEmailService} from './user/service/user-email.service';
 import {ReportsChartService} from './reports/reports-chart.service';
 
 @NgModule({
