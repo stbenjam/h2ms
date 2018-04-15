@@ -52,6 +52,7 @@ import {
     ResetPasswordComponent,
     SuccessfullyResetPasswordComponent
 } from './reset-password/reset-password.component';
+import { UserComponent } from './user/user.component';
 
 @NgModule({
     declarations: [
@@ -68,7 +69,8 @@ import {
         SuccessfullyResetPasswordComponent,
         AboutComponent,
         ForgotPasswordComponent,
-        ResetPasswordComponent
+        ResetPasswordComponent,
+        UserComponent
     ],
     imports: [
         BrowserModule,
