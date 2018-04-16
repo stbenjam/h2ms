@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import {ResourcesUser, ResourceUser, User} from '../';
+import {ResourcesUser, ResourceUser, User, UserEntityService} from '../';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
+import {FormSubmissionDialogComponent} from '../dynamic-form/dynamic-form.component';
+import {DIALOG_STYLE} from '../forms-common/dialog';
+import {MatDialog, MatDialogRef} from '@angular/material';
 
 @Component({
     selector: 'app-user',
@@ -12,17 +15,15 @@ export class UserComponent implements OnInit {
     userForm: FormGroup;
     users: ResourcesUser;
     editMode: boolean;
-    user: User = {
-        firstName: '',
-        lastName: '',
-        middleName: '',
-        email: ''
-    };
+    user: User;
 
-    constructor(private actr: ActivatedRoute) { }
+    constructor(private actr: ActivatedRoute,
+                private userEntityService: UserEntityService,
+                public dialog: MatDialog) { }
 
     ngOnInit() {
         this.userForm = new FormGroup({
+            userSelect: new FormControl(),
             firstName: new FormControl('', [
                 Validators.required
             ]),
@@ -42,28 +43,41 @@ export class UserComponent implements OnInit {
         });
     }
 
-    onSubmit() { }
+    onSubmit() {
+        this.user = {
+            firstName: this.userForm.get('firstName').value,
+            middleName: this.userForm.get('middleName').value,
+            lastName: this.userForm.get('lastName').value,
+            email: this.userForm.get('email').value,
+        };
 
+        if (this.editMode) {
+            this.user.id = this.userForm.get('userSelect').value.id;
+        }
+
+        const saveObservable = this.editMode ? this.userEntityService.saveUserUsingPATCH(this.user.id, this.user)
+            : this.userEntityService.saveUserUsingPOST(this.user);
+        saveObservable.subscribe((response) => { this.openSuccessDialog(); },
+            (error) => { this.openFailureDialog(); } );
+    }
+
+    // TODO: enable deactivation
     onDeactivate() { }
+
+    openSuccessDialog(): void {
+        this.dialog.open(UserSubmissionSuccessDialogComponent, DIALOG_STYLE);
+    }
+
+    openFailureDialog(): void {
+        this.dialog.open(UserSubmissionFailureDialogComponent, DIALOG_STYLE);
+    }
 
     onChange(selectedUser: ResourceUser) {
         if (selectedUser !== '') {
             this.editMode = true;
-            this.user = {
-                firstName: selectedUser.firstName,
-                middleName: selectedUser.middleName,
-                lastName: selectedUser.lastName,
-                email: selectedUser.email
-            };
             this.setUserFormValues(selectedUser);
         } else {
             this.editMode = false;
-            this.user = {
-                firstName: '',
-                middleName: '',
-                lastName: '',
-                email: ''
-            };
             this.resetUserFormValues();
         }
     }
@@ -90,4 +104,32 @@ export class UserComponent implements OnInit {
         this.userForm.get('email').updateValueAndValidity();
     }
 
+}
+
+@Component({
+    selector: 'app-user-submission-success-dialog',
+    templateUrl: 'user-submission-success-dialog.html',
+})
+export class UserSubmissionSuccessDialogComponent {
+
+    constructor(public dialogRef: MatDialogRef<FormSubmissionDialogComponent>) {
+    }
+
+    closeDialog(): void {
+        this.dialogRef.close();
+    }
+}
+
+@Component({
+    selector: 'app-user-submission-failure-dialog',
+    templateUrl: 'user-submission-failure-dialog.html',
+})
+export class UserSubmissionFailureDialogComponent {
+
+    constructor(public dialogRef: MatDialogRef<FormSubmissionDialogComponent>) {
+    }
+
+    closeDialog(): void {
+        this.dialogRef.close();
+    }
 }

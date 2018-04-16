@@ -52,7 +52,10 @@ import {
     ResetPasswordComponent,
     SuccessfullyResetPasswordComponent
 } from './reset-password/reset-password.component';
-import { UserComponent } from './user/user.component';
+import { UserComponent,
+    UserSubmissionSuccessDialogComponent,
+    UserSubmissionFailureDialogComponent
+} from './user/user.component';
 
 @NgModule({
     declarations: [
@@ -70,7 +73,9 @@ import { UserComponent } from './user/user.component';
         AboutComponent,
         ForgotPasswordComponent,
         ResetPasswordComponent,
-        UserComponent
+        UserComponent,
+        UserSubmissionSuccessDialogComponent,
+        UserSubmissionFailureDialogComponent
     ],
     imports: [
         BrowserModule,
@@ -97,7 +102,9 @@ import { UserComponent } from './user/user.component';
     entryComponents: [
         FormSubmissionDialogComponent,
         SuccessfullySentPasswordRecoveryEmailComponent,
-        SuccessfullyResetPasswordComponent
+        SuccessfullyResetPasswordComponent,
+        UserSubmissionSuccessDialogComponent,
+        UserSubmissionFailureDialogComponent
     ],
     providers: [
         MediaMatcher,
