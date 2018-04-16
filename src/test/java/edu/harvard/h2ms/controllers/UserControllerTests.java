@@ -5,24 +5,25 @@ import static java.lang.Boolean.TRUE;
 import static java.util.Arrays.asList;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import edu.harvard.h2ms.common.TestHelpers;
 import edu.harvard.h2ms.domain.core.*;
-import edu.harvard.h2ms.repository.EventRepository;
-import edu.harvard.h2ms.repository.EventTemplateRepository;
-import edu.harvard.h2ms.repository.QuestionRepository;
-import edu.harvard.h2ms.repository.UserRepository;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import edu.harvard.h2ms.repository.*;
+
+import java.security.Principal;
+import java.util.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,7 +34,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 @RunWith(SpringRunner.class)
@@ -54,6 +57,8 @@ public class UserControllerTests {
   private MockMvc mvc;
 
   @Autowired UserRepository userRepository;
+
+  @Autowired RoleRepository roleRepository;
 
   @Autowired QuestionRepository questionRepository;
 
@@ -77,6 +82,7 @@ public class UserControllerTests {
 
     // Sample User Data
     User observer = new User("John", "Quincy", "Adams", EMAIL, PASSWORD, "Other");
+    // observer.setRoles(new HashSet<Role>(Arrays.asList(roleRepository.findByName("ADMIN"))));
     userRepository.save(observer);
     User subject = new User("Jane", "Doe", "Sam", "sample@email.com", "password", "Doctor");
     userRepository.save(subject);
@@ -172,4 +178,51 @@ public class UserControllerTests {
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest());
   }
+
+  @Test
+  @Transactional
+  @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+  public void test_nonAdminRequest_UserController_saveNewUser() throws Exception {
+
+    User user = new User("John", "Middle", "Doe", "john_doe@gmail.com", "password123", "user_type");
+    ObjectMapper mapper = new ObjectMapper();
+    String jsonStr = mapper.writeValueAsString(user);
+    final String accessToken = obtainAccessToken(mvc, "jqadams@h2ms.org", "password");
+
+    mvc.perform(
+            MockMvcRequestBuilders.post("/users/")
+                .content(jsonStr)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + accessToken)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isForbidden()); // 403 Forbidden You don't have permission to access ..
+  }
+
+  @Ignore
+  @Test
+  @Transactional
+  @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+  public void test_AdminRequest_UserController_saveNewUser() throws Exception {
+
+    Principal principal = Mockito.mock(Principal.class);
+    Mockito.when(principal.getName()).thenReturn("ADMIN");
+
+    User user = new User("John", "Middle", "Doe", "john_doe@gmail.com", "password123", "user_type");
+    ObjectMapper mapper = new ObjectMapper();
+    String jsonStr = mapper.writeValueAsString(user);
+    final String accessToken = obtainAccessToken(mvc, "jqadams@h2ms.org", "password");
+
+    MockHttpServletResponse response = mvc.perform(
+            MockMvcRequestBuilders.post("/users/")
+                    .content(jsonStr)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + accessToken)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .principal(principal))
+                    .andReturn()
+                    .getResponse();
+
+    response.toString();
+  }
+
 }

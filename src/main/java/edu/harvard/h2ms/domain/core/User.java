@@ -1,21 +1,8 @@
 package edu.harvard.h2ms.domain.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import java.util.*;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -49,13 +36,12 @@ public class User implements UserDetails {
 
   @NotNull @Column private String type;
 
-  @NotNull @Column @JsonIgnore private String password;
+  @NotNull @Column private String password;
 
-  @ManyToMany
-  @JoinTable(
-    name = "user_role",
-    joinColumns = @JoinColumn(name = "user_id"),
-    inverseJoinColumns = @JoinColumn(name = "role_id")
+  @ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+  @JoinTable(name="user_roles",
+          joinColumns = {@JoinColumn(name="user_id", referencedColumnName="id")},
+          inverseJoinColumns = {@JoinColumn(name="role_id", referencedColumnName="id")}
   )
   private Set<Role> roles;
 
