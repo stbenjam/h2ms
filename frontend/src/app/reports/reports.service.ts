@@ -95,21 +95,24 @@ export class ReportsService {
 
     getCharts() {
         // todo get all charts from backend
-        this.charts.push(
-            {value: 'Average compliance for ' + this.config.configQuestion.displayName,
-                id: this.config.configQuestion.id,
-                groupClusters: [{name: 'Time',
-                    disabled: false,
-                    groupings: [{value: 'year'},
-                        {value: 'quarter'},
-                        {value: 'month'},
-                        {value: 'week'}]},
-                    {name: 'Person',
-                        disabled: true,
-                        groupings: [{value: 'observer'}]},
-                    {name: 'Location',
+        this.config.configQuestions.map(q => {
+            this.charts.push(
+                {value: 'Average compliance for ' + q.displayName,
+                    id: q.id,
+                    groupClusters: [{name: 'Time',
                         disabled: false,
-                        groupings: [{value: 'hospital'}]}]});
+                        groupings: [{value: 'year'},
+                            {value: 'quarter'},
+                            {value: 'month'},
+                            {value: 'week'}]},
+                        {name: 'Person',
+                            disabled: true,
+                            groupings: [{value: 'observer'}]},
+                        {name: 'Location',
+                            disabled: false,
+                            groupings: [{value: 'hospital'}]}]});
+            }
+        );
         return this.charts;
     }
 
@@ -131,7 +134,14 @@ export class ReportsService {
      */
     private buildURL(chart, grouping) {
         if (chart.value.match('Number of observations')) {
-            return this.config.getBackendUrl() + '/' + 'events/count/' + grouping.value;
+            if (grouping.value.match('year') || grouping.value.match('quarter')
+                || grouping.value.match('month') || grouping.value.match('week')
+                || grouping.value.match('observer')) {
+                return this.config.getBackendUrl() + '/' + 'events/count/' + grouping.value;
+            } else {
+                console.log('no url known for selected chart: \'' + chart.value + '\' ' +
+                    'and grouping: \'' + grouping.value + '\'');
+            }
         } else if (chart.value.indexOf('Average compliance') !== -1) {
             if (grouping.value.match('user')) {
                 return this.config.getBackendUrl() + '/' + 'users/compliance/' + chart.id;
@@ -141,12 +151,12 @@ export class ReportsService {
             } else if (grouping.value.match('hospital')) {
                 return this.config.getBackendUrl() + '/' + 'events/compliance/' + chart.id + '/location';
             } else {
-                console.log('no url known for selected chart: \'' + chart + '\' ' +
-                    'and grouping: \'' + grouping + '\'');
+                console.log('no url known for selected chart: \'' + chart.value + '\' ' +
+                    'and grouping: \'' + grouping.value + '\'');
             }
         } else {
-            console.log('no url known for selected chart: \'' + chart + '\' ' +
-                'and grouping: \'' + grouping + '\'');
+            console.log('no url known for selected chart: \'' + chart.value + '\' ' +
+                'and grouping: \'' + grouping.value + '\'');
         }
     }
 

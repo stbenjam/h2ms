@@ -26,7 +26,7 @@
                         <mat-select placeholder="grouped by" required [(value)]="selectedGrouping">
                             <mat-optgroup *ngFor="let groupCluster of selectedChart.groupClusters"
                                           [label]="groupCluster.name"
-                                          [disabled]="groupCluster.disabled">
+                                          [hidden]="groupCluster.disabled">
                                     <mat-option *ngFor="let group of groupCluster.groupings" [value]="group">
                                         {{group.value}}
                                     </mat-option>

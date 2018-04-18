@@ -17,8 +17,8 @@ export class ReportsComponent implements OnInit {
     progressBarIsHidden: boolean;
     emptyJSONReturned: boolean;
     chartName = 'chart';
-    chartTitle: string;
-    charts;
+    chartTitle = 'Loading chart';
+    charts: any;
     selectedChart;
     selectedGrouping;
 
@@ -78,6 +78,4 @@ export class ReportsComponent implements OnInit {
                 }
             );
     }
-
-
 }
