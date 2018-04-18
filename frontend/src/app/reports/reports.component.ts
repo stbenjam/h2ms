@@ -56,26 +56,28 @@ export class ReportsComponent implements OnInit {
      * ReportsChartService
      */
     submit() {
-        this.progressBarIsHidden = false;
-        this.reportsService.fetchReport(this.selectedChart, this.selectedGrouping)
-            .subscribe(
-                response => {
-                    if (JSON.stringify(response).indexOf('{}') !== -1) {
-                        this.emptyJSONReturned = true;
-                    } else {
-                        this.emptyJSONReturned = false;
-                        this.reportsChartService.makeBarChart(this.chartName,
-                            this.selectedChart.value, this.selectedGrouping.value, response);
-                        this.chartTitle = this.selectedChart.value + ' grouped by '
-                            + this.selectedGrouping.value;
+        if (this.selectedChart && this.selectedGrouping) {
+            this.progressBarIsHidden = false;
+            this.reportsService.fetchReport(this.selectedChart, this.selectedGrouping)
+                .subscribe(
+                    response => {
+                        if (JSON.stringify(response).indexOf('{}') !== -1) {
+                            this.emptyJSONReturned = true;
+                        } else {
+                            this.emptyJSONReturned = false;
+                            this.reportsChartService.makeBarChart(this.chartName,
+                                this.selectedChart.value, this.selectedGrouping.value, response);
+                            this.chartTitle = this.selectedChart.value + ' grouped by '
+                                + this.selectedGrouping.value;
+                        }
+                    },
+                    error => {
+                        this.progressBarIsHidden = true;
+                        if (error.status === 401) {
+                            alert('authentication error: please login');
+                        }
                     }
-                },
-                error => {
-                    this.progressBarIsHidden = true;
-                    if (error.status === 401) {
-                        alert('authentication error: please login');
-                    }
-                }
-            );
+                );
+        }
     }
 }
