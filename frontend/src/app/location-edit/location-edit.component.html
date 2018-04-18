@@ -1,20 +1,41 @@
 <div class="row">
     <mat-card class="card">
-        <mat-card-title>{{location.name}}</mat-card-title>
+        <mat-card-title>{{crudOperation}} Location</mat-card-title>
 
         <mat-card-content class="text-center">
             <mat-form-field class="col">
-                <input matInput #name placeholder="Name" required [value]="location.name"
-                       [formControl]="nameFormControl">
-                <mat-error *ngIf="nameFormControl.invalid">{{nameErrorMessage()}}
-                </mat-error>
+                <input matInput #name placeholder="Name" required [formControl]="nameFormControl">
+                <mat-error *ngIf="nameFormControl.invalid">{{nameErrorMessage()}}</mat-error>
             </mat-form-field>
 
+            <mat-form-field class="col">
+                <input matInput #address placeholder="Address" [value]="initialLocation.address">
+            </mat-form-field>
+
+            <mat-form-field class="col">
+                <input matInput #zip placeholder="Zip Code" [value]="initialLocation.zip">
+            </mat-form-field>
+
+            <mat-form-field class="col">
+                <input matInput #country placeholder="Country" [value]="initialLocation.country">
+            </mat-form-field>
+
+            <mat-form-field class="col" hintLabel="Examples: 'Hospital' or 'Ward'">
+                <input matInput #type placeholder="Location Type" [formControl]="typeFormControl"
+                       required>
+                <mat-error *ngIf="typeFormControl.invalid">{{typeErrorMessage()}}</mat-error>
+            </mat-form-field>
+
+
+            <!--TODO Decide how I want to display this-->
+            <!--parent?: Location;-->
+            <!--children?: Array<Location>;-->
+
             <mat-card-actions>
-                <button (click)="submit(name.value)" mat-raised-button
-                        color="primary">
-                    <!--color="primary" [disabled]="emailFormControl.invalid">-->
-                    Send Recovery Email
+                <button mat-raised-button color="primary"
+                        (click)="submit(name.value, address.value, zip.value, country.value, type.value)"
+                        [disabled]="typeFormControl.invalid || nameFormControl.invalid">
+                    {{crudOperation}}
                 </button>
             </mat-card-actions>
         </mat-card-content>

@@ -1,5 +1,5 @@
-import {AfterViewInit, Component, ViewChild} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {AfterViewInit, Component, ViewChild, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '../model/location';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {HttpClient} from '@angular/common/http';
@@ -11,28 +11,47 @@ import {getId} from '../api-utils';
     templateUrl: './location.component.html',
     styleUrls: ['./location.component.css', '../card.css']
 })
-export class LocationComponent implements AfterViewInit {
+/**
+ * A component for showing all locations in the app. The table is based heavily on the Angular
+ * Material Table examples here: https://material.angular.io/components/table/overview
+ */
+export class LocationComponent implements OnInit, AfterViewInit {
 
     @ViewChild(MatPaginator) paginator: MatPaginator;
     @ViewChild(MatSort) sort: MatSort;
 
-    getIdForHtml = getId;
     locations: Location[];
-    displayedColumns = ['name', 'address', 'parent', 'buttons'];
+    displayedColumns = ['name', 'address', 'buttons'];
     dataSource: MatTableDataSource<Location>;
 
-    constructor(private actr: ActivatedRoute, private http: HttpClient) {
+    constructor(private actr: ActivatedRoute,
+                private router: Router,
+                private http: HttpClient) {
+    }
+
+    ngOnInit() {
         const locationResolver = this.actr.snapshot.data.locationResolver;
         this.locations = locationResolver._embedded.locations;
         this.dataSource = new MatTableDataSource(this.locations);
     }
 
+    edit(location: Location) {
+        this.router.navigate(['/locations/' + getId(location) + '/edit']);
+    }
 
     delete(location: Location) {
-        alert('About to delete ' + location.name);
-        // TODO: Maybe add a "Are you sure?" prompt
-        // TODO: Move to service
-        return this.http.delete(getLinks(location).self.href, undefined).subscribe();
+        if (confirm('Are you sure you want to delete ' + location.name)) {
+            this.http.delete(getLinks(location).self.href, undefined).subscribe();
+            this.removeLocationFromTable(location);
+        }
+    }
+
+    private removeLocationFromTable(location: Location) {
+        const index = this.locations.indexOf(location, 0);
+        if (index > -1) {
+            this.locations.splice(index, 1);
+            this.dataSource.data = this.locations;
+        }
     }
 
     ngAfterViewInit() {

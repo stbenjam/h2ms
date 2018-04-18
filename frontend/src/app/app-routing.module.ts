@@ -44,7 +44,15 @@ const routes: Routes = [
         }
     },
     {
-        path: 'locations/:id',
+        path: 'locations/create',
+        component: LocationEditComponent,
+        canActivate: [AuthGuardService],
+        resolve: {
+            locationResolver: LocationResolverService
+        }
+    },
+    {
+        path: 'locations/:id/edit',
         component: LocationEditComponent,
         canActivate: [AuthGuardService],
         resolve: {
