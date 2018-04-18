@@ -12,19 +12,15 @@ import {ReportsChartService} from './reports-chart.service';
 })
 export class ReportsComponent implements OnInit {
 
-    // todo: styles below should be added to styleURLs above when patternfly style is ready
-    // '../../../node_modules/patternfly/dist/css/patternfly.min.css',
-    // '../../../node_modules/patternfly/dist/css/patternfly-additions.css'
-    // todo: chart title
-
-
     config: Config;
-    chartName = 'chart';
-    plots;
-    groupings;
     // make progressBarIsHidden false when retrieving data from backend
     progressBarIsHidden: boolean;
     emptyJSONReturned: boolean;
+    chartName = 'chart';
+    chartTitle: string;
+    charts;
+    selectedChart;
+    selectedGrouping;
 
     /**
      * form controls allow required fields
@@ -47,45 +43,40 @@ export class ReportsComponent implements OnInit {
     ngOnInit() {
         this.progressBarIsHidden = false;
         this.emptyJSONReturned = false;
-
-        // todo get dynamic reports to populate drop down
-        this.reportsChartService.getPlots().subscribe(p => {
-            this.plots = p;
-        });
-        this.reportsChartService.getGroupings().subscribe(g => {
-            this.groupings = g;
-        });
-
+        this.charts = this.reportsService.getCharts();
+        // defaults
+        this.selectedChart = this.charts[0];
+        this.selectedGrouping = this.selectedChart.groupClusters[0].groupings[0];
+        this.submit();
         this.progressBarIsHidden = true;
     }
 
     /**
-     * This function submits a url to the reports service to retrieve a report json
+     * This function gets the report from the ReportService then produces a chart with the
+     * ReportsChartService
      */
-    submit(selectedPlot: string, selectedGrouping: string) {
-        // todo: make sure valid input selection
-        if (selectedPlot && selectedGrouping) {
-            this.progressBarIsHidden = false;
-            this.reportsService.fetchReport(this.config.getBackendUrl() + '/'
-                + selectedPlot + selectedGrouping)
-                .subscribe(
-                    response => {
-                        if (JSON.stringify(response).indexOf('{}') !== -1) {
-                            this.emptyJSONReturned = true;
-                        } else {
-                            this.emptyJSONReturned = false;
-                            this.reportsChartService.makeBarPlot(this.chartName,
-                                selectedPlot, selectedGrouping, response);
-                        }
-                    },
-                    error => {
-                        this.progressBarIsHidden = true;
-                        if (error.status === 401) {
-                            alert('authentication error: please login');
-                        }
+    submit() {
+        this.progressBarIsHidden = false;
+        this.reportsService.fetchReport(this.selectedChart, this.selectedGrouping)
+            .subscribe(
+                response => {
+                    if (JSON.stringify(response).indexOf('{}') !== -1) {
+                        this.emptyJSONReturned = true;
+                    } else {
+                        this.emptyJSONReturned = false;
+                        this.reportsChartService.makeBarChart(this.chartName,
+                            this.selectedChart.value, this.selectedGrouping.value, response);
+                        this.chartTitle = this.selectedChart.value + ' grouped by '
+                            + this.selectedGrouping.value;
                     }
-                );
-        }
+                },
+                error => {
+                    this.progressBarIsHidden = true;
+                    if (error.status === 401) {
+                        alert('authentication error: please login');
+                    }
+                }
+            );
     }
 
 
