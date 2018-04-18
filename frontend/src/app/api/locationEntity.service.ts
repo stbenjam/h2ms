@@ -12,20 +12,20 @@
 
 /* tslint:disable:no-unused-variable member-ordering */
 
-import { Inject, Injectable, Optional }                      from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams }               from '@angular/common/http';
+import {Inject, Injectable, Optional} from '@angular/core';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 
-import { Observable }                                        from 'rxjs/Observable';
+import {Observable} from 'rxjs/Observable';
 import '../rxjs-operators';
 
-import { Location } from '../model/location';
-import { ResourceLocation } from '../model/resourceLocation';
-import { ResourcesLocation } from '../model/resourcesLocation';
-
+import {Location} from '../model/location';
+import {ResourceLocation} from '../model/resourceLocation';
+import {ResourcesLocation} from '../model/resourcesLocation';
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
 import { Configuration }                                     from '../configuration';
 import { CustomHttpUrlEncodingCodec }                        from '../encoder';
-
+import {Config} from '../config/config';
+import {ConfigService} from '../config/config.service';
 
 @Injectable()
 export class LocationEntityService {
@@ -33,14 +33,21 @@ export class LocationEntityService {
     protected basePath = 'http://test.h2ms.org:81';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
+    config: Config;
 
-    constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration) {
+    constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration,
+                @Optional() configService: ConfigService) {
         if (basePath) {
             this.basePath = basePath;
         }
         if (configuration) {
             this.configuration = configuration;
             this.basePath = basePath || configuration.basePath || this.basePath;
+        }
+
+        if (configService) {
+            this.config = configService.getConfig();
+            this.basePath = this.config.getBackendUrl();
         }
     }
 
@@ -81,8 +88,7 @@ export class LocationEntityService {
         }
 
         // to determine the Content-Type header
-        let consumes: string[] = [
-        ];
+        let consumes: string[] = [];
 
         return this.httpClient.delete<any>(`${this.basePath}/locations/${encodeURIComponent(String(id))}`,
             {
@@ -127,8 +133,7 @@ export class LocationEntityService {
         }
 
         // to determine the Content-Type header
-        let consumes: string[] = [
-        ];
+        let consumes: string[] = [];
 
         return this.httpClient.get<any>(`${this.basePath}/locations`,
             {
@@ -163,8 +168,7 @@ export class LocationEntityService {
         }
 
         // to determine the Content-Type header
-        let consumes: string[] = [
-        ];
+        let consumes: string[] = [];
 
         return this.httpClient.get<any>(`${this.basePath}/locations/search/findByName`,
             {
@@ -197,8 +201,7 @@ export class LocationEntityService {
         }
 
         // to determine the Content-Type header
-        let consumes: string[] = [
-        ];
+        let consumes: string[] = [];
 
         return this.httpClient.get<any>(`${this.basePath}/locations/${encodeURIComponent(String(id))}`,
             {
@@ -342,8 +345,7 @@ export class LocationEntityService {
         }
 
         // to determine the Content-Type header
-        let consumes: string[] = [
-        ];
+        let consumes: string[] = [];
 
         return this.httpClient.get<any>(`${this.basePath}/locations/${encodeURIComponent(String(id))}/children`,
             {
@@ -383,7 +385,7 @@ export class LocationEntityService {
             'text/uri-list',
             'application/x-spring-data-compact+json'
         ];
-        let httpContentTypeSelected:string = this.configuration.selectHeaderContentType(consumes);
+        let httpContentTypeSelected: string = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected != undefined) {
             headers = headers.set("Content-Type", httpContentTypeSelected);
         }
@@ -427,7 +429,7 @@ export class LocationEntityService {
             'text/uri-list',
             'application/x-spring-data-compact+json'
         ];
-        let httpContentTypeSelected:string = this.configuration.selectHeaderContentType(consumes);
+        let httpContentTypeSelected: string = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected != undefined) {
             headers = headers.set("Content-Type", httpContentTypeSelected);
         }
@@ -471,7 +473,7 @@ export class LocationEntityService {
             'text/uri-list',
             'application/x-spring-data-compact+json'
         ];
-        let httpContentTypeSelected:string = this.configuration.selectHeaderContentType(consumes);
+        let httpContentTypeSelected: string = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected != undefined) {
             headers = headers.set("Content-Type", httpContentTypeSelected);
         }
@@ -542,8 +544,7 @@ export class LocationEntityService {
         }
 
         // to determine the Content-Type header
-        let consumes: string[] = [
-        ];
+        let consumes: string[] = [];
 
         return this.httpClient.get<any>(`${this.basePath}/locations/${encodeURIComponent(String(id))}/parent`,
             {
@@ -583,7 +584,7 @@ export class LocationEntityService {
             'text/uri-list',
             'application/x-spring-data-compact+json'
         ];
-        let httpContentTypeSelected:string = this.configuration.selectHeaderContentType(consumes);
+        let httpContentTypeSelected: string = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected != undefined) {
             headers = headers.set("Content-Type", httpContentTypeSelected);
         }
@@ -627,7 +628,7 @@ export class LocationEntityService {
             'text/uri-list',
             'application/x-spring-data-compact+json'
         ];
-        let httpContentTypeSelected:string = this.configuration.selectHeaderContentType(consumes);
+        let httpContentTypeSelected: string = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected != undefined) {
             headers = headers.set("Content-Type", httpContentTypeSelected);
         }
@@ -671,7 +672,7 @@ export class LocationEntityService {
             'text/uri-list',
             'application/x-spring-data-compact+json'
         ];
-        let httpContentTypeSelected:string = this.configuration.selectHeaderContentType(consumes);
+        let httpContentTypeSelected: string = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected != undefined) {
             headers = headers.set("Content-Type", httpContentTypeSelected);
         }
@@ -714,7 +715,7 @@ export class LocationEntityService {
         let consumes: string[] = [
             'application/json'
         ];
-        let httpContentTypeSelected:string = this.configuration.selectHeaderContentType(consumes);
+        let httpContentTypeSelected: string = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected != undefined) {
             headers = headers.set("Content-Type", httpContentTypeSelected);
         }
@@ -753,7 +754,7 @@ export class LocationEntityService {
         let consumes: string[] = [
             'application/json'
         ];
-        let httpContentTypeSelected:string = this.configuration.selectHeaderContentType(consumes);
+        let httpContentTypeSelected: string = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected != undefined) {
             headers = headers.set("Content-Type", httpContentTypeSelected);
         }
@@ -796,7 +797,7 @@ export class LocationEntityService {
         let consumes: string[] = [
             'application/json'
         ];
-        let httpContentTypeSelected:string = this.configuration.selectHeaderContentType(consumes);
+        let httpContentTypeSelected: string = this.configuration.selectHeaderContentType(consumes);
         if (httpContentTypeSelected != undefined) {
             headers = headers.set("Content-Type", httpContentTypeSelected);
         }
