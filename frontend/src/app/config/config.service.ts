@@ -22,7 +22,8 @@ export class ConfigService {
             defaultConfig.bannerUrl,
             defaultConfig.logoUrl,
             defaultConfig.backendHostname,
-            defaultConfig.backendPort);
+            defaultConfig.backendPort,
+            defaultConfig.configQuestion);
     }
 
     getConfig(): Config {
