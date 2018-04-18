@@ -20,6 +20,9 @@ enum CrudOperation {
     templateUrl: './location-edit.component.html',
     styleUrls: ['./location-edit.component.css', '../card.css']
 })
+/**
+ * A Component for Creating and Updating singular locations.
+ */
 export class LocationEditComponent {
     nameFormControl: FormControl = REQUIRED_NAME;
     nameErrorMessage = REQUIRED_NAME_ERROR_MESSAGE;
