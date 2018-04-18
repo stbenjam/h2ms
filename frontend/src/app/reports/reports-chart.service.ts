@@ -1,58 +1,68 @@
 import {Injectable} from '@angular/core';
 import * as c3 from 'c3';
+import * as d3 from 'd3';
 import {ChartAPI} from 'c3';
-import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class ReportsChartService {
 
+
     chart: ChartAPI;
-    plots = [{value: 'events/count/', viewValue: 'number of observations'}];
-    groupings = [{value: 'year', viewValue: 'year'},
-        {value: 'quarter', viewValue: 'quarter'},
-        {value: 'month', viewValue: 'month'},
-        {value: 'week', viewValue: 'week'}];
 
     constructor() {
     }
 
     /**
-     * a function to make a determination about which type of plot to make and calls helper to convert
-     * json to plot data
+     * a function to make a determination about which type of chart to make and calls helper to convert
+     * json to chart data
      */
-    makeBarPlot(id, selectedPlot: string, selectedGrouping: string, data: Object) {
-        if (selectedPlot.match('events/count/')) {
-            if (selectedGrouping.match('year')) {
-                this.makeBarPlotNumObsByYear(id, data);
-            } else if (selectedGrouping.match('quarter')) {
-                this.makeBarPlotNumObsByQuarter(id, data);
-            } else if (selectedGrouping.match('month')) {
-                this.makeBarPlotNumObsByMonth(id, data);
-            } else if (selectedGrouping.match('week')) {
-                this.makeBarPlotNumObsByWeek(id, data);
+    makeBarChart(id, chart: string, grouping: string, data: Object) {
+        // if (chart.match('number of observations')) {
+        //     if (grouping.match('year')
+        //         || grouping.match('observer')) {
+        //         this.makeBarChartWithoutSubgrouping(id, data);
+        //     } else
+            if (grouping.match('quarter')) {
+                this.makeBarChartNumObsByQuarter(id, data);
+            } else if (grouping.match('month')) {
+                this.makeBarChartNumObsByMonth(id, data);
+            } else if (grouping.match('week')) {
+                this.makeBarChartNumObsByWeek(id, data);
+            } else {
+                this.makeBarChartWithoutSubgrouping(id, data);
+                // console.log('unrecongized chart format, defaulting to single grouping for chart: \'' + chart + '\' ' +
+                //     'and grouping: \'' + grouping + '\'');
             }
-        }
+        // } else {
+        //     this.makeBarChartWithoutSubgrouping(id, data);
+        //     console.log('unrecongized chart format, defaulting to single grouping for chart: \'' + chart + '\' ' +
+        //         'and grouping: \'' + grouping + '\'');
+        // }
+        // handle not found case
     }
 
     /**
-     * converts json for number of observations by year to plot data
+     * converts json for number of observations by a single grouping (e.g. year, observer, etc. )
      */
-    makeBarPlotNumObsByYear(id, data: Object) {
-        const columns: string[] = new Array();
-        const values: [[string | number]] = [['Value']];
+    makeBarChartWithoutSubgrouping(id, data: Object) {
+        const names: string[] = new Array();
+        const values: [[string | number]] = [['Count']];
 
         for (const key of Object.keys(data)) {
-            columns.push(key);
+            names.push(key);
             values[0].push(data[key]);
         }
-
-        this.groupedBarPlot(id, values, columns, false);
+        let number = 0;
+        if (names.length > 5) {
+            number = 90;
+        }
+        this.groupedBarChart(id, values, names, false, number);
     }
 
     /**
-     * converts json for number of observations by quarter to plot data
+     * converts json for number of observations by quarter to chart data
      */
-    makeBarPlotNumObsByQuarter(id, data: Object) {
+    makeBarChartNumObsByQuarter(id, data: Object) {
         const categories: string[] = new Array();
         const groupedColumnsData: [[string | number]] = [['Q1'], ['Q2'], ['Q3'], ['Q4']];
 
@@ -65,13 +75,13 @@ export class ReportsChartService {
                 categories.push(year);
             }
         }
-        this.groupedBarPlot(id, groupedColumnsData, categories, true);
+        this.groupedBarChart(id, groupedColumnsData, categories, true);
     }
 
     /**
-     * converts json for number of observations by month to plot data
+     * converts json for number of observations by month to chart data
      */
-    makeBarPlotNumObsByMonth(id, data: Object) {
+    makeBarChartNumObsByMonth(id, data: Object) {
         const referenceMonths = ['January', 'February', 'March', 'April', 'May', 'June',
             'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -91,13 +101,13 @@ export class ReportsChartService {
                 categories.push(year);
             }
         }
-        this.groupedBarPlot(id, groupedColumnsData, categories, true);
+        this.groupedBarChart(id, groupedColumnsData, categories, true);
     }
 
     /**
-     * converts json for number of observations by week to plot data
+     * converts json for number of observations by week to chart data
      */
-    makeBarPlotNumObsByWeek(id, data: Object) {
+    makeBarChartNumObsByWeek(id, data: Object) {
         const categories: string[] = new Array();
         const groupedColumnsData: [[string | number]] = [['1']];
         const referenceWeeks: string[] = ['1st'];
@@ -117,24 +127,13 @@ export class ReportsChartService {
                 categories.push(year);
             }
         }
-        this.groupedBarPlot(id, groupedColumnsData, categories, true);
+        this.groupedBarChart(id, groupedColumnsData, categories, true);
     }
 
     /**
-     * a helper function to add bar plot data to this.chart
+     * a helper function to add bar chart data to this.chart
      */
-    groupedBarPlot(id, groupedColumnsData, categories, legendShow) {
-        // todo: fully implement pf style
-        // const verticalBarChartConfig = patternfly.c3ChartDefaults().getDefaultGroupedBarConfig(categories);
-        // verticalBarChartConfig.bindto = '#chart';
-        // verticalBarChartConfig.data = {
-        //             columns: groupedColumnsData,
-        //             type: 'bar'};
-        // verticalBarChartConfig.axis = {
-        //             x: {categories: categories,
-        //                 type: 'category'}};
-        // verticalBarChartConfig.legend = {show: legendShow};
-        // this.chart = c3.generate(verticalBarChartConfig);
+    groupedBarChart(id, groupedColumnsData, categories, legendShow, rotate = 0) {
         this.chart = c3.generate({
             bindto: '#' + id,
             data: {
@@ -144,7 +143,11 @@ export class ReportsChartService {
             axis: {
                 x: {
                     categories: categories,
-                    type: 'category'
+                    type: 'category',
+                    tick: {
+                        rotate: rotate,
+                        multiline: false
+                    }
                 }
             },
             legend: {
@@ -161,15 +164,5 @@ export class ReportsChartService {
         const s = ['th', 'st', 'nd', 'rd'],
             v = n % 100;
         return n + (s[(v - 20) % 10] || s[v] || s[0]);
-    }
-
-    getPlots() {
-        // todo implement backend call for plots
-        return Observable.of(this.plots);
-    }
-
-    getGroupings() {
-        // todo implement backend call for plots
-        return Observable.of(this.groupings);
     }
 }

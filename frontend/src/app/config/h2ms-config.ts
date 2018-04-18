@@ -10,4 +10,4 @@ export const CONFIG: Config = new Config('H2MS',
     '/assets/images/logos/h2ms-logo.png',
     'https://test.h2ms.org',
     443,
-    [{id: '3', displayName: 'Washed?'}]);
+    {id: 3, displayName: 'Washed?'});

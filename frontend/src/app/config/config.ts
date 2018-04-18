@@ -17,7 +17,7 @@ export class Config {
     logoUrl: string;
     backendHostname: string;
     backendPort: number;
-    configQuestions: [ConfigQuestion];
+    configQuestion: ConfigQuestion;
 
     constructor(appName: string,
                 frontendHostname: string,
@@ -26,7 +26,7 @@ export class Config {
                 logoUrl: string,
                 backendHostname: string,
                 backendPort: number,
-                configQuestions: [ConfigQuestion]) {
+                configQuestion: ConfigQuestion) {
         this.appName = appName;
         this.frontendHostname = frontendHostname;
         this.frontendPort = frontendPort;
@@ -34,7 +34,7 @@ export class Config {
         this.logoUrl = logoUrl;
         this.backendHostname = backendHostname;
         this.backendPort = backendPort;
-        this.configQuestions = configQuestions;
+        this.configQuestion = configQuestion;
     }
 
     public setConfig(config: Config) {
@@ -45,7 +45,7 @@ export class Config {
         this.logoUrl = config.logoUrl;
         this.backendHostname = config.backendHostname;
         this.backendPort = config.backendPort;
-        this.configQuestions = config.configQuestions;
+        this.configQuestion = config.configQuestion;
     }
 
     public getFrontendUrl() {
