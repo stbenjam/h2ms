@@ -45,13 +45,6 @@ import {ReportsService} from './reports/reports.service';
 import {AboutComponent} from './about/about.component';
 import {LocationComponent} from './location/location.component';
 import {LocationEditComponent} from './location-edit/location-edit.component';
-import {BASE_PATH} from './variables';
-import {Config} from './config/config';
-import {UserEmailService} from './user/service/user-email.service';
-import {
-    ForgotPasswordComponent,
-    SuccessfullySentPasswordRecoveryEmailComponent
-} from './forgot-password/forgot-password.component';
 import {
     ResetPasswordComponent,
     SuccessfullyResetPasswordComponent
