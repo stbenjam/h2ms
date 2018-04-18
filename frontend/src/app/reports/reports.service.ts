@@ -72,6 +72,12 @@ export class ReportsService {
         '2nd (2018)': 600
     };
 
+    numObsByObserver = {
+        'Handwasher, John <jhandwasher@h2ms.org>': 10,
+        'Handwasher, John <theotherjhandwasher@h2ms.org>': 500,
+        'Clean, Jane <jclean@h2ms.org>': 1000,
+    }
+
     constructor(private http: HttpClient,
                 private configService: ConfigService,
                 private activatedRoute: ActivatedRoute) {
@@ -170,6 +176,8 @@ export class ReportsService {
                 return this.numObsByMonth;
             } else if (url.indexOf('week') !== -1) {
                 return this.numObsByWeek;
+            } else if (url.indexOf('observer') !== -1) {
+                return this.numObsByObserver;
             }
         } else {
             return JSON.parse('{}');

@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import * as c3 from 'c3';
+import * as d3 from 'd3';
 import {ChartAPI} from 'c3';
 
 @Injectable()
@@ -33,16 +34,18 @@ export class ReportsChartService {
     makeBarChartWithoutSubgrouping(id, data: Object) {
         const names: string[] = new Array();
         const values: [[string | number]] = [['Count']];
+        let totalXAxisLabelLength = 1;
 
         for (const key of Object.keys(data)) {
             names.push(key);
             values[0].push(data[key]);
+            totalXAxisLabelLength += key.length + 1;
         }
-        let number = 0;
-        if (names.length > 5) {
-            number = -70;
+        let xAxisLabelRotation = 0;
+        if (totalXAxisLabelLength > 50) {
+            xAxisLabelRotation = -90;
         }
-        this.groupedBarChart(id, values, names, false, number);
+        this.groupedBarChart(id, values, names, false, xAxisLabelRotation);
     }
 
     /**
@@ -95,11 +98,11 @@ export class ReportsChartService {
      */
     makeBarChartNumObsByWeek(id, data: Object) {
         const categories: string[] = new Array();
-        const groupedColumnsData: [[string | number]] = [['1:']];
+        const groupedColumnsData: [[string | number]] = [['1st']];
         const referenceWeeks: string[] = ['1st'];
 
         for (let i = 2; i <= 52; i++) {
-            groupedColumnsData.push(['' + i]);
+            groupedColumnsData.push([this.getGetOrdinal(i)]);
             referenceWeeks.push(this.getGetOrdinal(i));
         }
 
@@ -120,15 +123,24 @@ export class ReportsChartService {
      * a helper function to add bar chart data to this.chart
      */
     groupedBarChart(id, groupedColumnsData, categories, legendShow, rotate = 0) {
+        let height = 320;
+        if (rotate !== 0) {
+            height = 640;
+        }
         this.chart = c3.generate({
             bindto: '#' + id,
+            size: {
+                height: height
+            },
             data: {
                 columns: groupedColumnsData,
                 type: 'bar'
             },
             axis: {
                 x: {
-                    categories: categories,
+                    categories: categories.map( c => {
+                        return c.substring()
+                    }),
                     type: 'category',
                     tick: {
                         rotate: rotate,
@@ -138,6 +150,11 @@ export class ReportsChartService {
             },
             legend: {
                 show: legendShow
+            // },
+            // tooltip: {
+            //     format: {
+            //         value: categories
+            //     }
             }
         });
     }
