@@ -40,7 +40,7 @@ export class ReportsChartService {
         }
         let number = 0;
         if (names.length > 5) {
-            number = 90;
+            number = -70;
         }
         this.groupedBarChart(id, values, names, false, number);
     }
@@ -95,7 +95,7 @@ export class ReportsChartService {
      */
     makeBarChartNumObsByWeek(id, data: Object) {
         const categories: string[] = new Array();
-        const groupedColumnsData: [[string | number]] = [['1']];
+        const groupedColumnsData: [[string | number]] = [['1:']];
         const referenceWeeks: string[] = ['1st'];
 
         for (let i = 2; i <= 52; i++) {
