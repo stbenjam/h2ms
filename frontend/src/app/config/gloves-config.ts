@@ -10,4 +10,4 @@ export const CONFIG: Config = new Config('Blue Gloves 4 All',
     '/assets/images/logos/h2ms-logo.png',
     'https://test.h2ms.org',
     443,
-    {id: null, displayName: null}); // todo: add gloves favicon and logo
+    [{id: null, displayName: null}]); // todo: add gloves favicon and logo
