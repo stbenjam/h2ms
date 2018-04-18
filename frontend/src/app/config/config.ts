@@ -8,7 +8,7 @@ export class ConfigQuestion {
  * Config file to switch between different types of applications. Ex. Hand Hygiene, Blue Gloves, or Blue Masks.
  */
 export class Config {
-    servicesReturnFakeData = false;
+    servicesReturnFakeData = true;
 
     appName: string;
     frontendHostname: string;
