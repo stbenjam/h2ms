@@ -63,6 +63,7 @@ export class EventComponent implements OnInit {
                     params.required = false;
                     this.questions.push(new CheckboxQuestion(params));
                 }
+                console.log('question: ' + q.question + ', id: ' + q.id);
             });
     }
 
