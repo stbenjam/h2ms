@@ -21,12 +21,11 @@ import '../rxjs-operators';
 import {Location} from '../model/location';
 import {ResourceLocation} from '../model/resourceLocation';
 import {ResourcesLocation} from '../model/resourcesLocation';
-
-import {BASE_PATH} from '../variables';
-import {Configuration} from '../configuration';
-import {CustomHttpUrlEncodingCodec} from '../encoder';
-import {ConfigService} from "../config/config.service";
-
+import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
+import { Configuration }                                     from '../configuration';
+import { CustomHttpUrlEncodingCodec }                        from '../encoder';
+import {Config} from '../config/config';
+import {ConfigService} from '../config/config.service';
 
 @Injectable()
 export class LocationEntityService {
@@ -34,13 +33,21 @@ export class LocationEntityService {
     protected basePath = 'http://test.h2ms.org:81';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
+    config: Config;
 
-    constructor(protected httpClient: HttpClient, @Optional() @Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration,
-                configService: ConfigService) {
-        this.basePath = configService.config.getBackendUrl();
+    constructor(protected httpClient: HttpClient, @Optional()@Inject(BASE_PATH) basePath: string, @Optional() configuration: Configuration,
+                @Optional() configService: ConfigService) {
+        if (basePath) {
+            this.basePath = basePath;
+        }
         if (configuration) {
             this.configuration = configuration;
             this.basePath = basePath || configuration.basePath || this.basePath;
+        }
+
+        if (configService) {
+            this.config = configService.getConfig();
+            this.basePath = this.config.getBackendUrl();
         }
     }
 

@@ -7,7 +7,7 @@ import {NavItem} from './sidenav/nav-item';
 import {ExportComponent} from './export/export.component';
 import {AuthGuardService} from './auth/auth-guard.service';
 import {LocationResolverService} from './location/service/location-resolver.service';
-import {UserResolverService} from './user/service/user-resolver.service';
+import {UsersResolverService} from './user/service/users-resolver.service';
 import {QuestionResolverService} from './questions/service/question-resolver.service';
 import {ReportsComponent} from './reports/reports.component';
 import {AboutComponent} from './about/about.component';
@@ -15,6 +15,7 @@ import {LocationComponent} from './location/location.component';
 import {LocationEditComponent} from './location-edit/location-edit.component';
 import {ForgotPasswordComponent} from './forgot-password/forgot-password.component';
 import {ResetPasswordComponent} from './reset-password/reset-password.component';
+import {UserByEmailResolverService} from './user/service/user-by-email-resolver.service';
 
 /**
  * The actual available routes. Which links are routed to which components.
@@ -29,8 +30,9 @@ const routes: Routes = [
         canActivate: [AuthGuardService],
         resolve: {
             locationResolver: LocationResolverService,
-            userResolver: UserResolverService,
-            questionResolver: QuestionResolverService
+            usersResolver: UsersResolverService,
+            questionResolver: QuestionResolverService,
+            userByEmailResolver: UserByEmailResolverService
         }
     },
     {path: 'reports', component: ReportsComponent, canActivate: [AuthGuardService]},
@@ -94,8 +96,9 @@ export const NAV_ITEMS: NavItem[] = [
     imports: [RouterModule.forRoot(routes)],
     providers: [
         QuestionResolverService,
-        UserResolverService,
-        LocationResolverService
+        UsersResolverService,
+        LocationResolverService,
+        UserByEmailResolverService,
     ]
 })
 export class AppRoutingModule {
