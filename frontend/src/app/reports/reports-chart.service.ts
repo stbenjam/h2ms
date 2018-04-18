@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import * as c3 from 'c3';
-import * as d3 from 'd3';
 import {ChartAPI} from 'c3';
 
 @Injectable()
@@ -17,28 +16,15 @@ export class ReportsChartService {
      * json to chart data
      */
     makeBarChart(id, chart: string, grouping: string, data: Object) {
-        // if (chart.match('number of observations')) {
-        //     if (grouping.match('year')
-        //         || grouping.match('observer')) {
-        //         this.makeBarChartWithoutSubgrouping(id, data);
-        //     } else
-            if (grouping.match('quarter')) {
-                this.makeBarChartNumObsByQuarter(id, data);
-            } else if (grouping.match('month')) {
-                this.makeBarChartNumObsByMonth(id, data);
-            } else if (grouping.match('week')) {
-                this.makeBarChartNumObsByWeek(id, data);
-            } else {
-                this.makeBarChartWithoutSubgrouping(id, data);
-                // console.log('unrecongized chart format, defaulting to single grouping for chart: \'' + chart + '\' ' +
-                //     'and grouping: \'' + grouping + '\'');
-            }
-        // } else {
-        //     this.makeBarChartWithoutSubgrouping(id, data);
-        //     console.log('unrecongized chart format, defaulting to single grouping for chart: \'' + chart + '\' ' +
-        //         'and grouping: \'' + grouping + '\'');
-        // }
-        // handle not found case
+        if (grouping.match('quarter')) {
+            this.makeBarChartNumObsByQuarter(id, data);
+        } else if (grouping.match('month')) {
+            this.makeBarChartNumObsByMonth(id, data);
+        } else if (grouping.match('week')) {
+            this.makeBarChartNumObsByWeek(id, data);
+        } else {
+            this.makeBarChartWithoutSubgrouping(id, data);
+        }
     }
 
     /**

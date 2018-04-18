@@ -10,4 +10,4 @@ export const CONFIG: Config = new Config('H2MS',
     '/assets/images/logos/h2ms-logo.png',
     'http://localhost',
     8080,
-    {id: null, displayName: null});
+    [{id: null, displayName: null}]);
