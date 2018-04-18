@@ -23,7 +23,7 @@ export class ConfigService {
             defaultConfig.logoUrl,
             defaultConfig.backendHostname,
             defaultConfig.backendPort,
-            defaultConfig.configQuestion);
+            defaultConfig.configQuestions);
     }
 
     getConfig(): Config {
