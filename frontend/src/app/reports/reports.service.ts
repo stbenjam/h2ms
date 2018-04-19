@@ -12,26 +12,32 @@ import {ActivatedRoute} from '@angular/router';
 @Injectable()
 export class ReportsService {
 
-    questions: any[] = [];
-    questionResolver;
-
-    charts = [{value: 'Number of observations',
-        id: '',
-        groupClusters: [{name: 'Time',
-                            disabled: false,
-                            groupings: [{value: 'year'},
-                                        {value: 'quarter'},
-                                        {value: 'month'},
-                                        {value: 'week'}]},
-                        {name: 'Person',
-                            disabled: false,
-                            groupings: [{value: 'observer'}]},
-                        {name: 'Location',
-                            disabled: true,
-                            groupings: [{value: 'hospital'}]}
-                            ]}];
-
     config: Config;
+
+    charts = [{
+        value: 'Number of observations',
+        viewValue: 'Number of observations',
+        id: '',
+        groupingClusters: [{
+            name: 'Time',
+            disabled: false,
+            groupings: [{value: 'year', viewValue: 'Year'},
+                {value: 'quarter', viewValue: 'Quarter'},
+                {value: 'month', viewValue: 'Month'},
+                {value: 'week', viewValue: 'Week'}]
+        },
+            {
+                name: 'Person',
+                disabled: false,
+                groupings: [{value: 'observer', viewValue: 'Observer'}]
+            },
+            {
+                name: 'Location',
+                disabled: true,
+                groupings: [{value: 'hospital', viewValue: 'Hospital'}]
+            }
+        ]
+    }];
 
     numObsByYear = {
         '2017': 100,
@@ -76,17 +82,14 @@ export class ReportsService {
         'Handwasher, John <jhandwasher@h2ms.org>': 10,
         'Handwasher, John <theotherjhandwasher@h2ms.org>': 500,
         'Clean, Jane <jclean@h2ms.org>': 1000,
-    }
+    };
 
     constructor(private http: HttpClient,
-                private configService: ConfigService,
-                private activatedRoute: ActivatedRoute) {
+                private configService: ConfigService) {
         this.config = configService.getConfig();
-        this.questionResolver = this.activatedRoute.snapshot.data.questionResolver;
     }
 
     fetchReport(chart, grouping) {
-
         if (this.config.servicesReturnFakeData) {
             return Observable.of(this.fetchFakeData(this.buildURL(chart, grouping))).delay(350);
         } else {
@@ -103,20 +106,22 @@ export class ReportsService {
         // todo get all charts from backend
         this.config.configQuestions.map(q => {
             this.charts.push(
-                {value: 'Average compliance for ' + q.displayName,
-                    id: q.id,
-                    groupClusters: [{name: 'Time',
-                        disabled: false,
-                        groupings: [{value: 'year'},
-                            {value: 'quarter'},
-                            {value: 'month'},
-                            {value: 'week'}]},
-                        {name: 'Person',
-                            disabled: true,
-                            groupings: [{value: 'observer'}]},
-                        {name: 'Location',
-                            disabled: false,
-                            groupings: [{value: 'hospital'}]}]});
+                {value: 'Average compliance',
+                viewValue: 'Average compliance for ' + q.displayName,
+                id: '',
+                groupingClusters: [{name: 'Time',
+                disabled: false,
+                groupings: [{value: 'year', viewValue: 'Year'},
+                    {value: 'quarter', viewValue: 'Quarter'},
+                    {value: 'month', viewValue: 'Month'},
+                    {value: 'week', viewValue: 'Week'}]},
+                {name: 'Person',
+                    disabled: true,
+                    groupings: [{value: 'observer', viewValue: 'Observer'}]},
+                {name: 'Location',
+                    disabled: false,
+                    groupings: [{value: 'hospital', viewValue: 'Hospital'}]}
+            ]});
             }
         );
         return this.charts;

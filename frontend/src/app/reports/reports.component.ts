@@ -44,9 +44,8 @@ export class ReportsComponent implements OnInit {
         this.progressBarIsHidden = false;
         this.emptyJSONReturned = false;
         this.charts = this.reportsService.getCharts();
-        // defaults
         this.selectedChart = this.charts[0];
-        this.selectedGrouping = this.selectedChart.groupClusters[0].groupings[0];
+        this.selectedGrouping = this.selectedChart.groupingClusters[0].groupings[0];
         this.submit();
         this.progressBarIsHidden = true;
     }
@@ -67,7 +66,7 @@ export class ReportsComponent implements OnInit {
                             this.emptyJSONReturned = false;
                             this.reportsChartService.makeBarChart(this.chartName,
                                 this.selectedChart.value, this.selectedGrouping.value, response);
-                            this.chartTitle = this.selectedChart.value + ' grouped by '
+                            this.chartTitle = this.selectedChart.viewValue + ' grouped by '
                                 + this.selectedGrouping.value;
                         }
                     },
