@@ -12,18 +12,25 @@
                     <mat-card-subtitle class="chart-select-title" align="left">Select chart</mat-card-subtitle>
                     <mat-form-field>
                         <mat-select placeholder="Chart"
-                                    [(value)]="selectedChart" required
-                                    name="chart">
+                                    #chartSelect
+                                    [(value)]="selectedChart"
+                                    required
+                                    name="chart"
+                                    [formControl]="chartFormControl">
                             <mat-option *ngFor="let chart of charts" [value]="chart">
                                 {{chart.viewValue}}
                             </mat-option>
                         </mat-select>
-                        <mat-error *ngIf="plotFormControl.hasError('required')">
-                            plot is <strong>required</strong>
+                        <mat-error *ngIf="selectedChart.errorState && chartFormControl.hasError('required')">
+                            Chart is <strong>required</strong>
                         </mat-error>
                     </mat-form-field>
                     <mat-form-field>
-                        <mat-select placeholder="Grouped by" required [(value)]="selectedGrouping">
+                        <mat-select placeholder="Grouped by"
+                                    #groupingSelect
+                                    required
+                                    [(value)]="selectedGrouping"
+                                    [formControl]="groupingFormControl">
                             <mat-optgroup *ngFor="let groupCluster of selectedChart.groupingClusters"
                                           [label]="groupCluster.name"
                                           [hidden]="groupCluster.disabled">
@@ -32,13 +39,13 @@
                                     </mat-option>
                             </mat-optgroup>
                         </mat-select>
-                        <mat-error *ngIf="groupingFormControl.hasError('required')">
-                            grouped by is <strong>required</strong>
+                        <mat-error *ngIf="groupingSelect.errorState && groupingFormControl.hasError('required')">
+                            Grouped by is <strong>required</strong>
                         </mat-error>
                     </mat-form-field>
                 </section>
             <mat-card-actions>
-                <button (click)="submit()"
+                <button (click)="submit()" [disabled]="groupingSelect.errorState && groupingFormControl.hasError('required')"
                         mat-raised-button color="primary">
                     Submit
                 </button>

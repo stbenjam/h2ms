@@ -4,6 +4,7 @@ import {FormControl, Validators} from '@angular/forms';
 import {Config} from '../config/config';
 import {ConfigService} from '../config/config.service';
 import {ReportsChartService} from './reports-chart.service';
+import {REQUIRED_VALIDATOR} from '@angular/forms/src/directives/validators';
 
 @Component({
     selector: 'app-reports',
@@ -25,7 +26,7 @@ export class ReportsComponent implements OnInit {
     /**
      * form controls allow required fields
      */
-    plotFormControl = new FormControl('', [
+    chartFormControl = new FormControl('', [
         Validators.required,
     ]);
 

@@ -5,9 +5,6 @@ import {Config} from '../config/config';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
-import {ActivatedRoute} from '@angular/router';
-
-
 
 @Injectable()
 export class ReportsService {
@@ -108,7 +105,7 @@ export class ReportsService {
             this.charts.push(
                 {value: 'Average compliance',
                 viewValue: 'Average compliance for ' + q.displayName,
-                id: '',
+                id: q.id,
                 groupingClusters: [{name: 'Time',
                 disabled: false,
                 groupings: [{value: 'year', viewValue: 'Year'},
