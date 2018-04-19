@@ -13,7 +13,8 @@
                     <mat-select placeholder="Chart"
                                 [(value)]="selectedChart"
                                 required
-                                [formControl]="chartFormControl">
+                                [formControl]="chartFormControl"
+                                (change)="resetGrouping()">
                         <mat-option *ngFor="let chart of charts" [value]="chart">
                             {{chart.viewValue}}
                         </mat-option>
@@ -28,7 +29,8 @@
                                 [(value)]="selectedGrouping"
                                 [formControl]="groupingFormControl">
                         <mat-optgroup *ngFor="let groupingCluster of selectedChart.groupingClusters"
-                                      [label]="groupingCluster.name">
+                                      [label]="groupingCluster.name"
+                                      [hidden]="groupingCluster.disabled">
                             <mat-option *ngFor="let group of groupingCluster.groupings"
                                         [value]="group"
                                         [hidden]="group.disabled">
@@ -43,6 +45,7 @@
             </section>
             <mat-card-actions>
                 <button (click)="updateChart()"
+                        [disabled]="groupingFormControl.invalid || groupingFormControl.invalid"
                         mat-raised-button color="primary">
                     Submit
                 </button>

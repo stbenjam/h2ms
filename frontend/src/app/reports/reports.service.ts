@@ -17,6 +17,7 @@ export class ReportsService {
         id: '',
         groupingClusters: [{
             name: 'Time',
+            disabled: false,
             groupings: [{value: 'year', viewValue: 'Year', disabled: false},
                 {value: 'quarter', viewValue: 'Quarter', disabled: false},
                 {value: 'month', viewValue: 'Month', disabled: false},
@@ -24,11 +25,13 @@ export class ReportsService {
         },
             {
                 name: 'Person',
+                disabled: false,
                 groupings: [{value: 'observer', viewValue: 'Observer', disabled: false},
                     {value: 'employee type', viewValue: 'Employee type', disabled: true}]
             },
             {
                 name: 'Location',
+                disabled: true,
                 groupings: [{value: 'hospital', viewValue: 'Hospital', disabled: true}]
             }
         ]
@@ -128,14 +131,17 @@ export class ReportsService {
                 viewValue: 'Average compliance for ' + q.displayName,
                 id: q.id,
                 groupingClusters: [{name: 'Time',
+                    disabled: false,
                 groupings: [{value: 'year', viewValue: 'Year', disabled: false},
                     {value: 'quarter', viewValue: 'Quarter', disabled: false},
                     {value: 'month', viewValue: 'Month', disabled: false},
                     {value: 'week', viewValue: 'Week', disabled: false}]},
                 {name: 'Person',
+                    disabled: false,
                     groupings: [{value: 'observer', viewValue: 'Observer', disabled: true},
                                 {value: 'employee type', viewValue: 'Employee type', disabled: false}]},
                 {name: 'Location',
+                    disabled: false,
                     groupings: [{value: 'hospital', viewValue: 'Hospital', disabled: false}]}
             ]});
             }
