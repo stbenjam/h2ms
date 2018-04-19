@@ -85,4 +85,8 @@ export class ReportsComponent implements OnInit {
                 );
         }
     }
+
+    resetGrouping() {
+        this.groupingFormControl.reset();
+    }
 }
