@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import * as c3 from 'c3';
-import * as d3 from 'd3';
 import {ChartAPI} from 'c3';
 
 @Injectable()
@@ -8,9 +7,6 @@ export class ReportsChartService {
 
 
     chart: ChartAPI;
-
-    constructor() {
-    }
 
     /**
      * a function to make a determination about which type of chart to make and calls helper to convert
@@ -102,8 +98,8 @@ export class ReportsChartService {
         const referenceWeeks: string[] = ['1st'];
 
         for (let i = 2; i <= 52; i++) {
-            groupedColumnsData.push([this.getGetOrdinal(i)]);
-            referenceWeeks.push(this.getGetOrdinal(i));
+            groupedColumnsData.push([this.getOrdinal(i)]);
+            referenceWeeks.push(this.getOrdinal(i));
         }
 
         for (const key of Object.keys(data)) {
@@ -122,9 +118,9 @@ export class ReportsChartService {
     /**
      * a helper function to add bar chart data to this.chart
      */
-    groupedBarChart(id, groupedColumnsData, categories, legendShow, rotate = 0) {
+    groupedBarChart(id, groupedColumnsData, categories, legendShow, rotateXLabelsDegrees = 0) {
         let height = 320;
-        if (rotate !== 0) {
+        if (rotateXLabelsDegrees !== 0) {
             height = 640;
         }
         this.chart = c3.generate({
@@ -138,31 +134,24 @@ export class ReportsChartService {
             },
             axis: {
                 x: {
-                    categories: categories.map( c => {
-                        return c.substring()
-                    }),
+                    categories: categories,
                     type: 'category',
                     tick: {
-                        rotate: rotate,
+                        rotate: rotateXLabelsDegrees,
                         multiline: false
                     }
                 }
             },
             legend: {
                 show: legendShow
-            // },
-            // tooltip: {
-            //     format: {
-            //         value: categories
-            //     }
             }
         });
     }
 
     /**
-     * a helder function to convert a number to its ordinal (1st, 2nd, etc.) string value
+     * a helper function to convert a number to its ordinal (1st, 2nd, etc.) string value
      */
-    getGetOrdinal(n: number): string {
+    getOrdinal(n: number): string {
         // https://stackoverflow.com/questions/13627308/add-st-nd-rd-and-th-ordinal-suffix-to-a-number
         const s = ['th', 'st', 'nd', 'rd'],
             v = n % 100;

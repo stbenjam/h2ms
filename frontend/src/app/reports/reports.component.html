@@ -11,11 +11,11 @@
                 <section class="plotSelectionSection">
                     <mat-card-subtitle class="chart-select-title" align="left">Select chart</mat-card-subtitle>
                     <mat-form-field>
-                        <mat-select placeholder="chart"
+                        <mat-select placeholder="Chart"
                                     [(value)]="selectedChart" required
                                     name="chart">
                             <mat-option *ngFor="let chart of charts" [value]="chart">
-                                {{chart.value}}
+                                {{chart.viewValue}}
                             </mat-option>
                         </mat-select>
                         <mat-error *ngIf="plotFormControl.hasError('required')">
@@ -23,12 +23,12 @@
                         </mat-error>
                     </mat-form-field>
                     <mat-form-field>
-                        <mat-select placeholder="grouped by" required [(value)]="selectedGrouping">
-                            <mat-optgroup *ngFor="let groupCluster of selectedChart.groupClusters"
+                        <mat-select placeholder="Grouped by" required [(value)]="selectedGrouping">
+                            <mat-optgroup *ngFor="let groupCluster of selectedChart.groupingClusters"
                                           [label]="groupCluster.name"
                                           [hidden]="groupCluster.disabled">
                                     <mat-option *ngFor="let group of groupCluster.groupings" [value]="group">
-                                        {{group.value}}
+                                        {{group.viewValue}}
                                     </mat-option>
                             </mat-optgroup>
                         </mat-select>
