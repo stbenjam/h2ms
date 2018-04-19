@@ -14,7 +14,6 @@ export class ReportsComponent implements OnInit {
 
     config: Config;
     // make progressBarIsHidden false when retrieving data from backend
-    progressBarIsHidden: boolean;
     emptyJSONReturned: boolean;
     chartName = 'chart';
     chartTitle = 'Loading chart';
@@ -22,11 +21,14 @@ export class ReportsComponent implements OnInit {
     selectedChart;
     selectedGrouping;
 
-    /**
-     * form controls allow required fields
-     */
-    chartFormControl = new FormControl('', [Validators.required]);
-    groupingFormControl = new FormControl('', [Validators.required]);
+    chartFormControl = new FormControl('', [
+        Validators.required,
+    ]);
+
+    groupingFormControl = new FormControl('', [
+        Validators.required,
+    ]);
+
 
     constructor(private reportsService: ReportsService,
                 private configService: ConfigService,
@@ -36,14 +38,16 @@ export class ReportsComponent implements OnInit {
 
     ngOnInit() {
         this.emptyJSONReturned = false;
-        this.progressBarIsHidden = false;
         this.initChart();
     }
 
-    initChart() {
+    private initChart() {
         this.reportsService.getCharts().subscribe(c => {
             this.charts = c;
-            if (c.length < 1) {
+            if (this.charts[0] === 'undefined') {
+                console.log('charts not yet retrieved');
+                this.initChart();
+            } else if (c.length < 1) {
                 console.log('no charts founds');
                 this.initChart();
             } else {
@@ -60,7 +64,6 @@ export class ReportsComponent implements OnInit {
      */
     updateChart() {
         if (this.selectedChart && this.selectedGrouping) {
-            this.progressBarIsHidden = false;
             this.reportsService.fetchReport(this.selectedChart, this.selectedGrouping)
                 .subscribe(
                     response => {
@@ -72,12 +75,9 @@ export class ReportsComponent implements OnInit {
                                 this.selectedChart.value, this.selectedGrouping.value, response);
                             this.chartTitle = this.selectedChart.viewValue + ' grouped by '
                                 + this.selectedGrouping.value;
-                            this.chartFormControl.reset();
-                            this.groupingFormControl.reset();
                         }
                     },
                     error => {
-                        this.progressBarIsHidden = true;
                         if (error.status === 401) {
                             alert('authentication error: please login');
                         }

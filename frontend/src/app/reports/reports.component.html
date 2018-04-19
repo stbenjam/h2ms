@@ -6,44 +6,43 @@
             <img class="placeholder-img" mat-card-image src="assets/images/chart-placeholder.png">
         </div>
         <mat-card-content class="text-center">
-            <mat-progress-bar mode="indeterminate" hidden="progressBarIsHidden"></mat-progress-bar>
             <mat-error *ngIf="emptyJSONReturned">There is no data for the selected plot!</mat-error>
-                <section class="plotSelectionSection">
-                    <mat-card-subtitle class="chart-select-title" align="left">Select chart</mat-card-subtitle>
-                    <mat-form-field>
-                        <mat-select placeholder="Chart"
-                                    [(value)]="selectedChart"
-                                    required
-                                    name="chart"
-                                    [formControl]="chartFormControl">
-                            <mat-option *ngFor="let chart of charts" [value]="chart">
-                                {{chart.viewValue}}
+            <section class="plotSelectionSection">
+                <mat-card-subtitle class="chart-select-title" align="left">Select chart</mat-card-subtitle>
+                <mat-form-field>
+                    <mat-select placeholder="Chart"
+                                [(value)]="selectedChart"
+                                required
+                                [formControl]="chartFormControl">
+                        <mat-option *ngFor="let chart of charts" [value]="chart">
+                            {{chart.viewValue}}
+                        </mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="chartFormControl.hasError('required')">
+                        plot is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
+                <mat-form-field>
+                    <mat-select placeholder="Grouped by"
+                                required
+                                [(value)]="selectedGrouping"
+                                [formControl]="groupingFormControl">
+                        <mat-optgroup *ngFor="let groupingCluster of selectedChart.groupingClusters"
+                                      [label]="groupingCluster.name">
+                            <mat-option *ngFor="let group of groupingCluster.groupings"
+                                        [value]="group"
+                                        [hidden]="group.disabled">
+                                {{group.viewValue}}
                             </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="chartFormControl.hasError('required')">
-                            Chart is <strong>required</strong>
-                        </mat-error>
-                    </mat-form-field>
-                    <mat-form-field>
-                        <mat-select placeholder="Grouped by"
-                                    required
-                                    [(value)]="selectedGrouping"
-                                    [formControl]="groupingFormControl">
-                            <mat-optgroup *ngFor="let groupCluster of selectedChart.groupingClusters"
-                                          [label]="groupCluster.name"
-                                          [hidden]="groupCluster.disabled">
-                                    <mat-option *ngFor="let group of groupCluster.groupings" [value]="group">
-                                        {{group.viewValue}}
-                                    </mat-option>
-                            </mat-optgroup>
-                        </mat-select>
-                        <mat-error *ngIf="groupingFormControl.hasError('required')">
-                            Grouped by is <strong>required</strong>
-                        </mat-error>
-                    </mat-form-field>
-                </section>
+                        </mat-optgroup>
+                    </mat-select>
+                    <mat-error *ngIf="groupingFormControl.hasError('required')">
+                        grouped by is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
+            </section>
             <mat-card-actions>
-                <button (click)="updateChart()" [disabled]="groupingFormControl.untouched"
+                <button (click)="updateChart()"
                         mat-raised-button color="primary">
                     Submit
                 </button>
@@ -51,4 +50,3 @@
         </mat-card-content>
     </mat-card>
 </div>
-
