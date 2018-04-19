@@ -121,7 +121,7 @@ export class ReportsService {
             ]});
             }
         );
-        return this.charts;
+        return Observable.of(this.charts);
     }
 
     /**

@@ -4,7 +4,6 @@ import {FormControl, Validators} from '@angular/forms';
 import {Config} from '../config/config';
 import {ConfigService} from '../config/config.service';
 import {ReportsChartService} from './reports-chart.service';
-import {REQUIRED_VALIDATOR} from '@angular/forms/src/directives/validators';
 
 @Component({
     selector: 'app-reports',
@@ -26,14 +25,8 @@ export class ReportsComponent implements OnInit {
     /**
      * form controls allow required fields
      */
-    chartFormControl = new FormControl('', [
-        Validators.required,
-    ]);
-
-    groupingFormControl = new FormControl('', [
-        Validators.required,
-    ]);
-
+    chartFormControl = new FormControl('', [Validators.required]);
+    groupingFormControl = new FormControl('', [Validators.required]);
 
     constructor(private reportsService: ReportsService,
                 private configService: ConfigService,
@@ -42,20 +35,30 @@ export class ReportsComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.progressBarIsHidden = false;
         this.emptyJSONReturned = false;
-        this.charts = this.reportsService.getCharts();
-        this.selectedChart = this.charts[0];
-        this.selectedGrouping = this.selectedChart.groupingClusters[0].groupings[0];
-        this.submit();
-        this.progressBarIsHidden = true;
+        this.progressBarIsHidden = false;
+        this.initChart();
+    }
+
+    initChart() {
+        this.reportsService.getCharts().subscribe(c => {
+            // todo error checking: ensure we get a chart with at least one value
+            this.charts = c;
+            if (c.length < 1) {
+                console.log('no charts founds');
+            } else {
+                this.selectedChart = this.charts[0];
+                this.selectedGrouping = this.selectedChart.groupingClusters[0].groupings[0];
+                this.updateChart();
+            }
+        });
     }
 
     /**
      * This function gets the report from the ReportService then produces a chart with the
      * ReportsChartService
      */
-    submit() {
+    updateChart() {
         if (this.selectedChart && this.selectedGrouping) {
             this.progressBarIsHidden = false;
             this.reportsService.fetchReport(this.selectedChart, this.selectedGrouping)
@@ -69,6 +72,8 @@ export class ReportsComponent implements OnInit {
                                 this.selectedChart.value, this.selectedGrouping.value, response);
                             this.chartTitle = this.selectedChart.viewValue + ' grouped by '
                                 + this.selectedGrouping.value;
+                            this.chartFormControl.reset();
+                            this.groupingFormControl.reset();
                         }
                     },
                     error => {
