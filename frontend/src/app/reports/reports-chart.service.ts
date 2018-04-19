@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import * as c3 from 'c3';
+import * as d3 from 'd3';
 import {ChartAPI} from 'c3';
 
 @Injectable()
@@ -9,27 +10,62 @@ export class ReportsChartService {
     chart: ChartAPI;
 
     /**
+     * a helper function to convert a number to its ordinal (1st, 2nd, etc.) string value
+     */
+    private static getOrdinal(n: number): string {
+        // https://stackoverflow.com/questions/13627308/add-st-nd-rd-and-th-ordinal-suffix-to-a-number
+        const s = ['th', 'st', 'nd', 'rd'],
+            v = n % 100;
+        return n + (s[(v - 20) % 10] || s[v] || s[0]);
+    }
+
+    /**
      * a function to make a determination about which type of chart to make and calls helper to convert
      * json to chart data
      */
     makeBarChart(id, chart: string, grouping: string, data: Object) {
         if (grouping.match('quarter')) {
-            this.makeBarChartNumObsByQuarter(id, data);
+            this.makeBarChartNumObsByQuarter(id, chart, data);
         } else if (grouping.match('month')) {
-            this.makeBarChartNumObsByMonth(id, data);
+            this.makeBarChartNumObsByMonth(id, chart, data);
         } else if (grouping.match('week')) {
-            this.makeBarChartNumObsByWeek(id, data);
+            this.makeBarChartNumObsByWeek(id, chart, data);
+        } else if (grouping.match('observer')
+                    || grouping.match('employee type')) {
+            this.makeBarChartNumObsByUser(id, chart, data);
         } else {
-            this.makeBarChartWithoutSubgrouping(id, data);
+            this.makeBarChartWithoutSubgrouping(id, chart, data);
         }
+    }
+
+    /**
+     * converts json for number of observations by quarter to chart data
+     */
+    private makeBarChartNumObsByUser(id, chart, data: Object) {
+        const categories: string[] = ['Value'];
+        const groupedColumnsData: [[string | number]] = [['']];
+        let totalXAxisLabelLength = 1;
+
+        for (const key of Object.keys(data)) {
+            groupedColumnsData.push([key, data[key]]);
+            totalXAxisLabelLength += key.length + 1;
+        }
+
+        let xAxisLabelRotation = 0;
+        if (totalXAxisLabelLength > 50) {
+            xAxisLabelRotation = -90;
+        }
+
+        this.groupedBarChart(id, groupedColumnsData, categories, true,
+            chart, xAxisLabelRotation, false, true);
     }
 
     /**
      * converts json for number of observations by a single grouping (e.g. year, observer, etc. )
      */
-    makeBarChartWithoutSubgrouping(id, data: Object) {
-        const names: string[] = new Array();
-        const values: [[string | number]] = [['Count']];
+    private makeBarChartWithoutSubgrouping(id, chart, data: Object) {
+        const names: string[] = [];
+        const values: [[string | number]] = [['Value']];
         let totalXAxisLabelLength = 1;
 
         for (const key of Object.keys(data)) {
@@ -41,14 +77,14 @@ export class ReportsChartService {
         if (totalXAxisLabelLength > 50) {
             xAxisLabelRotation = -90;
         }
-        this.groupedBarChart(id, values, names, false, xAxisLabelRotation);
+        this.groupedBarChart(id, values, names, false, chart, xAxisLabelRotation);
     }
 
     /**
      * converts json for number of observations by quarter to chart data
      */
-    makeBarChartNumObsByQuarter(id, data: Object) {
-        const categories: string[] = new Array();
+    private makeBarChartNumObsByQuarter(id, chart, data: Object) {
+        const categories: string[] = [];
         const groupedColumnsData: [[string | number]] = [['Q1'], ['Q2'], ['Q3'], ['Q4']];
 
         for (const key of Object.keys(data)) {
@@ -60,21 +96,20 @@ export class ReportsChartService {
                 categories.push(year);
             }
         }
-        this.groupedBarChart(id, groupedColumnsData, categories, true);
+        this.groupedBarChart(id, groupedColumnsData, categories, true, chart);
     }
 
     /**
      * converts json for number of observations by month to chart data
      */
-    makeBarChartNumObsByMonth(id, data: Object) {
+    private makeBarChartNumObsByMonth(id, chart, data: Object) {
         const referenceMonths = ['January', 'February', 'March', 'April', 'May', 'June',
             'July', 'August', 'September', 'October', 'November', 'December'];
 
-        const categories: string[] = new Array();
+        const categories: string[] = [];
         const groupedColumnsData: [[string | number]] =
             [['January'], ['February'], ['March'], ['April'], ['May'], ['June'],
-                ['July'], ['August'], ['September'], ['October'], ['November'], ['December']
-            ];
+                ['July'], ['August'], ['September'], ['October'], ['November'], ['December']];
 
         for (const key of Object.keys(data)) {
             const endOfMonthName = key.indexOf(' (');
@@ -86,20 +121,20 @@ export class ReportsChartService {
                 categories.push(year);
             }
         }
-        this.groupedBarChart(id, groupedColumnsData, categories, true);
+        this.groupedBarChart(id, groupedColumnsData, categories, true, chart);
     }
 
     /**
      * converts json for number of observations by week to chart data
      */
-    makeBarChartNumObsByWeek(id, data: Object) {
-        const categories: string[] = new Array();
+    private makeBarChartNumObsByWeek(id, chart, data: Object) {
+        const categories: string[] = [];
         const groupedColumnsData: [[string | number]] = [['1st']];
         const referenceWeeks: string[] = ['1st'];
 
         for (let i = 2; i <= 52; i++) {
-            groupedColumnsData.push([this.getOrdinal(i)]);
-            referenceWeeks.push(this.getOrdinal(i));
+            groupedColumnsData.push([ReportsChartService.getOrdinal(i)]);
+            referenceWeeks.push(ReportsChartService.getOrdinal(i));
         }
 
         for (const key of Object.keys(data)) {
@@ -112,21 +147,24 @@ export class ReportsChartService {
                 categories.push(year);
             }
         }
-        this.groupedBarChart(id, groupedColumnsData, categories, true);
+        this.groupedBarChart(id, groupedColumnsData, categories, true, chart);
     }
 
     /**
      * a helper function to add bar chart data to this.chart
      */
-    groupedBarChart(id, groupedColumnsData, categories, legendShow, rotateXLabelsDegrees = 0) {
-        let height = 320;
-        if (rotateXLabelsDegrees !== 0) {
-            height = 640;
-        }
-        this.chart = c3.generate({
+    private groupedBarChart(id, groupedColumnsData, categories, legendShow = true, yLabel = '',
+                            rotateXLabelsDegrees = 0, xAxisShow = true, enableTooltip = true) {
+        c3.generate({
             bindto: '#' + id,
             size: {
-                height: height
+                height: 320
+            },
+            padding: {
+                top: 20,
+                bottom: 20,
+                right: 100,
+                left: 100
             },
             data: {
                 columns: groupedColumnsData,
@@ -134,27 +172,38 @@ export class ReportsChartService {
             },
             axis: {
                 x: {
+                    show: xAxisShow,
                     categories: categories,
                     type: 'category',
                     tick: {
-                        rotate: rotateXLabelsDegrees,
-                        multiline: false
+                        rotate: rotateXLabelsDegrees
+                    }
+                },
+                y: {
+                    label: {
+                        text: yLabel,
+                        position: 'outer-middle'
                     }
                 }
             },
             legend: {
                 show: legendShow
+            },
+            tooltip: {
+                show: enableTooltip,
+                grouped: false,
+                format: {
+                    title: function (x) {
+                        return categories[x].toString().match('Value') ? '' : categories[x];
+                    },
+                    name: function (name) {
+                        return name + ':';
+                    },
+                    value: function (value) {
+                        return value.toString().indexOf('.') !== -1 ? d3.format('.2f')(value) : value;
+                    }
+                }
             }
         });
-    }
-
-    /**
-     * a helper function to convert a number to its ordinal (1st, 2nd, etc.) string value
-     */
-    getOrdinal(n: number): string {
-        // https://stackoverflow.com/questions/13627308/add-st-nd-rd-and-th-ordinal-suffix-to-a-number
-        const s = ['th', 'st', 'nd', 'rd'],
-            v = n % 100;
-        return n + (s[(v - 20) % 10] || s[v] || s[0]);
     }
 }

@@ -11,37 +11,35 @@ export class ReportsService {
 
     config: Config;
 
-    charts = [{
+    private charts = [{
         value: 'Number of observations',
         viewValue: 'Number of observations',
         id: '',
         groupingClusters: [{
             name: 'Time',
-            disabled: false,
-            groupings: [{value: 'year', viewValue: 'Year'},
-                {value: 'quarter', viewValue: 'Quarter'},
-                {value: 'month', viewValue: 'Month'},
-                {value: 'week', viewValue: 'Week'}]
+            groupings: [{value: 'year', viewValue: 'Year', disabled: false},
+                {value: 'quarter', viewValue: 'Quarter', disabled: false},
+                {value: 'month', viewValue: 'Month', disabled: false},
+                {value: 'week', viewValue: 'Week', disabled: false}]
         },
             {
                 name: 'Person',
-                disabled: false,
-                groupings: [{value: 'observer', viewValue: 'Observer'}]
+                groupings: [{value: 'observer', viewValue: 'Observer', disabled: false},
+                    {value: 'employee type', viewValue: 'Employee type', disabled: true}]
             },
             {
                 name: 'Location',
-                disabled: true,
-                groupings: [{value: 'hospital', viewValue: 'Hospital'}]
+                groupings: [{value: 'hospital', viewValue: 'Hospital', disabled: true}]
             }
         ]
     }];
 
-    numObsByYear = {
+    private numObsByYear = {
         '2017': 100,
         '2018': 600
     };
 
-    numObsByQuarters = {
+    private numObsByQuarters = {
         'Q1 (2017)': 100,
         'Q2 (2017)': 200,
         'Q3 (2017)': 300,
@@ -50,7 +48,7 @@ export class ReportsService {
         'Q2 (2018)': 600
     };
 
-    numObsByMonth = {
+    private numObsByMonth = {
         'January (2017)': 100,
         'February (2017)': 200,
         'March (2017)': 300,
@@ -66,19 +64,42 @@ export class ReportsService {
         'January (2018)': 650
     };
 
-    numObsByWeek = {
-        '1st (2017)': 100,
-        '2nd (2017)': 200,
-        '3rd (2017)': 300,
-        '4th (2017)': 400,
-        '1st (2018)': 500,
-        '2nd (2018)': 600
+    private numObsByWeek = {
+        '1st (2017)': 100, '2nd (2017)': 200, '3rd (2017)': 300, '4th (2017)': 400, '5th (2017)': 400,
+        '6th (2017)': 400, '7th (2017)': 400, '8th (2017)': 400, '9th (2017)': 400, '10th (2017)': 400,
+        '11th (2017)': 400, '12th (2017)': 400, '13th (2017)': 400, '14th (2017)': 400, '15th (2017)': 400,
+        '16th (2017)': 400, '17th (2017)': 400, '18th (2017)': 400, '19th (2017)': 400, '20th (2017)': 400,
+        '21st (2017)': 400, '22nd (2017)': 400, '23rd (2017)': 400, '24th (2017)': 400, '25th (2017)': 400,
+        '26th (2017)': 400, '27th (2017)': 400, '28th (2017)': 400, '29th (2017)': 400, '30th (2017)': 400,
+        '31st (2017)': 400, '32nd (2017)': 400, '33rd (2017)': 400, '34th (2017)': 400, '35th (2017)': 400,
+        '36th (2017)': 400, '37th (2017)': 400, '38th (2017)': 400, '39th (2017)': 400, '40th (2017)': 400,
+        '41st (2017)': 400, '42nd (2017)': 400, '43rd (2017)': 400, '44th (2017)': 400, '45th (2017)': 400,
+        '46th (2017)': 400, '47th (2017)': 400, '48th (2017)': 400, '49th (2017)': 400, '50th (2017)': 400,
+        '51st (2018)': 500, '52nd (2018)': 600,
+        '1st (2018)': 500, '2nd (2018)': 600
     };
 
-    numObsByObserver = {
-        'Handwasher, John <jhandwasher@h2ms.org>': 10,
-        'Handwasher, John <theotherjhandwasher@h2ms.org>': 500,
-        'Clean, Jane <jclean@h2ms.org>': 1000,
+    private numObsByObserver = {
+        'jhandwasher@h2ms.org': 10,
+        'theotherjhandwasher@h2ms.org': 500,
+        'jclean@h2ms.org': 1000,
+        'bhandwasher@h2ms.org': 10,
+        'anotherjhandwasher@h2ms.org': 500,
+        'jclean2@h2ms.org': 1000,
+    };
+
+    // numObsByObserverRevised = {
+    //     'Handwasher, John <jhandwasher@h2ms.org>': 10,
+    //     'Handwasher, John <theotherjhandwasher@h2ms.org>': 500,
+    //     'Clean, Jane <jclean@h2ms.org>': 1000,
+    //     'Handwasher, Bob <bhandwasher@h2ms.org>': 10,
+    //     'Handwasher, Joe <anotherjhandwasher@h2ms.org>': 500,
+    //     'Clean, Jim <jclean2@h2ms.org>': 1000,
+    // };
+
+    private avgCompByLoc = {
+        'MA General Hospital': 0.92222222222,
+        'BCH': 0.9411111234
     };
 
     constructor(private http: HttpClient,
@@ -107,17 +128,15 @@ export class ReportsService {
                 viewValue: 'Average compliance for ' + q.displayName,
                 id: q.id,
                 groupingClusters: [{name: 'Time',
-                disabled: false,
-                groupings: [{value: 'year', viewValue: 'Year'},
-                    {value: 'quarter', viewValue: 'Quarter'},
-                    {value: 'month', viewValue: 'Month'},
-                    {value: 'week', viewValue: 'Week'}]},
+                groupings: [{value: 'year', viewValue: 'Year', disabled: false},
+                    {value: 'quarter', viewValue: 'Quarter', disabled: false},
+                    {value: 'month', viewValue: 'Month', disabled: false},
+                    {value: 'week', viewValue: 'Week', disabled: false}]},
                 {name: 'Person',
-                    disabled: true,
-                    groupings: [{value: 'observer', viewValue: 'Observer'}]},
+                    groupings: [{value: 'observer', viewValue: 'Observer', disabled: true},
+                                {value: 'employee type', viewValue: 'Employee type', disabled: false}]},
                 {name: 'Location',
-                    disabled: false,
-                    groupings: [{value: 'hospital', viewValue: 'Hospital'}]}
+                    groupings: [{value: 'hospital', viewValue: 'Hospital', disabled: false}]}
             ]});
             }
         );
@@ -150,8 +169,8 @@ export class ReportsService {
                 console.log('no url known for selected chart: \'' + chart.value + '\' ' +
                     'and grouping: \'' + grouping.value + '\'');
             }
-        } else if (chart.value.indexOf('Average compliance') !== -1) {
-            if (grouping.value.match('user')) {
+        } else if (chart.value.match('Average compliance')) {
+            if (grouping.value.match('employee type')) {
                 return this.config.getBackendUrl() + '/' + 'users/compliance/' + chart.id;
             } else if (grouping.value.match('year') || grouping.value.match('quarter')
                 || grouping.value.match('month') || grouping.value.match('week')) {
@@ -181,6 +200,8 @@ export class ReportsService {
             } else if (url.indexOf('observer') !== -1) {
                 return this.numObsByObserver;
             }
+        } else if (url.indexOf('location') !== -1) {
+            return this.avgCompByLoc;
         } else {
             return JSON.parse('{}');
         }

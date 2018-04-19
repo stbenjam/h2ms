@@ -9,7 +9,7 @@ import {
     MatCardModule,
     MatCheckboxModule,
     MatDialogModule,
-    MatDividerModule,
+    MatDividerModule, MatFormFieldControl,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
