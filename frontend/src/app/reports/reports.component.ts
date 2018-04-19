@@ -42,10 +42,10 @@ export class ReportsComponent implements OnInit {
 
     initChart() {
         this.reportsService.getCharts().subscribe(c => {
-            // todo error checking: ensure we get a chart with at least one value
             this.charts = c;
             if (c.length < 1) {
                 console.log('no charts founds');
+                this.initChart();
             } else {
                 this.selectedChart = this.charts[0];
                 this.selectedGrouping = this.selectedChart.groupingClusters[0].groupings[0];
