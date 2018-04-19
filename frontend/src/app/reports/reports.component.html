@@ -12,7 +12,6 @@
                     <mat-card-subtitle class="chart-select-title" align="left">Select chart</mat-card-subtitle>
                     <mat-form-field>
                         <mat-select placeholder="Chart"
-                                    #chartSelect
                                     [(value)]="selectedChart"
                                     required
                                     name="chart"
@@ -21,13 +20,12 @@
                                 {{chart.viewValue}}
                             </mat-option>
                         </mat-select>
-                        <mat-error *ngIf="selectedChart.errorState && chartFormControl.hasError('required')">
+                        <mat-error *ngIf="chartFormControl.hasError('required')">
                             Chart is <strong>required</strong>
                         </mat-error>
                     </mat-form-field>
                     <mat-form-field>
                         <mat-select placeholder="Grouped by"
-                                    #groupingSelect
                                     required
                                     [(value)]="selectedGrouping"
                                     [formControl]="groupingFormControl">
@@ -39,13 +37,13 @@
                                     </mat-option>
                             </mat-optgroup>
                         </mat-select>
-                        <mat-error *ngIf="groupingSelect.errorState && groupingFormControl.hasError('required')">
+                        <mat-error *ngIf="groupingFormControl.hasError('required')">
                             Grouped by is <strong>required</strong>
                         </mat-error>
                     </mat-form-field>
                 </section>
             <mat-card-actions>
-                <button (click)="submit()" [disabled]="groupingSelect.errorState && groupingFormControl.hasError('required')"
+                <button (click)="updateChart()" [disabled]="groupingFormControl.untouched"
                         mat-raised-button color="primary">
                     Submit
                 </button>
