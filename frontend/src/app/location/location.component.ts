@@ -21,7 +21,7 @@ export class LocationComponent implements OnInit, AfterViewInit {
     @ViewChild(MatSort) sort: MatSort;
 
     locations: Location[];
-    displayedColumns = ['name', 'address', 'buttons'];
+    displayedColumns = ['name', 'address', 'parent', 'buttons'];
     dataSource: MatTableDataSource<Location>;
 
     constructor(private actr: ActivatedRoute,
@@ -44,6 +44,14 @@ export class LocationComponent implements OnInit, AfterViewInit {
             this.http.delete(getLinks(location).self.href, undefined).subscribe();
             this.removeLocationFromTable(location);
         }
+    }
+
+    getParentDisplay(location: Location) {
+        if (!location.parent) {
+            return 'N/A';
+        }
+
+        return location.parent;
     }
 
     private removeLocationFromTable(location: Location) {

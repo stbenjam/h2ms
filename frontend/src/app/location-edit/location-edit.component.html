@@ -26,6 +26,31 @@
                 <mat-error *ngIf="typeFormControl.invalid">{{typeErrorMessage()}}</mat-error>
             </mat-form-field>
 
+            <mat-form-field class="col">
+                <mat-select placeholder="Located Within">
+                    <mat-option>--</mat-option>
+
+                    <ng-template ngFor let-location [ngForOf]="locations">
+                        <mat-option *ngIf="getParent(location)"
+                                    [value]="location.id">
+                            {{ location.name }}
+                        </mat-option>
+                    </ng-template>
+
+                    <!--<mat-option *ngFor="let parentLocation of locations"-->
+                    <!--*ngIf="!! parentLocation.parent"-->
+                    <!--[value]="parentLocation.id">-->
+                    <!--{{ parentLocation.name }}-->
+                    <!--</mat-option>-->
+
+                    <!--<mat-optgroup *ngFor="let group of pokemonGroups" [label]="group.name">-->
+                    <!--<mat-option *ngFor="let pokemon of group.pokemon" [value]="pokemon.value">-->
+                    <!--{{ pokemon.viewValue }}-->
+                    <!--</mat-option>-->
+                    <!--</mat-optgroup>-->
+                </mat-select>
+            </mat-form-field>
+
 
             <!--TODO Decide how I want to display this-->
             <!--parent?: Location;-->

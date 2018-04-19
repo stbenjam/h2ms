@@ -6,6 +6,7 @@ import {REQUIRED_NAME, REQUIRED_NAME_ERROR_MESSAGE} from '../forms-common/form-c
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {ConfigService} from '../config/config.service';
 import {Config} from '../config/config';
+import {getLinks} from "../api-utils";
 
 /**
  * Which CRUD operation the component is being used for.
@@ -31,6 +32,7 @@ export class LocationEditComponent {
     initialLocation: Location;
     id: number;
     config: Config;
+    locations: Location[];
 
     constructor(private route: ActivatedRoute,
                 private configService: ConfigService,
@@ -60,12 +62,26 @@ export class LocationEditComponent {
             };
         }
 
+        this.locations = locationResolver._embedded.locations;
+
         this.nameFormControl.setValue(this.initialLocation.name);
         this.typeFormControl.setValue(this.initialLocation.type);
     }
 
     typeErrorMessage() {
         return this.typeFormControl.hasError('required') ? 'You must enter a value' : '';
+    }
+
+    getParent(location: Location) {
+        const internalLocation = this.locations.find(l => location.id === l.id);
+        if (!internalLocation.parent) {
+            this.http.get(getLinks(internalLocation).parent.href).do(res => {
+                internalLocation.parent = res;
+            }).subscribe();
+            console.log(internalLocation.parent);
+        }
+
+        return internalLocation.parent;
     }
 
     submit(name: string, address: string, zip: string, country: string, type: string) {
