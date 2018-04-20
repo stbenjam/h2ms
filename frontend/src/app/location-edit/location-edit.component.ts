@@ -33,6 +33,7 @@ export class LocationEditComponent {
     id: number;
     config: Config;
     locations: Location[];
+    childrenMap: Map<number, Location[]> = new Map();
 
     constructor(private route: ActivatedRoute,
                 private configService: ConfigService,
@@ -62,10 +63,32 @@ export class LocationEditComponent {
             };
         }
 
-        this.locations = locationResolver._embedded.locations;
-
+        this.loadTopLevelLocations();
         this.nameFormControl.setValue(this.initialLocation.name);
         this.typeFormControl.setValue(this.initialLocation.type);
+    }
+
+    private loadTopLevelLocations() {
+        this.http.get(this.config.getBackendUrl() + '/locations/search/findTopLevel').subscribe(
+            ls => {
+                this.locations = this.getPayload(ls).locations;
+            }
+        );
+    }
+
+    private getChildren(locationId: number) {
+        if (!this.childrenMap.has(locationId)) {
+            this.http.get(this.config.getBackendUrl() + '/locations/' + locationId + '/children').do(ls => {
+                this.childrenMap.set(locationId, this.getPayload(ls).locations);
+            }).subscribe();
+        }
+
+
+        return this.childrenMap.get(locationId);
+    }
+
+    private getPayload(ls) {
+        return ls._embedded;
     }
 
     typeErrorMessage() {
