@@ -14,9 +14,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 public interface LocationRepository extends PagingAndSortingRepository<Location, Long> {
   Location findByName(String name);
 
-  /**
-   * Returns all the parentless-locations, e.g. the top level locations.
-   */
+  /** Returns all the parentless-locations, e.g. the top level locations. */
   @Query("from Location as location where location.parent is null")
   Set<Location> findTopLevel();
 }
