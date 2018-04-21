@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,10 +39,11 @@ public class User implements UserDetails {
 
   @NotNull @Column private String password;
 
-  @ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
-  @JoinTable(name="user_roles",
-          joinColumns = {@JoinColumn(name="user_id", referencedColumnName="id")},
-          inverseJoinColumns = {@JoinColumn(name="role_id", referencedColumnName="id")}
+  @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @JoinTable(
+    name = "user_roles",
+    joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+    inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")}
   )
   private Set<Role> roles;
 
@@ -82,7 +84,12 @@ public class User implements UserDetails {
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     List<GrantedAuthority> authorities = new ArrayList<>();
-
+    Collection<Role> roles = getRoles();
+    if (roles != null) {
+      for (Role role : roles) {
+        authorities.add(new SimpleGrantedAuthority(role.getName()));
+      }
+    }
     return authorities;
   }
 

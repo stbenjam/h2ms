@@ -8,6 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import edu.harvard.h2ms.domain.core.Role;
 import edu.harvard.h2ms.domain.core.User;
 import edu.harvard.h2ms.repository.UserRepository;
 import org.apache.commons.logging.Log;
@@ -27,6 +28,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 @RunWith(SpringRunner.class)
 @WebAppConfiguration
@@ -68,7 +72,6 @@ public class PasswordControllerTests {
     ObjectMapper mapper1 = new ObjectMapper();
 
     User user = new User(FIRSTNAME, MIDDLENAME, LASTNAME, EMAIL, PASSWORD, TYPE);
-
     log.debug("Test: user info for registration " + mapper1.writeValueAsString(user));
 
     MockHttpServletResponse result =

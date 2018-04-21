@@ -4,8 +4,7 @@ import edu.harvard.h2ms.domain.core.Role;
 
 public interface RoleService {
 
-    public Role save(Role role);
+  public Role save(Role role);
 
-    public void delete(Role role);
-
+  public void delete(Role role);
 }

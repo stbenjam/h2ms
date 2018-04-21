@@ -27,13 +27,11 @@ public class RoleSeeder {
 
   private void seedRoleTable() {
     if (roleRepository.count() == 0) {
-      List<List<String>> records = asList(asList("ADMIN"), asList("USER"), asList("OBSERVER"));
+      List<String> records = asList("ROLE_ADMIN", "ROLE_USER", "ROLE_OBSERVER");
 
-      for (List<String> record : records) {
-        String name = record.get(0);
+      for (String record : records) {
         Role role = new Role();
-        role.setName(name);
-
+        role.setName(record);
         roleRepository.save(role);
       }
     }

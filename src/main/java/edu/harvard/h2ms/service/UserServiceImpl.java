@@ -39,7 +39,8 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void delete(User user) { userRepository.delete(user);
+  public void delete(User user) {
+    userRepository.delete(user);
   }
 
   @Autowired private EventRepository eventRepository;

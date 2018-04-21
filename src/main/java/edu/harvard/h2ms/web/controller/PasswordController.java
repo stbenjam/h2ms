@@ -1,13 +1,13 @@
 package edu.harvard.h2ms.web.controller;
 
+import edu.harvard.h2ms.domain.core.Role;
 import edu.harvard.h2ms.domain.core.User;
+import edu.harvard.h2ms.repository.RoleRepository;
 import edu.harvard.h2ms.repository.UserRepository;
 import edu.harvard.h2ms.service.EmailService;
 import edu.harvard.h2ms.service.UserService;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +53,8 @@ public class PasswordController {
   @Autowired public JavaMailSender emailSender;
 
   @Autowired private UserRepository userRepository;
+
+  @Autowired public RoleRepository roleRepository;
 
   /**
    * Sets the reset parameter e.g., http://localhost:8080/api/passwords/reset/admin@h2ms.org
@@ -166,6 +168,9 @@ public class PasswordController {
       log.info(MSG);
       return new ResponseEntity<String>(MSG, HttpStatus.FORBIDDEN);
     }
+
+    Role role = roleRepository.findByName("ROLE_USER");
+    user.setRoles(new HashSet<>(Arrays.asList(role)));
 
     // TODO: is there a password policy?
     userRepository.save(user);

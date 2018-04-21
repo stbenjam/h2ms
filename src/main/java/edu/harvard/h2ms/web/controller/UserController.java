@@ -37,6 +37,7 @@ public class UserController {
    *
    * @return
    */
+  @PreAuthorize("hasRole('ADMIN')")
   @RequestMapping(value = "/compliance/{questionId}", method = RequestMethod.GET)
   public ResponseEntity<?> findCompliance(@PathVariable Long questionId) {
     List<Event> events;
@@ -68,5 +69,4 @@ public class UserController {
   public void delete(@RequestBody User resource) {
     userService.delete(resource);
   }
-
 }

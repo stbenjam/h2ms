@@ -1,6 +1,5 @@
 package edu.harvard.h2ms.domain.core;
 
-import java.util.Set;
 import javax.persistence.*;
 
 /**
@@ -30,5 +29,4 @@ public class Role {
   public void setName(String name) {
     this.name = name;
   }
-
 }

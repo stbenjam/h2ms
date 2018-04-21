@@ -10,20 +10,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 import edu.harvard.h2ms.common.TestHelpers;
 import edu.harvard.h2ms.domain.core.*;
 import edu.harvard.h2ms.repository.*;
-
-import java.security.Principal;
 import java.util.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -82,7 +77,9 @@ public class UserControllerTests {
 
     // Sample User Data
     User observer = new User("John", "Quincy", "Adams", EMAIL, PASSWORD, "Other");
-    // observer.setRoles(new HashSet<Role>(Arrays.asList(roleRepository.findByName("ADMIN"))));
+    Role role = new Role();
+    role.setName("ROLE_ADMIN");
+    observer.setRoles(new HashSet<Role>(Arrays.asList(role)));
     userRepository.save(observer);
     User subject = new User("Jane", "Doe", "Sam", "sample@email.com", "password", "Doctor");
     userRepository.save(subject);
@@ -187,7 +184,7 @@ public class UserControllerTests {
     User user = new User("John", "Middle", "Doe", "john_doe@gmail.com", "password123", "user_type");
     ObjectMapper mapper = new ObjectMapper();
     String jsonStr = mapper.writeValueAsString(user);
-    final String accessToken = obtainAccessToken(mvc, "jqadams@h2ms.org", "password");
+    final String accessToken = obtainAccessToken(mvc, "sample@email.com", "password");
 
     mvc.perform(
             MockMvcRequestBuilders.post("/users/")
@@ -198,31 +195,22 @@ public class UserControllerTests {
         .andExpect(status().isForbidden()); // 403 Forbidden You don't have permission to access ..
   }
 
-  @Ignore
   @Test
   @Transactional
   @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
   public void test_AdminRequest_UserController_saveNewUser() throws Exception {
-
-    Principal principal = Mockito.mock(Principal.class);
-    Mockito.when(principal.getName()).thenReturn("ADMIN");
 
     User user = new User("John", "Middle", "Doe", "john_doe@gmail.com", "password123", "user_type");
     ObjectMapper mapper = new ObjectMapper();
     String jsonStr = mapper.writeValueAsString(user);
     final String accessToken = obtainAccessToken(mvc, "jqadams@h2ms.org", "password");
 
-    MockHttpServletResponse response = mvc.perform(
+    mvc.perform(
             MockMvcRequestBuilders.post("/users/")
-                    .content(jsonStr)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .principal(principal))
-                    .andReturn()
-                    .getResponse();
-
-    response.toString();
+                .content(jsonStr)
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + accessToken)
+                .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
   }
-
 }

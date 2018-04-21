@@ -58,5 +58,4 @@ public interface EventService {
   Map<String, Double> findComplianceByLocation(Question question, List<Event> events);
 
   public Event save(Event event);
-
 }
