@@ -1,8 +1,22 @@
 package edu.harvard.h2ms.domain.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.*;
-import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -46,6 +60,9 @@ public class User implements UserDetails {
     inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")}
   )
   private Set<Role> roles;
+
+  @ManyToMany(mappedBy = "users")
+  private Set<Notification> notifications = new HashSet<>();
 
   @Column(name = "enabled")
   private boolean enabled = true;
