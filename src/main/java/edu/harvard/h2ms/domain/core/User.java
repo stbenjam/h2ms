@@ -1,6 +1,7 @@
 package edu.harvard.h2ms.domain.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -42,7 +43,10 @@ public class User implements UserDetails {
 
   @NotNull @Column private String type;
 
-  @NotNull @JsonIgnore @Column private String password;
+  @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+  @NotNull
+  @Column
+  private String password;
 
   @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   @JoinTable(
