@@ -52,6 +52,8 @@ public class NotificationServiceImpl {
 
   @Autowired private EmailService emailService;
 
+  @Autowired private ReportService reportService;
+
   @Scheduled(fixedRate = 10000)
   public void pollNotifications() {
     log.debug("****polling notifications");
@@ -85,6 +87,9 @@ public class NotificationServiceImpl {
         message.setSubject(notification.getNotificationTitle());
 
         String messageText = notification.getNotificationBody();
+
+        // request for report
+        reportService.requestReport(notification.getReportType());
 
         message.setText(messageText);
 

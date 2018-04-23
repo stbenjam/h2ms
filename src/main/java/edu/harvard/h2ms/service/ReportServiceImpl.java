@@ -4,8 +4,13 @@ import com.google.common.collect.Lists;
 import com.opencsv.CSVWriter;
 import edu.harvard.h2ms.domain.core.Answer;
 import edu.harvard.h2ms.domain.core.Event;
+import edu.harvard.h2ms.domain.core.Question;
+import edu.harvard.h2ms.domain.core.User;
+import edu.harvard.h2ms.exception.InvalidAnswerTypeException;
 import edu.harvard.h2ms.repository.EventRepository;
 import edu.harvard.h2ms.repository.QuestionRepository;
+import edu.harvard.h2ms.repository.UserRepository;
+import edu.harvard.h2ms.service.utils.H2msRestUtils;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -15,6 +20,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +41,10 @@ public class ReportServiceImpl implements ReportService {
   @Autowired private EventService eventService;
 
   @Autowired private QuestionRepository questionRepository;
+
+  //  @Autowired private ReportWorker complianceWarningReportWorker;
+
+  @Autowired private UserRepository userRepository;
 
   /**
    * Writes Report using list of list of strings
@@ -137,5 +148,48 @@ public class ReportServiceImpl implements ReportService {
     }
 
     return writer.toString();
+  }
+
+  @Override
+  public boolean isTriggered() {
+    return true;
+  }
+
+  @Override
+  public String requestReport(String reportType) {
+    log.info("report requested.  report type: " + reportType);
+    if (reportType.equals("complianceWarning")) {
+      //      boolean ans = complianceWarningReportWorker.isTriggered();
+      //      return "complianceWarningReportWorker: " + ans;
+
+      List<Event> events = new ArrayList<>();
+
+      // for all questions:
+      Hibernate.initialize(questionRepository);
+      for (Question question : questionRepository.findAll()) {
+        Map<User, Double> complianceResult = new HashMap<>();
+
+        try {
+          events = eventService.findEventsForCompliance(question);
+        } catch (InvalidAnswerTypeException e) {
+          e.printStackTrace();
+        }
+
+        Map<String, Set<Event>> values = new HashMap<>();
+
+        // for all users:
+        for (User user : userRepository.findAll()) {
+          complianceResult.put(
+              user,
+              H2msRestUtils.calculateCompliance(
+                  question,
+                  events
+                      .stream()
+                      .filter(event -> event.getSubject().equals(user))
+                      .collect(Collectors.toSet())));
+        }
+      }
+    }
+    return null;
   }
 }
