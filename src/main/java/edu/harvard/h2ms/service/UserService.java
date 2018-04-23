@@ -13,7 +13,9 @@ public interface UserService {
 
   public User findUserByResetToken(String resetToken);
 
-  public void save(User user);
+  public User save(User user);
+
+  public void delete(User user);
 
   /**
    * Prepares a key-value mapping of average compliance grouped by employee type. The average

@@ -15,10 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/events")
@@ -42,6 +40,7 @@ public class EventController {
    * @return ResponseEntity - 200 OK with JSON Map<String, Long> with results - 400 Bad Request on
    *     incorrect time frame
    */
+  @PreAuthorize("hasRole('ADMIN')")
   @RequestMapping(value = "/count/{timeframe}", method = RequestMethod.GET)
   public ResponseEntity<?> findEventCountByTimeframe(@PathVariable String timeframe) {
     log.info("Searching for all events grouping by " + timeframe);
@@ -63,6 +62,7 @@ public class EventController {
    *
    * @return ResponseEntity - 200 OK with JSON Map<String, Long> with results - 400 Bad Request
    */
+  @PreAuthorize("hasRole('ADMIN')")
   @RequestMapping(value = "/count/observer", method = RequestMethod.GET)
   public ResponseEntity<?> findEventCountByObserver() {
     log.info("Searching for all events grouping by observer");
@@ -80,6 +80,7 @@ public class EventController {
    * @return ResponseEntity - 200 OK with JSON Map<String, Double> with compliance results - 400 Bad
    *     Request on incorrect time frame - 404 Not Found if question not found
    */
+  @PreAuthorize("hasRole('ADMIN')")
   @RequestMapping(value = "/compliance/{questionId}/location", method = RequestMethod.GET)
   public ResponseEntity<?> findComplianceByLocation(@PathVariable Long questionId) {
     List<Event> events;
@@ -110,6 +111,7 @@ public class EventController {
    * @return ResponseEntity - 200 OK with JSON Map<String, Double> with compliance results - 400 Bad
    *     Request on incorrect time frame - 404 Not Found if question not found
    */
+  @PreAuthorize("hasRole('ADMIN')")
   @RequestMapping(value = "/compliance/{questionId}/{timeframe}", method = RequestMethod.GET)
   public ResponseEntity<?> findComplianceByTimeframe(
       @PathVariable String timeframe, @PathVariable Long questionId) {
@@ -136,11 +138,25 @@ public class EventController {
    *
    * @param response
    */
+  @PreAuthorize("hasRole('ADMIN')")
   @RequestMapping(value = "/export/csv", method = RequestMethod.GET)
   public ResponseEntity<?> exportEvent() {
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.add("Content-Type", "text/csv; charset=utf-8");
     return new ResponseEntity<String>(
         reportService.createEventReport(), httpHeaders, HttpStatus.OK);
+  }
+
+  /**
+   * Creates/Persists a new event
+   *
+   * @param resource
+   * @return
+   */
+  @PreAuthorize("hasRole('OBSERVER','ADMIN')")
+  @RequestMapping(value = "/", method = RequestMethod.POST)
+  @ResponseBody
+  public Event create(@RequestBody Event resource) {
+    return eventService.save(resource);
   }
 }
