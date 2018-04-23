@@ -42,7 +42,7 @@ public class User implements UserDetails {
 
   @NotNull @Column private String type;
 
-  @NotNull @Column private String password;
+  @NotNull @JsonIgnore @Column private String password;
 
   @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   @JoinTable(
