@@ -16,15 +16,21 @@ import {MatSelect} from '@angular/material';
     templateUrl: './select-location.component.html',
     styleUrls: ['./select-location.component.css']
 })
+/**
+ * A component which allows you to get and set locations.
+ */
 export class SelectLocationComponent implements OnInit {
 
     @ViewChild('topLevelLocation') topLevelLocation;
     @ViewChild('childLocation1') childLocation1;
     @ViewChild('childLocation2') childLocation2;
+    @ViewChild('childLocation3') childLocation3;
+    @ViewChild('childLocation4') childLocation4;
+    @ViewChild('childLocation5') childLocation5;
     config: Config;
-    selectedLevelsToChildrenLocationsList: Observable<Location[]>[];
+    selectedLevelsToChildLocations: Observable<Location[]>[];
     selectedLocations: Location[];
-    locations: Location[];
+    topLevelLocations: Location[];
 
     constructor(private configService: ConfigService,
                 private http: HttpClient,
@@ -35,60 +41,8 @@ export class SelectLocationComponent implements OnInit {
 
     ngOnInit() {
         this.loadTopLevelLocations();
-        this.selectedLevelsToChildrenLocationsList = [Observable.of([])];
+        this.selectedLevelsToChildLocations = [Observable.of([])];
         this.selectedLocations = [];
-
-    }
-
-
-    private updateSubLocationsFromId(locationId: number, level: number) {
-        if (!locationId) {
-            this.updateSubLocations(undefined, level);
-            return;
-        }
-
-        this.http.get(this.config.getBackendUrl() + '/locations/' + locationId)
-            .subscribe(data => {
-                this.updateSubLocations(data, level);
-            });
-    }
-
-    private updateSubLocations(location: Location, level: number) {
-        this.wipeLevelsAtAndAfter(level);
-        if (location == null) {
-            console.log('Location is null.');
-            this.selectedLevelsToChildrenLocationsList[level] = Observable.of([]);
-            return;
-        }
-
-        this.selectedLocations[level] = location;
-        this.setLocationDropDown(level);
-
-        this.http.get(this.config.getBackendUrl() + '/locations/' + getId(location) + '/children')
-            .subscribe((res: Response) => {
-                const locs = this.sortByKey(this.getPayload(res).locations, 'name');
-                this.selectedLevelsToChildrenLocationsList[level] = Observable.of(locs);
-            });
-    }
-
-    private wipeLevelsAtAndAfter(level: number) {
-        for (let i = level; i < this.selectedLevelsToChildrenLocationsList.length; i++) {
-            this.selectedLevelsToChildrenLocationsList[i] = Observable.of([]);
-            this.selectedLocations.splice(i);
-        }
-    }
-
-    private loadTopLevelLocations() {
-        this.locations = [];
-        this.http.get(this.config.getBackendUrl() + '/locations/search/findTopLevel').subscribe(
-            ls => {
-                this.locations = this.sortByKey(this.getPayload(ls).locations, 'name');
-            }
-        );
-    }
-
-    private getPayload(ls) {
-        return ls._embedded;
     }
 
     public getSelectedLocation(): Location {
@@ -100,9 +54,14 @@ export class SelectLocationComponent implements OnInit {
         return this.selectedLocations[this.selectedLocations.length - 1];
     }
 
+    public getSelectedLocationId(): number {
+        const selectedLocation = this.getSelectedLocation();
+        return selectedLocation ? selectedLocation.id : undefined;
+    }
+
     public setSelectedLocation(location: Location, level = 0) {
         if (!location) {
-            this.updateSubLocations(location, level);
+            this.updateChildLocations(location, level);
             return Observable.of();
         }
 
@@ -112,7 +71,7 @@ export class SelectLocationComponent implements OnInit {
                 console.log(locations);
 
                 for (let i = 0; i < locations.length; i++) {
-                    this.updateSubLocations(locations[i], i);
+                    this.updateChildLocations(locations[i], i);
                 }
             }, error => {
                 console.log('Error while getting parent locations');
@@ -121,6 +80,63 @@ export class SelectLocationComponent implements OnInit {
         );
     }
 
+    updateChildLocationsFromId(locationId: number, level: number) {
+        if (!locationId) {
+            this.updateChildLocations(undefined, level);
+            return;
+        }
+
+        this.http.get(this.config.getBackendUrl() + '/locations/' + locationId)
+            .subscribe(data => {
+                this.updateChildLocations(data, level);
+            });
+    }
+
+    updateChildLocations(location: Location, level: number) {
+        this.resetLevelsAtAndAfter(level);
+        if (location == null) {
+            console.log('Location is null.');
+            this.selectedLevelsToChildLocations[level] = Observable.of([]);
+            return;
+        }
+
+        this.selectedLocations[level] = location;
+        this.setLocationDropDown(level);
+
+        this.http.get(this.config.getBackendUrl() + '/locations/' + getId(location) + '/children')
+            .subscribe((res: Response) => {
+                const locs = this.sortByKey(this.getPayload(res).locations, 'name');
+                this.selectedLevelsToChildLocations[level] = Observable.of(locs);
+            });
+    }
+
+    private resetLevelsAtAndAfter(level: number) {
+        for (let i = level; i < this.selectedLevelsToChildLocations.length; i++) {
+            this.selectedLevelsToChildLocations[i] = Observable.of([]);
+            this.selectedLocations.splice(i);
+        }
+    }
+
+    private loadTopLevelLocations() {
+        this.topLevelLocations = [];
+        this.http.get(this.config.getBackendUrl() + '/locations/search/findTopLevel').subscribe(
+            ls => {
+                this.topLevelLocations = this.sortByKey(this.getPayload(ls).locations, 'name');
+            }
+        );
+    }
+
+    private getPayload(ls) {
+        return ls._embedded;
+    }
+
+
+    /**
+     * TODO: Make more dynamic someday. :P
+     *
+     * I have spent a good 10+ hours tying to make this dynamic always hitting subtle errors, not worth
+     * the effort currently.
+     */
     private setLocationDropDown(level: number) {
         let locationDropdown;
         if (level === 0) {
@@ -129,13 +145,14 @@ export class SelectLocationComponent implements OnInit {
             locationDropdown = this.childLocation1;
         } else if (level === 2) {
             locationDropdown = this.childLocation2;
+        } else if (level === 3) {
+            locationDropdown = this.childLocation3;
+        } else if (level === 4) {
+            locationDropdown = this.childLocation4;
+        } else if (level === 5) {
+            locationDropdown = this.childLocation5;
         }
 
-        console.log({
-            level: level,
-            before: locationDropdown,
-            after: this.selectedLocations[level].id
-        });
         locationDropdown.value = this.selectedLocations[level].id;
     }
 

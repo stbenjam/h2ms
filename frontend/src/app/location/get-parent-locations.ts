@@ -4,9 +4,12 @@ import {HttpClient} from '@angular/common/http';
 import {ConfigService} from '../config/config.service';
 import {Config} from '../config/config';
 import {Location} from '../model/location';
-import {Injectable} from "@angular/core";
+import {Injectable} from '@angular/core';
 
 @Injectable()
+/**
+ * Helper class to find all of the parent locations of a given location.
+ */
 export class ParentLocationFinder {
     private config: Config;
 
@@ -22,7 +25,7 @@ export class ParentLocationFinder {
         return this.getLocations([], location, 0);
     }
 
-    public getLocations(locations: Location[], location: Location, level = 0): Observable<Location[]> {
+    private getLocations(locations: Location[], location: Location, level = 0): Observable<Location[]> {
         // Builds the list backwards, then reverses at the end.
 
         return this.http.get(this.config.getBackendUrl() + '/locations/' + getId(location) + '/parent')

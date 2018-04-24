@@ -34,7 +34,7 @@ export class LocationEditComponent {
     initialLocation: Location;
     id: number;
     config: Config;
-    @ViewChild('selectLocation') selectLocation;
+    @ViewChild('parentLocation') parentLocation;
 
 
     constructor(private route: ActivatedRoute,
@@ -45,35 +45,33 @@ export class LocationEditComponent {
         this.route.paramMap.subscribe(
             params => {
                 this.id = +(params.get('id'));
-                this.http.get(this.config.getBackendUrl() + '/locations/' + this.id)
-                    .subscribe((res: Response) => {
-                        this.selectLocation.setSelectedLocation(res);
-                    });
+
+                const locationResolver = this.route.snapshot.data.locationResolver;
+                this.initialLocation = locationResolver._embedded.locations.find(location => location.id === this.id);
+                this.crudOperation = this.initialLocation ? CrudOperation.Update : CrudOperation.Create;
+
+                if (this.crudOperation === CrudOperation.Create) {
+                    this.initialLocation = {
+                        address: '',
+                        children: null,
+                        country: '',
+                        id: null,
+                        name: '',
+                        parent: null,
+                        type: '',
+                        zip: '',
+                    };
+                } else if (this.crudOperation === CrudOperation.Update) {
+                    this.http.get(this.config.getBackendUrl() + '/locations/' + this.id + '/parent')
+                        .subscribe((res: Response) => {
+                            this.parentLocation.setSelectedLocation(res);
+                        });
+                }
+
+                this.nameFormControl.setValue(this.initialLocation.name);
+                this.typeFormControl.setValue(this.initialLocation.type);
             }
         );
-
-
-        const locationResolver = this.route.snapshot.data.locationResolver;
-        this.initialLocation = locationResolver._embedded.locations.find(location => location.id === this.id);
-        this.crudOperation = this.initialLocation ? CrudOperation.Update : CrudOperation.Create;
-
-        if (this.crudOperation === CrudOperation.Create) {
-            this.initialLocation = {
-                address: '',
-                children: null,
-                country: '',
-                id: null,
-                name: '',
-                parent: null,
-                type: '',
-                zip: '',
-            };
-        }
-
-        this.nameFormControl.setValue(this.initialLocation.name);
-        this.typeFormControl.setValue(this.initialLocation.type);
-
-
     }
 
 
@@ -106,6 +104,7 @@ export class LocationEditComponent {
                 'name': name,
                 'type': type,
                 'zip': zip
+
             }, {
                 headers: this.getJsonHeader()
             }
@@ -119,8 +118,6 @@ export class LocationEditComponent {
     }
 
     private update(address: string, country: string, name: string, type: string, zip: string) {
-
-
         this.http.put<any>(this.config.getBackendUrl() + '/locations/' + this.id,
             {
                 'address': address,
