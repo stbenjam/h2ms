@@ -16,12 +16,13 @@ import {MatSelect} from '@angular/material';
     templateUrl: './select-location.component.html',
     styleUrls: ['./select-location.component.css']
 })
-export class SelectLocationComponent implements OnInit, AfterViewInit {
+export class SelectLocationComponent implements OnInit {
 
-    @ViewChildren(MatSelect) childLocations: QueryList<MatSelect>;
     @ViewChild('topLevelLocation') topLevelLocation;
+    @ViewChild('childLocation1') childLocation1;
+    @ViewChild('childLocation2') childLocation2;
     config: Config;
-    locationChildrenLevels$: Observable<Location[]>[];
+    selectedLevelsToChildrenLocationsList: Observable<Location[]>[];
     selectedLocations: Location[];
     locations: Location[];
 
@@ -34,27 +35,9 @@ export class SelectLocationComponent implements OnInit, AfterViewInit {
 
     ngOnInit() {
         this.loadTopLevelLocations();
-        this.locationChildrenLevels$ = [Observable.of([])];
+        this.selectedLevelsToChildrenLocationsList = [Observable.of([])];
         this.selectedLocations = [];
 
-    }
-
-    ngAfterViewInit() {
-        this.childLocations.changes.subscribe(e => {
-            setTimeout(() => {
-                    let locations = e.toArray();
-                    for (let i = 1; i < locations.length; i++) {
-                        // TODO Bad, but meh
-                        console.log("index: " + i);
-                        console.log(locations[i].value);
-                        console.log(this.selectedLocations[i]);
-
-
-                        // locations[i].value = 1;
-                    }
-                },
-                0);
-        });
     }
 
 
@@ -74,26 +57,26 @@ export class SelectLocationComponent implements OnInit, AfterViewInit {
         this.wipeLevelsAtAndAfter(level);
         if (location == null) {
             console.log('Location is null.');
-            this.locationChildrenLevels$[level] = Observable.of([]);
+            this.selectedLevelsToChildrenLocationsList[level] = Observable.of([]);
             return;
         }
 
         this.selectedLocations[level] = location;
+        this.setLocationDropDown(level);
 
         this.http.get(this.config.getBackendUrl() + '/locations/' + getId(location) + '/children')
             .subscribe((res: Response) => {
                 const locs = this.sortByKey(this.getPayload(res).locations, 'name');
-                this.locationChildrenLevels$[level] = Observable.of(locs);
+                this.selectedLevelsToChildrenLocationsList[level] = Observable.of(locs);
             });
     }
 
     private wipeLevelsAtAndAfter(level: number) {
-        for (let i = level; i < this.locationChildrenLevels$.length; i++) {
-            this.locationChildrenLevels$[i] = Observable.of([]);
+        for (let i = level; i < this.selectedLevelsToChildrenLocationsList.length; i++) {
+            this.selectedLevelsToChildrenLocationsList[i] = Observable.of([]);
             this.selectedLocations.splice(i);
         }
     }
-
 
     private loadTopLevelLocations() {
         this.locations = [];
@@ -117,12 +100,6 @@ export class SelectLocationComponent implements OnInit, AfterViewInit {
         return this.selectedLocations[this.selectedLocations.length - 1];
     }
 
-    public sleep(delay) {
-        const start = new Date().getTime();
-        while (new Date().getTime() < start + delay) {
-        }
-    }
-
     public setSelectedLocation(location: Location, level = 0) {
         if (!location) {
             this.updateSubLocations(location, level);
@@ -134,20 +111,32 @@ export class SelectLocationComponent implements OnInit, AfterViewInit {
                 console.log('Locations');
                 console.log(locations);
 
-                this.topLevelLocation.value = locations[0].id;
-
-
                 for (let i = 0; i < locations.length; i++) {
                     this.updateSubLocations(locations[i], i);
-                    this.sleep(1000);
                 }
-
-
             }, error => {
                 console.log('Error while getting parent locations');
                 console.log(error);
             }
         );
+    }
+
+    private setLocationDropDown(level: number) {
+        let locationDropdown;
+        if (level === 0) {
+            locationDropdown = this.topLevelLocation;
+        } else if (level === 1) {
+            locationDropdown = this.childLocation1;
+        } else if (level === 2) {
+            locationDropdown = this.childLocation2;
+        }
+
+        console.log({
+            level: level,
+            before: locationDropdown,
+            after: this.selectedLocations[level].id
+        });
+        locationDropdown.value = this.selectedLocations[level].id;
     }
 
     /**

@@ -9,18 +9,32 @@
 </mat-form-field>
 
 
-<ng-template ngFor let-i="index" let-locationChildren [ngForOf]="locationChildrenLevels$">
-    <mat-form-field *ngIf="(locationChildren | async) && (locationChildren | async).length"
-                    class="col">
-        <mat-select #childLocation placeholder="Located Within"
-                    (change)="updateSubLocations(childLocation.value, i + 1)">
-            <mat-option>--</mat-option>
-            <mat-option
-                    *ngFor="let child of (locationChildren | async)"
-                    [value]="child">
-                {{ child.name }}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-</ng-template>
+<mat-form-field
+        [hidden]="! ((selectedLevelsToChildrenLocationsList[0] | async) && (selectedLevelsToChildrenLocationsList[0] | async).length)"
+        class="col">
+    <mat-select #childLocation1 placeholder="Located Within"
+                (change)="updateSubLocationsFromId(childLocation1.value, 1)">
+        <mat-option>--</mat-option>
+        <mat-option *ngFor="let child of (selectedLevelsToChildrenLocationsList[0] | async)"
+                    [value]="child.id">
+            {{ child.name }}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+
+<mat-form-field
+        [hidden]="! ((selectedLevelsToChildrenLocationsList[1] | async) && (selectedLevelsToChildrenLocationsList[1] | async).length)"
+        class="col">
+    <mat-select #childLocation2 placeholder="Located Within"
+                (change)="updateSubLocationsFromId(childLocation2.value, 2)">
+        <mat-option>--</mat-option>
+        <mat-option *ngFor="let child of (selectedLevelsToChildrenLocationsList[1] | async)"
+                    [value]="child.id">
+            {{ child.name }}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+
+
+
 
