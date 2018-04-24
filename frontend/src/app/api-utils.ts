@@ -11,7 +11,8 @@ export interface Links {
 
 export function getLinks(swaggerObject): Links {
     if (!swaggerObject || !swaggerObject.hasOwnProperty('_links')) {
-        console.log('Cannot get links from object: ' + JSON.stringify(swaggerObject));
+        console.log('Cannot get links from object: ');
+        console.log(swaggerObject);
         return null;
     }
 
@@ -20,7 +21,8 @@ export function getLinks(swaggerObject): Links {
 
 export function getId(swaggerObject): number {
     if (!swaggerObject || !swaggerObject.hasOwnProperty('id')) {
-        console.log('Cannot get id from object: ' + JSON.stringify(swaggerObject));
+        console.log('Cannot get links from object: ');
+        console.log(swaggerObject);
         return null;
     }
 

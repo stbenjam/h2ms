@@ -54,6 +54,8 @@ import {
     SuccessfullySentPasswordRecoveryEmailComponent
 } from './forgot-password/forgot-password.component';
 import {UserEmailService} from './user/service/user-email.service';
+import {SelectLocationComponent} from './select-location/select-location.component';
+import {ParentLocationFinder} from "./location/get-parent-locations";
 
 @NgModule({
     declarations: [
@@ -72,7 +74,8 @@ import {UserEmailService} from './user/service/user-email.service';
         SuccessfullyResetPasswordComponent,
         AboutComponent,
         ForgotPasswordComponent,
-        ResetPasswordComponent
+        ResetPasswordComponent,
+        SelectLocationComponent
     ],
     imports: [
         BrowserModule,
@@ -116,7 +119,8 @@ import {UserEmailService} from './user/service/user-email.service';
         ReportsService,
         EventTemplateEntityService,
         LocationEntityService,
-        UserEntityService
+        UserEntityService,
+        ParentLocationFinder
     ],
     bootstrap: [AppComponent]
 })

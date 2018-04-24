@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '../model/location';
 import {FormControl, Validators} from '@angular/forms';
@@ -6,7 +6,9 @@ import {REQUIRED_NAME, REQUIRED_NAME_ERROR_MESSAGE} from '../forms-common/form-c
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {ConfigService} from '../config/config.service';
 import {Config} from '../config/config';
-import {getLinks} from "../api-utils";
+import {getLinks} from '../api-utils';
+import 'rxjs/add/operator/toPromise';
+import {Observable} from "rxjs/Observable";
 
 /**
  * Which CRUD operation the component is being used for.
@@ -32,19 +34,24 @@ export class LocationEditComponent {
     initialLocation: Location;
     id: number;
     config: Config;
-    locations: Location[];
-    childrenMap: Map<number, Location[]> = new Map();
+    @ViewChild('selectLocation') selectLocation;
+
 
     constructor(private route: ActivatedRoute,
                 private configService: ConfigService,
                 private http: HttpClient,
                 private router: Router) {
+        this.config = this.configService.getConfig();
         this.route.paramMap.subscribe(
             params => {
                 this.id = +(params.get('id'));
+                this.http.get(this.config.getBackendUrl() + '/locations/' + this.id)
+                    .subscribe((res: Response) => {
+                        this.selectLocation.setSelectedLocation(res);
+                    });
             }
         );
-        this.config = this.configService.getConfig();
+
 
         const locationResolver = this.route.snapshot.data.locationResolver;
         this.initialLocation = locationResolver._embedded.locations.find(location => location.id === this.id);
@@ -63,49 +70,17 @@ export class LocationEditComponent {
             };
         }
 
-        this.loadTopLevelLocations();
         this.nameFormControl.setValue(this.initialLocation.name);
         this.typeFormControl.setValue(this.initialLocation.type);
+
+
     }
 
-    private loadTopLevelLocations() {
-        this.http.get(this.config.getBackendUrl() + '/locations/search/findTopLevel').subscribe(
-            ls => {
-                this.locations = this.getPayload(ls).locations;
-            }
-        );
-    }
-
-    private getChildren(locationId: number) {
-        if (!this.childrenMap.has(locationId)) {
-            this.http.get(this.config.getBackendUrl() + '/locations/' + locationId + '/children').do(ls => {
-                this.childrenMap.set(locationId, this.getPayload(ls).locations);
-            }).subscribe();
-        }
-
-
-        return this.childrenMap.get(locationId);
-    }
-
-    private getPayload(ls) {
-        return ls._embedded;
-    }
 
     typeErrorMessage() {
         return this.typeFormControl.hasError('required') ? 'You must enter a value' : '';
     }
 
-    getParent(location: Location) {
-        const internalLocation = this.locations.find(l => location.id === l.id);
-        if (!internalLocation.parent) {
-            this.http.get(getLinks(internalLocation).parent.href).do(res => {
-                internalLocation.parent = res;
-            }).subscribe();
-            console.log(internalLocation.parent);
-        }
-
-        return internalLocation.parent;
-    }
 
     submit(name: string, address: string, zip: string, country: string, type: string) {
         if (this.nameFormControl.invalid) {
@@ -144,6 +119,8 @@ export class LocationEditComponent {
     }
 
     private update(address: string, country: string, name: string, type: string, zip: string) {
+
+
         this.http.put<any>(this.config.getBackendUrl() + '/locations/' + this.id,
             {
                 'address': address,
@@ -167,5 +144,9 @@ export class LocationEditComponent {
         let headers = new HttpHeaders();
         headers = headers.set('Content-Type', 'application/json');
         return headers;
+    }
+
+    private selectLocationTest(location: Location) {
+        alert('Selected Location' + location.name);
     }
 }
