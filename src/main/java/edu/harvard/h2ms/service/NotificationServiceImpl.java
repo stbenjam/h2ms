@@ -3,7 +3,6 @@ package edu.harvard.h2ms.service;
 import edu.harvard.h2ms.domain.core.Notification;
 import edu.harvard.h2ms.domain.core.User;
 import edu.harvard.h2ms.repository.NotificationRepository;
-import edu.harvard.h2ms.repository.UserRepository;
 import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,11 +27,21 @@ public class NotificationServiceImpl {
     public final String stringRepresentation;
     public final long seconds;
 
+    /**
+     * @param stringRepresentation interval representation in text
+     * @param seconds interval duration
+     */
     NotificationFrequency(String stringRepresentation, long seconds) {
       this.stringRepresentation = stringRepresentation;
       this.seconds = seconds;
     }
 
+    /**
+     * Returns interval in seconds, with UNDEFINED if string representation don't fit
+     *
+     * @param stringRepresentation
+     * @return
+     */
     public static NotificationFrequency getNotificationFrequency(String stringRepresentation) {
 
       for (NotificationFrequency nf : NotificationFrequency.class.getEnumConstants()) {
@@ -48,10 +57,9 @@ public class NotificationServiceImpl {
 
   @Autowired private NotificationRepository notificationRepository;
 
-  @Autowired private UserRepository userRepository;
-
   @Autowired private EmailService emailService;
 
+  /** Polls notifications at set duration (modify fixedRate for polling frequency) */
   @Scheduled(fixedRate = 10000)
   public void pollNotifications() {
     log.debug("****polling notifications");
@@ -62,38 +70,33 @@ public class NotificationServiceImpl {
     }
   }
 
+  /**
+   * Scans subscribers for notification. Users due for notifications are sent notification email
+   *
+   * @param notification
+   */
   private void notifyUsers(Notification notification) {
     log.debug("notification Name: " + notification.getName());
     log.debug("notification subscribers: " + notification.getUser());
-    Map<String, Long> x = notification.getEmailLastNotifiedTimes();
 
-    for (String userEmail : x.keySet()) {
-      User user = userRepository.findByEmail(userEmail);
-      log.debug("Evaluating user" + user.getEmail());
+    Map<String, Long> lastNotified = notification.getEmailLastNotifiedTimes();
+    for (User user : notification.getUser()) {
+      if (lastNotified.containsKey(user.getEmail()) && isTimeToNotify(notification, user)) {
+        log.info("user " + user.getEmail() + " is ready to be notified");
 
-      if (isTimeToNotify(notification, user)) {
-        log.debug("user " + user.getEmail() + " is ready to be notified");
-
+        // Create email
         SimpleMailMessage message = new SimpleMailMessage();
-
-        // user email address
         message.setTo(user.getEmail());
-
-        // uncomment for quick test:
-        // message.setTo("my.email.address@gmail.com");
-
         message.setSubject(notification.getNotificationTitle());
-
         String messageText = notification.getNotificationBody();
-
         message.setText(messageText);
 
         // actually send the message
         emailService.sendEmail(message);
 
         log.debug("email sent " + message);
-
         log.debug("before reset" + notification.getEmailLastNotifiedTimes().get(user.getEmail()));
+
         // finally, not the time in which the last email was sent for the user
         resetEmailLastNotifiedTime(notification, user);
 
@@ -120,6 +123,18 @@ public class NotificationServiceImpl {
   private void resetEmailLastNotifiedTime(Notification notification, User user) {
 
     notification.setEmailLastNotifiedTime(user.getEmail(), getUnixTime());
+    notificationRepository.save(notification);
+  }
+
+  /**
+   * Remves the user notification time
+   *
+   * @param notification
+   * @param user
+   */
+  private void removeEmailLastNotifiedTime(Notification notification, User user) {
+
+    notification.getEmailLastNotifiedTimes().remove(user.getEmail());
     notificationRepository.save(notification);
   }
 
@@ -173,5 +188,18 @@ public class NotificationServiceImpl {
     notification.addUser(user);
     log.debug("subscribed:" + notification.getUser());
     resetEmailLastNotifiedTime(notification, user);
+  }
+
+  /**
+   * Removes user from notification's subscription list
+   *
+   * @param user
+   * @param notification
+   */
+  public void unsubscribeUserNotification(User user, Notification notification) {
+    notification.removeUser(user);
+    log.debug("unsubscribed:" + notification.getUser());
+    resetEmailLastNotifiedTime(notification, user);
+    removeEmailLastNotifiedTime(notification, user);
   }
 }

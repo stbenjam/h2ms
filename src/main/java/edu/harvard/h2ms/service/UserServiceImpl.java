@@ -34,8 +34,13 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void save(User user) {
-    userRepository.save(user);
+  public User save(User user) {
+    return userRepository.save(user);
+  }
+
+  @Override
+  public void delete(User user) {
+    userRepository.delete(user);
   }
 
   @Autowired private EventRepository eventRepository;

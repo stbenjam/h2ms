@@ -68,7 +68,6 @@ public class PasswordControllerTests {
     ObjectMapper mapper1 = new ObjectMapper();
 
     User user = new User(FIRSTNAME, MIDDLENAME, LASTNAME, EMAIL, PASSWORD, TYPE);
-
     log.debug("Test: user info for registration " + mapper1.writeValueAsString(user));
 
     MockHttpServletResponse result =
