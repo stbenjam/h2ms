@@ -159,4 +159,9 @@ public class EventServiceImpl implements EventService {
 
     return compliance;
   }
+
+  @Override
+  public Event save(Event event) {
+    return eventRepository.save(event);
+  }
 }

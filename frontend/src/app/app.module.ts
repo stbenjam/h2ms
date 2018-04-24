@@ -9,7 +9,7 @@ import {
     MatCardModule,
     MatCheckboxModule,
     MatDialogModule,
-    MatDividerModule,
+    MatDividerModule, MatFormFieldControl,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
@@ -45,6 +45,7 @@ import {ReportsService} from './reports/reports.service';
 import {AboutComponent} from './about/about.component';
 import {LocationComponent} from './location/location.component';
 import {LocationEditComponent} from './location-edit/location-edit.component';
+import {UserEmailService} from './user/service/user-email.service';
 import {
     ResetPasswordComponent,
     SuccessfullyResetPasswordComponent
@@ -53,9 +54,9 @@ import {
     ForgotPasswordComponent,
     SuccessfullySentPasswordRecoveryEmailComponent
 } from './forgot-password/forgot-password.component';
-import {UserEmailService} from './user/service/user-email.service';
 import {SelectLocationComponent} from './select-location/select-location.component';
-import {ParentLocationFinder} from "./location/get-parent-locations";
+import {ParentLocationFinder} from './location/get-parent-locations';
+import {ReportsChartService} from './reports/reports-chart.service';
 
 @NgModule({
     declarations: [
@@ -119,8 +120,9 @@ import {ParentLocationFinder} from "./location/get-parent-locations";
         ReportsService,
         EventTemplateEntityService,
         LocationEntityService,
-        UserEntityService,
-        ParentLocationFinder
+        ParentLocationFinder,
+        ReportsChartService,
+        UserEntityService
     ],
     bootstrap: [AppComponent]
 })
