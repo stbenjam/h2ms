@@ -42,14 +42,14 @@ const routes: Routes = [
     {path: 'forgot-password', component: ForgotPasswordComponent},
     {path: 'reset-password/:email/:resetToken', component: ResetPasswordComponent},
     // todo: route route to dashboard when made
-    {path: '', redirectTo: 'login', pathMatch: 'full'},
     {path: 'users',
         component: UserComponent,
         canActivate: [AuthGuardService],
         resolve: {
             usersResolver: UsersResolverService
         }
-    }
+    },
+    {path: '', redirectTo: 'reports', pathMatch: 'full'}
 ];
 
 /**

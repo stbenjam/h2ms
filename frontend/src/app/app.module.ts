@@ -9,7 +9,7 @@ import {
     MatCardModule,
     MatCheckboxModule,
     MatDialogModule,
-    MatDividerModule,
+    MatDividerModule, MatFormFieldControl,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
@@ -41,8 +41,6 @@ import {UserEntityService} from './api/userEntity.service';
 import {ReportsComponent} from './reports/reports.component';
 import {ReportsService} from './reports/reports.service';
 import {AboutComponent} from './about/about.component';
-import {BASE_PATH} from './variables';
-import {Config} from './config/config';
 import {UserEmailService} from './user/service/user-email.service';
 import {
     ForgotPasswordComponent,
@@ -56,6 +54,7 @@ import { UserComponent,
     UserSubmissionSuccessDialogComponent,
     UserSubmissionFailureDialogComponent
 } from './user/user.component';
+import {ReportsChartService} from './reports/reports-chart.service';
 
 @NgModule({
     declarations: [
@@ -119,6 +118,7 @@ import { UserComponent,
         ReportsService,
         EventTemplateEntityService,
         LocationEntityService,
+        ReportsChartService,
         UserEntityService
     ],
     bootstrap: [AppComponent]
