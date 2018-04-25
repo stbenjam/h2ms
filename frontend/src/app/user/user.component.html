@@ -1,0 +1,45 @@
+<div class="row">
+    <mat-card class="card text-center">
+        <mat-card-title>People</mat-card-title>
+        <mat-card-content>
+            <form [formGroup]="userForm">
+                <mat-form-field class="col">
+                    <mat-select #userSelect (selectionChange)="onChange(userSelect.value)" formControlName="userSelect">
+                        <mat-option>Add a new person</mat-option>
+                        <mat-option *ngFor="let user of users" [value]="user">{{user.lastName}}, {{user.firstName}} {{user.middleName}}</mat-option>
+                    </mat-select>
+                    <mat-placeholder>Select a person to edit or add</mat-placeholder>
+                </mat-form-field>
+                <mat-divider></mat-divider>
+                <mat-form-field class="col">
+                    <input matInput formControlName="firstName" required>
+                    <mat-placeholder>First name</mat-placeholder>
+                </mat-form-field>
+                <mat-form-field class="col">
+                    <input matInput formControlName="middleName">
+                    <mat-placeholder>Middle name</mat-placeholder>
+                </mat-form-field>
+                <mat-form-field class="col">
+                    <input matInput formControlName="lastName" required>
+                    <mat-placeholder>Last name</mat-placeholder>
+                </mat-form-field>
+                <mat-form-field class="col">
+                    <input matInput formControlName="email" required>
+                    <mat-placeholder>Email</mat-placeholder>
+                </mat-form-field>
+                <mat-form-field class="col">
+                    <input matInput formControlName="type" required>
+                    <mat-placeholder>Type</mat-placeholder>
+                </mat-form-field>
+                <button mat-raised-button (click)="onSubmit()" [disabled]="!userForm.valid" color="primary">
+                    Save
+                </button>
+                <!-- TODO: enable deactivation -->
+                <!--<div class="divider"></div>-->
+                <!--<button mat-raised-button (click)="onDeactivate()" [disabled]="!userForm.valid || !editMode" color="warn">
+                    Deactivate
+                </button>-->
+            </form>
+        </mat-card-content>
+    </mat-card>
+</div>
