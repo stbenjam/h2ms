@@ -218,14 +218,13 @@ public class UserControllerTests {
   }
 
   // Verifies system admin has role of ADMIN
-  @Ignore
   @Test
   public void test_AdminUserHasAdminRole(){
     User user = userRepository.findByLastName("User");
     Set<Role> roles = user.getRoles();
     Boolean hasRole = false;
     for(Role role: roles){
-      if(role.getName().contains("ADMIN")){
+      if(role.getName().contains("ROLE_ADMIN")){
         hasRole=true;
       }
 
