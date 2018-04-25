@@ -43,7 +43,7 @@ const routes: Routes = [
     {path: 'reset-password/:email/:resetToken', component: ResetPasswordComponent},
     // todo: route route to dashboard when made
     {path: '', redirectTo: 'login', pathMatch: 'full'},
-    {path: 'people',
+    {path: 'users',
         component: UserComponent,
         canActivate: [AuthGuardService],
         resolve: {
@@ -65,7 +65,7 @@ export const NAV_ITEMS: NavItem[] = [
         // new NavItem('Notifications', '/notifications'),
         // new NavItem('Sensors', '/sensors'),
         // new NavItem('RFIDs', '/rfids'),
-        new NavItem('People', '/people'),
+        new NavItem('Users', '/users'),
         // new NavItem('Locations', '/locations'),
         new NavItem('Privacy', '/privacy'),
         new NavItem('About', '/about'),
