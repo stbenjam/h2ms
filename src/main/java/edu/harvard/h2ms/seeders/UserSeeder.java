@@ -50,7 +50,9 @@ public class UserSeeder {
   private void seedUserTable() {
 
     if (userRepository.count() == 0) {
-      List<List<String>> records = asList(asList("Default", "User", "admin@h2ms.org", "ROLE_ADMIN"));
+      List<List<String>> records = asList(asList("Default", "User", "admin@h2ms.org", "ROLE_ADMIN"),
+              asList("Ben", "Jenkins", "bjenkins@h2ms.org", "ROLE_OBSERVER"),
+              asList("Wesley", "Skillerns", "wskillern@h2ms.org", "ROLE_USER"));
 
       for (List<String> record : records) {
         String firstName = record.get(0);
