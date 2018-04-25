@@ -27,5 +27,6 @@ export interface User {
     middleName?: string;
     notificationFrequency?: string;
     type?: string;
+    password?: string;
     roles?: Array<Role>;
 }

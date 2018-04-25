@@ -9,7 +9,7 @@ import {MatDialog, MatDialogRef} from '@angular/material';
 @Component({
     selector: 'app-user',
     templateUrl: './user.component.html',
-    styleUrls: ['./user.component.css']
+    styleUrls: ['../card.css']
 })
 export class UserComponent implements OnInit {
     userForm: FormGroup;
@@ -49,11 +49,15 @@ export class UserComponent implements OnInit {
     onSubmit() {
         this.user = {
             firstName: this.userForm.get('firstName').value,
-            middleName: this.userForm.get('middleName').value,
             lastName: this.userForm.get('lastName').value,
             email: this.userForm.get('email').value,
-            type: this.userForm.get('type').value
+            type: this.userForm.get('type').value,
+            password: 'a'
         };
+
+        if (this.userForm.get('middleName').value) {
+            this.user.middleName = this.userForm.get('middleName').value;
+        }
 
         if (this.editMode) {
             this.user.id = this.userForm.get('userSelect').value.id;
