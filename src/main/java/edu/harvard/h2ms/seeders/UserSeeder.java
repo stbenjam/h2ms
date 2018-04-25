@@ -2,8 +2,11 @@ package edu.harvard.h2ms.seeders;
 
 import static java.util.Arrays.asList;
 
+import edu.harvard.h2ms.domain.core.Role;
 import edu.harvard.h2ms.domain.core.User;
 import edu.harvard.h2ms.repository.UserRepository;
+
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,12 +50,13 @@ public class UserSeeder {
   private void seedUserTable() {
 
     if (userRepository.count() == 0) {
-      List<List<String>> records = asList(asList("Default", "User", "admin@h2ms.org"));
+      List<List<String>> records = asList(asList("Default", "User", "admin@h2ms.org", "ADMIN"));
 
       for (List<String> record : records) {
         String firstName = record.get(0);
         String lastName = record.get(1);
         String email = record.get(2);
+        String roleType = record.get(3);
 
         User user = new User();
         user.setFirstName(firstName);
@@ -60,6 +64,9 @@ public class UserSeeder {
         user.setEmail(email);
         user.setPassword(adminPassword);
         user.setType(adminUserType);
+        Role role = new Role();
+        role.setName(roleType);
+        user.setRoles(new HashSet<Role>(asList(role)));
         userRepository.save(user);
       }
     }
