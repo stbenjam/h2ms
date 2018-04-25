@@ -29,9 +29,8 @@ export class EventGuardService implements CanActivate {
         }
         if (!this.hasObserverRole) {
             this.userByEmailResolverService.resolve(route, state).subscribe(u => {
-                console.log(JSON.stringify(u));
                 const roleRef = u._embedded.users[0]._links.roles.href;
-                console.log(roleRef);
+                console.log('roleRef: ' + roleRef);
                 this.userRoleResolverService.resolve(route, state, roleRef).subscribe( n => {
                     console.log(n);
                     return true;
