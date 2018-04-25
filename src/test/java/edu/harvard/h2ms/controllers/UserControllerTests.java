@@ -16,7 +16,10 @@ import edu.harvard.h2ms.repository.*;
 import java.util.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.el.parser.AstSetData;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
@@ -213,4 +216,21 @@ public class UserControllerTests {
                 .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
   }
+
+  // Verifies system admin has role of ADMIN
+  @Ignore
+  @Test
+  public void test_AdminUserHasAdminRole(){
+    User user = userRepository.findByLastName("User");
+    Set<Role> roles = user.getRoles();
+    Boolean hasRole = false;
+    for(Role role: roles){
+      if(role.getName().contains("ADMIN")){
+        hasRole=true;
+      }
+
+    }
+    Assert.assertEquals(hasRole, TRUE);
+  }
+
 }
