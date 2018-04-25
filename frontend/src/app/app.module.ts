@@ -55,6 +55,9 @@ import { UserComponent,
     UserSubmissionFailureDialogComponent
 } from './user/user.component';
 import {ReportsChartService} from './reports/reports-chart.service';
+import {EventGuardService} from './auth/event-guard.service';
+import {UserRoleResolverService} from './user/service/user-role-resolver.service';
+import {RoleEntityService} from './api/roleEntity.service';
 
 @NgModule({
     declarations: [
@@ -119,7 +122,10 @@ import {ReportsChartService} from './reports/reports-chart.service';
         EventTemplateEntityService,
         LocationEntityService,
         ReportsChartService,
-        UserEntityService
+        UserEntityService,
+        EventGuardService,
+        UserRoleResolverService,
+        RoleEntityService
     ],
     bootstrap: [AppComponent]
 })
