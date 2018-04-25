@@ -34,6 +34,9 @@ export class UserComponent implements OnInit {
             email: new FormControl('', [
                 Validators.required,
                 Validators.email
+            ]),
+            type: new FormControl('', [
+                Validators.required
             ])
         });
 
@@ -49,6 +52,7 @@ export class UserComponent implements OnInit {
             middleName: this.userForm.get('middleName').value,
             lastName: this.userForm.get('lastName').value,
             email: this.userForm.get('email').value,
+            type: this.userForm.get('type').value
         };
 
         if (this.editMode) {
@@ -87,10 +91,12 @@ export class UserComponent implements OnInit {
         this.userForm.get('middleName').setValue(selectedUser.middleName);
         this.userForm.get('lastName').setValue(selectedUser.lastName);
         this.userForm.get('email').setValue(selectedUser.email);
+        this.userForm.get('type').setValue(selectedUser.type);
         this.userForm.get('firstName').updateValueAndValidity();
         this.userForm.get('middleName').updateValueAndValidity();
         this.userForm.get('lastName').updateValueAndValidity();
         this.userForm.get('email').updateValueAndValidity();
+        this.userForm.get('type').updateValueAndValidity();
     }
 
     private resetUserFormValues() {
@@ -98,10 +104,12 @@ export class UserComponent implements OnInit {
         this.userForm.get('middleName').setValue('');
         this.userForm.get('lastName').setValue('');
         this.userForm.get('email').setValue('');
+        this.userForm.get('type').setValue('');
         this.userForm.get('firstName').updateValueAndValidity();
         this.userForm.get('middleName').updateValueAndValidity();
         this.userForm.get('lastName').updateValueAndValidity();
         this.userForm.get('email').updateValueAndValidity();
+        this.userForm.get('type').updateValueAndValidity();
     }
 
 }

@@ -27,6 +27,10 @@
                     <input matInput formControlName="email" required>
                     <mat-placeholder>Email</mat-placeholder>
                 </mat-form-field>
+                <mat-form-field class="col">
+                    <input matInput formControlName="type" required>
+                    <mat-placeholder>Type</mat-placeholder>
+                </mat-form-field>
                 <div class="form-row">
                     <button mat-raised-button (click)="onSubmit()" [disabled]="!userForm.valid" color="primary">
                         Save
