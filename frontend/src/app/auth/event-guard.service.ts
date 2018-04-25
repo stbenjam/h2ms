@@ -7,8 +7,6 @@ import {Config} from '../config/config';
 import {AuthService} from './auth.service';
 import {UserByEmailResolverService} from '../user/service/user-by-email-resolver.service';
 import {UserRoleResolverService} from '../user/service/user-role-resolver.service';
-import {PromiseObservable} from "rxjs/observable/PromiseObservable";
-import {Observable} from "rxjs/Observable";
 
 @Injectable()
 export class EventGuardService implements CanActivate {
