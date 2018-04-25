@@ -5,7 +5,7 @@
             <form [formGroup]="userForm">
                 <mat-form-field class="col">
                     <mat-select #userSelect (selectionChange)="onChange(userSelect.value)" formControlName="userSelect">
-                        <mat-option value="">Add a new person</mat-option>
+                        <mat-option>Add a new person</mat-option>
                         <mat-option *ngFor="let user of users" [value]="user">{{user.lastName}}, {{user.firstName}} {{user.middleName}}</mat-option>
                     </mat-select>
                     <mat-placeholder>Select a person to edit or add</mat-placeholder>

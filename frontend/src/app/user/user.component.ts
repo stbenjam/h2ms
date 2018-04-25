@@ -81,7 +81,7 @@ export class UserComponent implements OnInit {
     }
 
     onChange(selectedUser: ResourceUser) {
-        if (selectedUser !== '') {
+        if (selectedUser) {
             this.editMode = true;
             this.setUserFormValues(selectedUser);
         } else {
