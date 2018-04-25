@@ -33,7 +33,7 @@ import {ConfigService} from '../config/config.service';
 @Injectable()
 export class UserEntityService {
 
-    protected basePath = 'http://test.h2ms.org:81';
+    protected basePath = '';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     config: Config;

@@ -50,6 +50,10 @@ import {
     ResetPasswordComponent,
     SuccessfullyResetPasswordComponent
 } from './reset-password/reset-password.component';
+import { UserComponent,
+    UserSubmissionSuccessDialogComponent,
+    UserSubmissionFailureDialogComponent
+} from './user/user.component';
 import {ReportsChartService} from './reports/reports-chart.service';
 
 @NgModule({
@@ -67,7 +71,10 @@ import {ReportsChartService} from './reports/reports-chart.service';
         SuccessfullyResetPasswordComponent,
         AboutComponent,
         ForgotPasswordComponent,
-        ResetPasswordComponent
+        ResetPasswordComponent,
+        UserComponent,
+        UserSubmissionSuccessDialogComponent,
+        UserSubmissionFailureDialogComponent
     ],
     imports: [
         BrowserModule,
@@ -94,7 +101,9 @@ import {ReportsChartService} from './reports/reports-chart.service';
     entryComponents: [
         FormSubmissionDialogComponent,
         SuccessfullySentPasswordRecoveryEmailComponent,
-        SuccessfullyResetPasswordComponent
+        SuccessfullyResetPasswordComponent,
+        UserSubmissionSuccessDialogComponent,
+        UserSubmissionFailureDialogComponent
     ],
     providers: [
         MediaMatcher,
