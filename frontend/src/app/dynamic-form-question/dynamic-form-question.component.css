@@ -1,12 +1,8 @@
-@media screen and (min-width: 1200px) {
-    ::ng-deep .mat-input-wrapper {
-        min-width: 287px !important;
-    }
+::ng-deep .mat-input-wrapper, ::ng-deep .mat-form-field-infix {
+    min-width: 100% !important;
+    width: 100% !important;
 }
 
-@media screen and (max-width: 400px) {
-    ::ng-deep .mat-input-wrapper {
-        min-width: 100% !important;
-        width: 100%;
-    }
+::ng-deep .mat-card-content[_ngcontent-c7] {
+    margin-right: 10px !important;
 }
