@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
 
 @Component
 @Service("complianceWarningReportWorker")
-public class ComplianceWarningReportWorker implements ReportWorker {
+public class ComplianceWarningReportWorker {
 
   final Logger log = LoggerFactory.getLogger(ComplianceWarningReportWorker.class);
 
@@ -36,13 +36,11 @@ public class ComplianceWarningReportWorker implements ReportWorker {
 
   @Autowired private UserRepository userRepository;
 
-  @Override
   public String createReport() {
     // TODO Auto-generated method stub
     return null;
   }
 
-  @Override
   public boolean isTriggered() {
 
     log.info("complianceWarningreport is requested " + questionRepository);
@@ -55,23 +53,23 @@ public class ComplianceWarningReportWorker implements ReportWorker {
 
       try {
         events = eventService.findEventsForCompliance(question);
+        // for all users:
+        for (User user : userRepository.findAll()) {
+          complianceResult.put(
+              user,
+              H2msRestUtils.calculateCompliance(
+                  question,
+                  events
+                      .stream()
+                      .filter(event -> event.getSubject().equals(user))
+                      .collect(Collectors.toSet())));
+        }
+
       } catch (InvalidAnswerTypeException e) {
-        e.printStackTrace();
+        // e.printStackTrace();
       }
 
       Map<String, Set<Event>> values = new HashMap<>();
-
-      // for all users:
-      for (User user : userRepository.findAll()) {
-        complianceResult.put(
-            user,
-            H2msRestUtils.calculateCompliance(
-                question,
-                events
-                    .stream()
-                    .filter(event -> event.getSubject().equals(user))
-                    .collect(Collectors.toSet())));
-      }
     }
 
     return true;

@@ -171,25 +171,27 @@ public class ReportServiceImpl implements ReportService {
 
         try {
           events = eventService.findEventsForCompliance(question);
+          Map<String, Set<Event>> values = new HashMap<>();
+
+          // for all users:
+          for (User user : userRepository.findAll()) {
+            complianceResult.put(
+                user,
+                H2msRestUtils.calculateCompliance(
+                    question,
+                    events
+                        .stream()
+                        .filter(event -> event.getSubject().equals(user))
+                        .collect(Collectors.toSet())));
+          }
+
         } catch (InvalidAnswerTypeException e) {
-          e.printStackTrace();
-        }
-
-        Map<String, Set<Event>> values = new HashMap<>();
-
-        // for all users:
-        for (User user : userRepository.findAll()) {
-          complianceResult.put(
-              user,
-              H2msRestUtils.calculateCompliance(
-                  question,
-                  events
-                      .stream()
-                      .filter(event -> event.getSubject().equals(user))
-                      .collect(Collectors.toSet())));
+          /// e.printStackTrace();
+          log.info("*********skipping");
         }
       }
     }
-    return null;
+    //TODO: add compliance result text
+    return "some compliance result";
   }
 }
