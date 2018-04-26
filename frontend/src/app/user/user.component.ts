@@ -5,6 +5,9 @@ import {ActivatedRoute} from '@angular/router';
 import {FormSubmissionDialogComponent} from '../dynamic-form/dynamic-form.component';
 import {DIALOG_STYLE} from '../forms-common/dialog';
 import {MatDialog, MatDialogRef} from '@angular/material';
+import {UserRegistrationService} from '../api/registration.service';
+import {AuthService} from '../auth/auth.service';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
     selector: 'app-user',
@@ -16,12 +19,18 @@ export class UserComponent implements OnInit {
     users: ResourcesUser;
     editMode: boolean;
     user: User;
+    isLoggedIn = false;
 
     constructor(private actr: ActivatedRoute,
                 private userEntityService: UserEntityService,
+                private userRegistrationService: UserRegistrationService,
+                private authService: AuthService,
                 public dialog: MatDialog) { }
 
     ngOnInit() {
+
+        this.isLoggedIn = this.authService.isLoggedIn();
+
         this.userForm = new FormGroup({
             userSelect: new FormControl(),
             firstName: new FormControl('', [
@@ -41,18 +50,21 @@ export class UserComponent implements OnInit {
         });
 
         const usersResolver = this.actr.snapshot.data.usersResolver;
-        this.users = usersResolver._embedded.users.filter((resourceUser: ResourceUser) => {
-            return resourceUser.enabled;
-        });
+        if (usersResolver._embedded && usersResolver._embedded.users.length > 0) {
+            this.users = usersResolver._embedded.users.filter((resourceUser: ResourceUser) => {
+                return resourceUser.enabled;
+            });
+        }
     }
 
     onSubmit() {
+        let saveObservable;
+
         this.user = {
             firstName: this.userForm.get('firstName').value,
             lastName: this.userForm.get('lastName').value,
             email: this.userForm.get('email').value,
             type: this.userForm.get('type').value,
-            password: 'a'
         };
 
         if (this.userForm.get('middleName').value) {
@@ -63,8 +75,15 @@ export class UserComponent implements OnInit {
             this.user.id = this.userForm.get('userSelect').value.id;
         }
 
-        const saveObservable = this.editMode ? this.userEntityService.saveUserUsingPATCH(this.user.id, this.user)
-            : this.userEntityService.saveUserUsingPOST(this.user);
+        // If this is a logged in user, use the admin save methods
+        if (this.authService.isLoggedIn()) {
+            saveObservable = this.editMode ? this.userEntityService.saveUserUsingPATCH(this.user.id, this.user)
+                : this.userRegistrationService.saveNewUserUsingPOST(this.user);
+        } else {
+            // else use the registration path
+            saveObservable = this.userRegistrationService.saveNewUserUsingPOST(this.user);
+        }
+
         saveObservable.subscribe((response) => { this.openSuccessDialog(); },
             (error) => { this.openFailureDialog(); } );
     }

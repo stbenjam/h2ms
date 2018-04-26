@@ -44,7 +44,6 @@ const routes: Routes = [
     // todo: route route to dashboard when made
     {path: 'users',
         component: UserComponent,
-        canActivate: [AuthGuardService],
         resolve: {
             usersResolver: UsersResolverService
         }
