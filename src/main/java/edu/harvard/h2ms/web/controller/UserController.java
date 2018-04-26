@@ -2,6 +2,7 @@ package edu.harvard.h2ms.web.controller;
 
 import edu.harvard.h2ms.domain.core.Event;
 import edu.harvard.h2ms.domain.core.Question;
+import edu.harvard.h2ms.domain.core.User;
 import edu.harvard.h2ms.exception.InvalidAnswerTypeException;
 import edu.harvard.h2ms.repository.QuestionRepository;
 import edu.harvard.h2ms.service.EventService;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -35,6 +37,7 @@ public class UserController {
    *
    * @return
    */
+  @PreAuthorize("hasRole('ADMIN')")
   @RequestMapping(value = "/compliance/{questionId}", method = RequestMethod.GET)
   public ResponseEntity<?> findCompliance(@PathVariable Long questionId) {
     List<Event> events;
@@ -51,5 +54,19 @@ public class UserController {
     } catch (InvalidAnswerTypeException answerType) {
       return new ResponseEntity<String>(answerType.getMessage(), HttpStatus.BAD_REQUEST);
     }
+  }
+
+  @PreAuthorize("hasRole('ADMIN')")
+  @RequestMapping(value = "/", method = RequestMethod.POST)
+  @ResponseBody
+  public User create(@RequestBody User resource) {
+    return userService.save(resource);
+  }
+
+  @PreAuthorize("hasRole('ADMIN')")
+  @RequestMapping(value = "/delete", method = RequestMethod.POST)
+  @ResponseBody
+  public void delete(@RequestBody User resource) {
+    userService.delete(resource);
   }
 }
