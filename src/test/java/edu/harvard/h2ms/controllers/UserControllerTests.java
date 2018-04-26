@@ -16,10 +16,8 @@ import edu.harvard.h2ms.repository.*;
 import java.util.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.el.parser.AstSetData;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
@@ -34,7 +32,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
 @RunWith(SpringRunner.class)
@@ -80,8 +77,7 @@ public class UserControllerTests {
 
     // Sample User Data
     User observer = new User("John", "Quincy", "Adams", EMAIL, PASSWORD, "Other");
-    Role role = new Role();
-    role.setName("ROLE_ADMIN");
+    Role role = roleRepository.findByName("ROLE_ADMIN");
     observer.setRoles(new HashSet<Role>(Arrays.asList(role)));
     userRepository.save(observer);
     User subject = new User("Jane", "Doe", "Sam", "sample@email.com", "password", "Doctor");
@@ -180,7 +176,6 @@ public class UserControllerTests {
   }
 
   @Test
-  @Transactional
   @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
   public void test_nonAdminRequest_UserController_saveNewUser() throws Exception {
 
@@ -199,11 +194,17 @@ public class UserControllerTests {
   }
 
   @Test
-  @Transactional
   @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
   public void test_AdminRequest_UserController_saveNewUser() throws Exception {
 
-    User user = new User("John", "Middle", "Doe", "john_doe@gmail.com", "password123", "user_type");
+    User user =
+        new User("John", "Middle", "Doe", "john_doe_test@gmail.com", "password123", "user_type");
+    Role role = roleRepository.findByName("ROLE_USER");
+    // user.setRoles(new HashSet<Role>(asList(role)));
+    user.setId(10L);
+    user.setCreatedOn(null);
+    user.setEnabled(TRUE);
+    user.setVerified(TRUE);
     ObjectMapper mapper = new ObjectMapper();
     String jsonStr = mapper.writeValueAsString(user);
     final String accessToken = obtainAccessToken(mvc, "jqadams@h2ms.org", "password");
@@ -219,17 +220,16 @@ public class UserControllerTests {
 
   // Verifies system admin has role of ADMIN
   @Test
-  public void test_AdminUserHasAdminRole(){
+  @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+  public void test_AdminUserHasAdminRole() {
     User user = userRepository.findByLastName("User");
     Set<Role> roles = user.getRoles();
     Boolean hasRole = false;
-    for(Role role: roles){
-      if(role.getName().contains("ROLE_ADMIN")){
-        hasRole=true;
+    for (Role role : roles) {
+      if (role.getName().contains("ROLE_ADMIN")) {
+        hasRole = true;
       }
-
     }
     Assert.assertEquals(hasRole, TRUE);
   }
-
 }

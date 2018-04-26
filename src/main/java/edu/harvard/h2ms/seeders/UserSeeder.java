@@ -4,9 +4,8 @@ import static java.util.Arrays.asList;
 
 import edu.harvard.h2ms.domain.core.Role;
 import edu.harvard.h2ms.domain.core.User;
+import edu.harvard.h2ms.repository.RoleRepository;
 import edu.harvard.h2ms.repository.UserRepository;
-
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,7 +26,10 @@ import org.springframework.stereotype.Component;
   )
 })
 public class UserSeeder {
+
   private UserRepository userRepository;
+
+  private RoleRepository roleRepository;
 
   @Value("${application.security.properties.admin.usertype}")
   private String adminUserType;
@@ -38,8 +40,9 @@ public class UserSeeder {
   Set<String> questionKeys = new HashSet<String>();
 
   @Autowired
-  public UserSeeder(UserRepository userRepository) {
+  public UserSeeder(UserRepository userRepository, RoleRepository roleRepository) {
     this.userRepository = userRepository;
+    this.roleRepository = roleRepository;
   }
 
   @EventListener
@@ -50,7 +53,9 @@ public class UserSeeder {
   private void seedUserTable() {
 
     if (userRepository.count() == 0) {
-      List<List<String>> records = asList(asList("Default", "User", "admin@h2ms.org", "ROLE_ADMIN"),
+      List<List<String>> records =
+          asList(
+              asList("Default", "User", "admin@h2ms.org", "ROLE_ADMIN"),
               asList("Ben", "Jenkins", "bjenkins@h2ms.org", "ROLE_OBSERVER"),
               asList("Wesley", "Skillerns", "wskillern@h2ms.org", "ROLE_USER"));
 
@@ -66,8 +71,12 @@ public class UserSeeder {
         user.setEmail(email);
         user.setPassword(adminPassword);
         user.setType(adminUserType);
-        Role role = new Role();
-        role.setName(roleType);
+        Role role = roleRepository.findByName(roleType);
+        if (role == null) {
+          role = new Role();
+          role.setName(roleType);
+          roleRepository.save(role);
+        }
         user.setRoles(new HashSet<Role>(asList(role)));
         userRepository.save(user);
       }

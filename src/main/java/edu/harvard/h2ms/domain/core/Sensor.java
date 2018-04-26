@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "sensors")
-public class Sensor  {
+public class Sensor {
 
   /* Properties */
   private Long id;

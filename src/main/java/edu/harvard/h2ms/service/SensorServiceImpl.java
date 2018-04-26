@@ -1,14 +1,9 @@
 package edu.harvard.h2ms.service;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import javax.usb.*;
-
-import edu.harvard.h2ms.domain.core.Role;
-import edu.harvard.h2ms.domain.core.Sensor;
 import edu.harvard.h2ms.repository.RoleRepository;
 import edu.harvard.h2ms.repository.SensorRepository;
+import java.util.List;
+import javax.usb.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +13,9 @@ public class SensorServiceImpl implements SensorService {
 
   private static final Logger log = LoggerFactory.getLogger(SensorServiceImpl.class);
 
-  @Autowired
-  private SensorRepository sensorRepository;
+  @Autowired private SensorRepository sensorRepository;
 
-  @Autowired
-  private RoleRepository roleRepository;
+  @Autowired private RoleRepository roleRepository;
 
   /**
    * Searches through all human interface devices attached to machine in search of specified Sensor

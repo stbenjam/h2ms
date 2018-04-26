@@ -1,7 +1,5 @@
 package edu.harvard.h2ms.service;
 
-import edu.harvard.h2ms.domain.core.Sensor;
-
 import javax.usb.UsbDevice;
 import javax.usb.UsbHub;
 import javax.usb.UsbInterface;
@@ -17,7 +15,8 @@ public interface SensorService {
    * @param productIdentifier - product ID of the Sensor device
    * @return
    */
-  UsbDevice findAttachedSensorScanner(UsbHub usbHub, short vendorIdentifier, short productIdentifier);
+  UsbDevice findAttachedSensorScanner(
+      UsbHub usbHub, short vendorIdentifier, short productIdentifier);
 
   /**
    * Retrieves the communication interface of Sensor scanner
@@ -26,5 +25,4 @@ public interface SensorService {
    * @return
    */
   UsbInterface findSensorScannerInterface(UsbDevice usbSensorScanner);
-
 }
