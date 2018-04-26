@@ -89,9 +89,9 @@ public class NotificationServiceImpl {
         String messageText = notification.getNotificationBody();
 
         // request for report
-        reportService.requestReport(notification.getReportType());
+        String reportString = reportService.requestReport(notification.getReportType());
 
-        message.setText(messageText);
+        message.setText(messageText + reportString);
 
         // actually send the message
         emailService.sendEmail(message);

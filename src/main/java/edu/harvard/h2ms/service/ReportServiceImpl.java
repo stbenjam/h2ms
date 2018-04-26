@@ -172,12 +172,13 @@ public class ReportServiceImpl implements ReportService {
   @Override
   public String requestReport(String reportType) {
     log.info("report requested.  report type: " + reportType);
-    log.info("***** cache count" + reportWorkerCache.size());
+    log.debug("***** cache count" + reportWorkerCache.size());
     ReportWorker reportWorker = getReportWorker(reportType);
 
     String ans = reportWorker.createReport();
 
     // TODO: add compliance result text
-    return "hi";
+    log.info("***** answer" + ans);
+    return ans;
   }
 }
