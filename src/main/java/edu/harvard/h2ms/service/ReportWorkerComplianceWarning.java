@@ -85,8 +85,4 @@ public class ReportWorkerComplianceWarning implements ReportWorker {
     return ReportUtils.writeCsvString(data);
   }
 
-  public boolean isTriggered() {
-
-    return true;
-  }
 }

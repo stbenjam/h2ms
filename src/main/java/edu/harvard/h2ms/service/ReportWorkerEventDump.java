@@ -97,8 +97,5 @@ public class ReportWorkerEventDump implements ReportWorker {
     return ReportUtils.writeCsvString(data);
   }
 
-  @Override
-  public boolean isTriggered() {
-    return true;
-  }
+
 }
