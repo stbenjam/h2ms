@@ -17,13 +17,6 @@ public class ReportServiceImpl implements ReportService {
 
   final Logger log = LoggerFactory.getLogger(ReportServiceImpl.class);
 
-  @Autowired private EventRepository eventRepository;
-
-  //  /** Creates event dump */
-  //  @Override
-  //  public String createEventReport() {
-  //    return requestReport("eventDump");
-  //  }
 
   @Autowired private List<ReportWorker> reportWorkers;
 
@@ -53,7 +46,6 @@ public class ReportServiceImpl implements ReportService {
 
     String ans = reportWorker.createReport();
 
-    // TODO: add compliance result text
     log.info("***** answer" + ans);
     return ans;
   }
