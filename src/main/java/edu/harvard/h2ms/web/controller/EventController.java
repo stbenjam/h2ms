@@ -141,6 +141,6 @@ public class EventController {
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.add("Content-Type", "text/csv; charset=utf-8");
     return new ResponseEntity<String>(
-        reportService.createEventReport(), httpHeaders, HttpStatus.OK);
+        reportService.requestReport("eventDump"), httpHeaders, HttpStatus.OK);
   }
 }

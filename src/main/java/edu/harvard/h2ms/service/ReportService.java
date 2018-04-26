@@ -5,9 +5,8 @@ public interface ReportService {
   /**
    * Generates report
    *
-   * @return
+   * @param reportType
+   * @return report in string
    */
-  public String createEventReport();
-
   public String requestReport(String reportType);
 }
