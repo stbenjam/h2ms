@@ -10,12 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+/**
+ * Loads and caches all report workers, as well as retrieve workers using report type names
+ */
 @Component
 @Service("reportService")
 public class ReportServiceImpl implements ReportService {
 
   final Logger log = LoggerFactory.getLogger(ReportServiceImpl.class);
 
+  /* this is where all the reportWorkers are loaded */
   @Autowired private List<ReportWorker> reportWorkers;
 
   private static final Map<String, ReportWorker> reportWorkerCache = new HashMap<>();
