@@ -9,8 +9,5 @@ public interface ReportService {
    */
   public String createEventReport();
 
-  /** Determines if notification should be triggered to create the report */
-  public boolean isTriggered();
-
   public String requestReport(String reportType);
 }
