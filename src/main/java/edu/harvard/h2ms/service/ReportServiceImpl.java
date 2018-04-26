@@ -4,13 +4,9 @@ import com.google.common.collect.Lists;
 import com.opencsv.CSVWriter;
 import edu.harvard.h2ms.domain.core.Answer;
 import edu.harvard.h2ms.domain.core.Event;
-import edu.harvard.h2ms.domain.core.Question;
-import edu.harvard.h2ms.domain.core.User;
-import edu.harvard.h2ms.exception.InvalidAnswerTypeException;
 import edu.harvard.h2ms.repository.EventRepository;
 import edu.harvard.h2ms.repository.QuestionRepository;
 import edu.harvard.h2ms.repository.UserRepository;
-import edu.harvard.h2ms.service.utils.H2msRestUtils;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -20,8 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import org.hibernate.Hibernate;
+import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -155,43 +150,34 @@ public class ReportServiceImpl implements ReportService {
     return true;
   }
 
+  @Autowired private List<ReportWorker> reportWorkers;
+
+  private static final Map<String, ReportWorker> reportWorkerCache = new HashMap<>();
+
+  @PostConstruct
+  public void initReportWorkerCache() {
+    for (ReportWorker reportWorker : reportWorkers) {
+      log.info("*********** cache init on" + reportWorker.getType());
+      reportWorkerCache.put(reportWorker.getType(), reportWorker);
+    }
+  }
+
+  public static ReportWorker getReportWorker(String reportType) {
+    //    log.info("***** cache count" + reportWorkerCache.size());
+    ReportWorker reportWorker = reportWorkerCache.get(reportType);
+    if (reportWorker == null) throw new RuntimeException(reportType);
+    return reportWorker;
+  }
+
   @Override
   public String requestReport(String reportType) {
     log.info("report requested.  report type: " + reportType);
-    if (reportType.equals("complianceWarning")) {
-      //      boolean ans = complianceWarningReportWorker.isTriggered();
-      //      return "complianceWarningReportWorker: " + ans;
+    log.info("***** cache count" + reportWorkerCache.size());
+    ReportWorker reportWorker = getReportWorker(reportType);
 
-      List<Event> events = new ArrayList<>();
+    String ans = reportWorker.createReport();
 
-      // for all questions:
-      Hibernate.initialize(questionRepository);
-      for (Question question : questionRepository.findAll()) {
-        Map<User, Double> complianceResult = new HashMap<>();
-
-        try {
-          events = eventService.findEventsForCompliance(question);
-          Map<String, Set<Event>> values = new HashMap<>();
-
-          // for all users:
-          for (User user : userRepository.findAll()) {
-            complianceResult.put(
-                user,
-                H2msRestUtils.calculateCompliance(
-                    question,
-                    events
-                        .stream()
-                        .filter(event -> event.getSubject().equals(user))
-                        .collect(Collectors.toSet())));
-          }
-
-        } catch (InvalidAnswerTypeException e) {
-          /// e.printStackTrace();
-          log.info("*********skipping");
-        }
-      }
-    }
-    //TODO: add compliance result text
-    return "some compliance result";
+    // TODO: add compliance result text
+    return "hi";
   }
 }

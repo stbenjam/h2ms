@@ -14,17 +14,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 @Component
-@Service("complianceWarningReportWorker")
-public class ComplianceWarningReportWorker {
+public class ReportWorkerComplianceWarning implements ReportWorker {
 
-  final Logger log = LoggerFactory.getLogger(ComplianceWarningReportWorker.class);
+  final Logger log = LoggerFactory.getLogger(ReportWorkerComplianceWarning.class);
 
   @Autowired private UserService userService;
 
@@ -36,9 +35,41 @@ public class ComplianceWarningReportWorker {
 
   @Autowired private UserRepository userRepository;
 
+  @Override
+  public String getType() {
+    return "complianceWarning";
+  }
+
   public String createReport() {
-    // TODO Auto-generated method stub
-    return null;
+    List<Event> events = new ArrayList<>();
+
+    // for all questions:
+    Hibernate.initialize(questionRepository);
+    for (Question question : questionRepository.findAll()) {
+      Map<User, Double> complianceResult = new HashMap<>();
+
+      try {
+        events = eventService.findEventsForCompliance(question);
+        Map<String, Set<Event>> values = new HashMap<>();
+
+        // for all users:
+        for (User user : userRepository.findAll()) {
+          complianceResult.put(
+              user,
+              H2msRestUtils.calculateCompliance(
+                  question,
+                  events
+                      .stream()
+                      .filter(event -> event.getSubject().equals(user))
+                      .collect(Collectors.toSet())));
+        }
+
+      } catch (InvalidAnswerTypeException e) {
+        /// e.printStackTrace();
+        log.info("*********skipping");
+      }
+    }
+    return "some compliance result";
   }
 
   public boolean isTriggered() {
