@@ -7,6 +7,7 @@ import {Config} from '../config/config';
 import {AuthService} from './auth.service';
 import {UserByEmailResolverService} from '../user/service/user-by-email-resolver.service';
 import {UserRoleResolverService} from '../user/service/user-role-resolver.service';
+import {Observable} from 'rxjs/Observable';
 
 @Injectable()
 export class EventGuardService implements CanActivate {
@@ -23,18 +24,17 @@ export class EventGuardService implements CanActivate {
         this.config = this.configService.getConfig();
     }
 
-    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
         if (!this.authService.isLoggedIn()) {
-            return false;
-        }
-        if (!this.hasObserverRole) {
-            return this.checkObserver(route, state).valueOf();
+            return Observable.of(false);
+        } else if (!this.hasObserverRole) {
+            this.checkObserver(route, state);
         } else {
-            return true;
+            return Observable.of(true);
         }
     }
 
-    checkObserver(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    checkObserver(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
         this.userByEmailResolverService.resolve(route, state).subscribe(u => {
             const roleRef = u._embedded.users[0]._links.roles.href;
             this.userRoleResolverService.resolve(route, state, roleRef).subscribe( n => {
@@ -45,9 +45,9 @@ export class EventGuardService implements CanActivate {
                         return true;
                     }
                 }
+                return false;
             });
         });
         console.log('goodbye');
-        return false;
     }
 }
