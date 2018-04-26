@@ -1,6 +1,5 @@
-package edu.harvard.h2ms.service;
+package edu.harvard.h2ms.service.report;
 
-import edu.harvard.h2ms.repository.EventRepository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 public class ReportServiceImpl implements ReportService {
 
   final Logger log = LoggerFactory.getLogger(ReportServiceImpl.class);
-
 
   @Autowired private List<ReportWorker> reportWorkers;
 

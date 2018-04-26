@@ -1,9 +1,12 @@
-package edu.harvard.h2ms.service;
+package edu.harvard.h2ms.service.report;
 
 import edu.harvard.h2ms.domain.core.Notification;
 import edu.harvard.h2ms.domain.core.User;
 import edu.harvard.h2ms.repository.NotificationRepository;
 import edu.harvard.h2ms.repository.UserRepository;
+import edu.harvard.h2ms.service.EmailService;
+import edu.harvard.h2ms.service.utils.ReportUtils;
+import edu.harvard.h2ms.service.utils.ReportUtils.NotificationFrequency;
 import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,33 +19,6 @@ import org.springframework.stereotype.Service;
 @Component
 @Service("notificationService")
 public class NotificationServiceImpl {
-
-  // this determines how long it takes for next notification
-  public enum NotificationFrequency {
-    HALFMINUTE("HALFMINUTE", 30L), // for testing
-    DAILY("DAILY", 86400L),
-    WEEKLY("WEEKLY", 604800L),
-    MONTHLY("MONTHLY", 2592000L),
-    UNDEFINED("UNDEFINED", 0L);
-
-    public final String stringRepresentation;
-    public final long seconds;
-
-    NotificationFrequency(String stringRepresentation, long seconds) {
-      this.stringRepresentation = stringRepresentation;
-      this.seconds = seconds;
-    }
-
-    public static NotificationFrequency getNotificationFrequency(String stringRepresentation) {
-
-      for (NotificationFrequency nf : NotificationFrequency.class.getEnumConstants()) {
-        if (nf.stringRepresentation.equals(stringRepresentation)) {
-          return nf;
-        }
-      }
-      return UNDEFINED;
-    }
-  }
 
   private static final Log log = LogFactory.getLog(NotificationServiceImpl.class);
 
@@ -110,12 +86,6 @@ public class NotificationServiceImpl {
     }
   }
 
-  /** @return current unix time */
-  private static long getUnixTime() {
-
-    return System.currentTimeMillis() / 1000L;
-  }
-
   /**
    * Sets the user notification time to current time
    *
@@ -124,7 +94,7 @@ public class NotificationServiceImpl {
    */
   private void resetEmailLastNotifiedTime(Notification notification, User user) {
 
-    notification.setEmailLastNotifiedTime(user.getEmail(), getUnixTime());
+    notification.setEmailLastNotifiedTime(user.getEmail(), ReportUtils.getUnixTime());
     notificationRepository.save(notification);
   }
 
@@ -155,7 +125,7 @@ public class NotificationServiceImpl {
 
     long interval = notificationFrequency.seconds;
 
-    long currentTime = getUnixTime();
+    long currentTime = ReportUtils.getUnixTime();
 
     long deltaNotificationTime = currentTime - lastNotificationTime;
 

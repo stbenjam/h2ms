@@ -8,6 +8,34 @@ import java.util.List;
 
 /** Utilities for report generation */
 public class ReportUtils {
+
+  // this determines how long it takes for next notification
+  public enum NotificationFrequency {
+    HALFMINUTE("HALFMINUTE", 30L), // for testing
+    DAILY("DAILY", 86400L),
+    WEEKLY("WEEKLY", 604800L),
+    MONTHLY("MONTHLY", 2592000L),
+    UNDEFINED("UNDEFINED", 0L);
+
+    public final String stringRepresentation;
+    public final long seconds;
+
+    NotificationFrequency(String stringRepresentation, long seconds) {
+      this.stringRepresentation = stringRepresentation;
+      this.seconds = seconds;
+    }
+
+    public static NotificationFrequency getNotificationFrequency(String stringRepresentation) {
+
+      for (NotificationFrequency nf : NotificationFrequency.class.getEnumConstants()) {
+        if (nf.stringRepresentation.equals(stringRepresentation)) {
+          return nf;
+        }
+      }
+      return UNDEFINED;
+    }
+  }
+
   /**
    * Writes Report using list of list of strings
    *
@@ -43,5 +71,11 @@ public class ReportUtils {
     }
 
     return writer.toString();
+  }
+
+  /** @return current unix time */
+  public static long getUnixTime() {
+
+    return System.currentTimeMillis() / 1000L;
   }
 }

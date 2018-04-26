@@ -1,4 +1,4 @@
-package edu.harvard.h2ms.service;
+package edu.harvard.h2ms.service.report;
 
 import com.google.common.collect.Lists;
 import edu.harvard.h2ms.domain.core.Answer;
@@ -96,6 +96,4 @@ public class ReportWorkerEventDump implements ReportWorker {
 
     return ReportUtils.writeCsvString(data);
   }
-
-
 }

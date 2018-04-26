@@ -94,7 +94,7 @@ public class NotificationControllerTests {
     final String accessToken = obtainAccessToken(mvc, NOTIFICATION_EMAIL, NOTIFICATION_PASSWORD);
 
     String NOTIFICATION_NAME = "myNotification1";
-    String NOTIFICATION_TYPE = "compliance1";
+    String NOTIFICATION_TYPE = "complianceWarningWeekly";
     String NOTIFICATION_TITLE = "myNotification1";
     String NOTIFICATION_BODY = "notification body text";
 
