@@ -165,33 +165,47 @@ export class ReportsService {
             number of observations by observer:
                 /events/count/observer
      */
+    /**
+     * Thanks Ben
+     */
     private buildURL(chart, grouping) {
+        let urlSuffix;
         if (chart.value.match('Number of observations')) {
-            if (grouping.value.match('year') || grouping.value.match('quarter')
-                || grouping.value.match('month') || grouping.value.match('week')
-                || grouping.value.match('observer')) {
-                return this.config.getBackendUrl() + '/' + 'events/count/' + grouping.value;
-            } else {
-                console.log('no url known for selected chart: \'' + chart.value + '\' ' +
-                    'and grouping: \'' + grouping.value + '\'');
-            }
+            urlSuffix = this.buildNumberOfObservationsUrlSuffix(grouping);
         } else if (chart.value.match('Average compliance')) {
-            if (grouping.value.match('employee type')) {
-                return this.config.getBackendUrl() + '/' + 'users/compliance/' + chart.id;
-            } else if (grouping.value.match('year') || grouping.value.match('quarter')
-                || grouping.value.match('month') || grouping.value.match('week')) {
-                return this.config.getBackendUrl() + '/' + 'events/compliance/' + chart.id + '/' + grouping.value;
-            } else if (grouping.value.match('hospital')) {
-                return this.config.getBackendUrl() + '/' + 'events/compliance/' + chart.id + '/location';
-            } else {
-                console.log('no url known for selected chart: \'' + chart.value + '\' ' +
-                    'and grouping: \'' + grouping.value + '\'');
-            }
-        } else {
+            urlSuffix = this.buildAverageComplianceUrlSuffix(chart, grouping);
+        }
+
+        if (!urlSuffix) {
             console.log('no url known for selected chart: \'' + chart.value + '\' ' +
                 'and grouping: \'' + grouping.value + '\'');
         }
+        return this.config.getBackendUrl() + urlSuffix;
     }
+
+    private buildAverageComplianceUrlSuffix(chart, grouping) {
+        if (grouping.value.match('employee type')) {
+            return '/users/compliance/' + chart.id;
+        } else if (grouping.value.match('year') || grouping.value.match('quarter')
+            || grouping.value.match('month') || grouping.value.match('week')) {
+            return '/events/compliance/' + chart.id + '/' + grouping.value;
+        } else if (grouping.value.match('hospital')) {
+            return '/events/compliance/' + chart.id + '/location';
+        } else {
+            return undefined;
+        }
+    }
+
+    private buildNumberOfObservationsUrlSuffix(grouping) {
+        if (grouping.value.match('year') || grouping.value.match('quarter')
+            || grouping.value.match('month') || grouping.value.match('week')
+            || grouping.value.match('observer')) {
+            return '/events/count/' + grouping.value;
+        } else {
+            return undefined;
+        }
+    }
+
 
     private fetchFakeData(url: string) {
         if (url.indexOf('events/count/') !== -1) {

@@ -56,6 +56,10 @@ import {
 } from './forgot-password/forgot-password.component';
 import {SelectLocationComponent} from './select-location/select-location.component';
 import {ParentLocationFinder} from './location/get-parent-locations';
+import { UserComponent,
+    UserSubmissionSuccessDialogComponent,
+    UserSubmissionFailureDialogComponent
+} from './user/user.component';
 import {ReportsChartService} from './reports/reports-chart.service';
 
 @NgModule({
@@ -76,7 +80,10 @@ import {ReportsChartService} from './reports/reports-chart.service';
         AboutComponent,
         ForgotPasswordComponent,
         ResetPasswordComponent,
-        SelectLocationComponent
+        SelectLocationComponent,
+        UserComponent,
+        UserSubmissionSuccessDialogComponent,
+        UserSubmissionFailureDialogComponent
     ],
     imports: [
         BrowserModule,
@@ -105,7 +112,9 @@ import {ReportsChartService} from './reports/reports-chart.service';
     entryComponents: [
         FormSubmissionDialogComponent,
         SuccessfullySentPasswordRecoveryEmailComponent,
-        SuccessfullyResetPasswordComponent
+        SuccessfullyResetPasswordComponent,
+        UserSubmissionSuccessDialogComponent,
+        UserSubmissionFailureDialogComponent
     ],
     providers: [
         MediaMatcher,
