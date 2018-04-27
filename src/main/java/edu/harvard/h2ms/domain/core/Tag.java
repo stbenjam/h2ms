@@ -2,10 +2,9 @@ package edu.harvard.h2ms.domain.core;
 
 import javax.persistence.*;
 
-/** A Wrist Band is.. */
 @Entity
-@Table(name = "WRIST_BAND")
-public class WristBand {
+@Table(name = "TAG")
+public class Tag {
 
   /* Properties */
   private Long id;
@@ -73,7 +72,7 @@ public class WristBand {
 
   @Override
   public String toString() {
-    return "Wrist Band - Id: "
+    return "Tag - Id: "
         + id
         + ", SKU: "
         + sku
