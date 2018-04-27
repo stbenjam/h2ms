@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-/**
- * Loads and caches all report workers, as well as retrieve workers using report type names
- */
+/** Loads and caches all report workers, as well as retrieve workers using report type names */
 @Component
 @Service("reportService")
 public class ReportServiceImpl implements ReportService {

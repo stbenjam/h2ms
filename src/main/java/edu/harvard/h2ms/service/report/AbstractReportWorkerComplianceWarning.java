@@ -22,8 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Basis of compliance notification emails  
- * change REPORTINGINTERVAL to change the reporting scope
+ * Basis of compliance notification emails change REPORTINGINTERVAL to change the reporting scope
  * Override getType() to change the name of the report type
  */
 public abstract class AbstractReportWorkerComplianceWarning implements ReportWorker {
