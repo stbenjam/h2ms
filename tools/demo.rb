@@ -17,10 +17,13 @@ OAUTH_ID = 'h2ms'.freeze
 OAUTH_SECRET = 'secret'.freeze
 
 @locations = [
-  'Emergency Room 1',
-  'Oncology',
-  'Pediatrics',
-  'Intensive Care Unit'
+  {name: 'Massachusetts General Hospital', address: '55 Fruit St, Boston, MA', zip: '02114', type: 'Hospital' },
+  {name: 'MGH Emergency Room', address: '55 Fruit St, Boston, MA', zip: '02114', type: 'ER', parent: 'Massachusetts General Hospital' },
+  {name: 'MGH Intensive Care Unit', address: '55 Fruit St, Boston, MA', zip: '02114', type: 'ICU', parent: 'Massachusetts General Hospital'},
+
+  {name: 'Sturdy Memorial Hospital', address: '211 Park St, Attleboor, MA', zip: '02703', type: 'Hospital' },
+  {name: 'Sturdy Emergency Room', address: '211 Park St, Attleboor, MA', zip: '02703', type: 'ER', parent: 'Sturdy Memorial Hospital' },
+  {name: 'Sturdy Intensive Care Unit', address: '211 Park St, Attleboor, MA', zip: '02703', type: 'ICU', parent: 'Sturdy Memorial Hospital' },
 ]
 
 @users = [
@@ -143,6 +146,24 @@ def create_or_find_user(user)
   response
 end
 
+def find_location(name)
+  all_locs = get('/api/locations')['_embedded']['locations']
+  existing = all_locs.find { |l| l['name'] == name }
+  existing
+end
+
+def create_location(location)
+  existing = find_location(location[:name])
+
+  response = if existing
+               existing
+             else
+               post('/api/locations', location)
+             end
+
+  response['_links']['self']['href']
+end
+
 def answer(question)
   answer = { question: question['_links']['self']['href'] }
 
@@ -168,7 +189,7 @@ def create_events(count)
       answers << answer(question)
     end
 
-    event = { eventTemplate: template_url.to_s, location: @locations.sample, observer: observer, subject: subject, answers: answers, timestamp: timestamp }
+    event = { eventTemplate: template_url.to_s, location: @locations.sample[:name], observer: observer, subject: subject, answers: answers, timestamp: timestamp }
     response = post('/api/events', event)
     puts response if VERBOSE
   end
@@ -180,6 +201,13 @@ end
   user[:roles] = [role(user[:roles])]
   response = create_or_find_user(user)
   puts response if VERBOSE
+end
+
+# Create locations
+@locations.each do |location|
+  puts "Creating #{location[:name]}"
+  location[:parent] = find_location(location[:parent])['_links']['self']['href'] if location[:parent]
+  create_location(location)
 end
 
 # Create a number of events
