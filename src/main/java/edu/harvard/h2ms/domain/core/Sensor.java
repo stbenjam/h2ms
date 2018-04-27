@@ -2,10 +2,9 @@ package edu.harvard.h2ms.domain.core;
 
 import javax.persistence.*;
 
-/** A Reader is.. */
 @Entity
-@Table(name = "READER")
-public class Reader {
+@Table(name = "sensors")
+public class Sensor {
 
   /* Properties */
   private Long id;
@@ -83,7 +82,7 @@ public class Reader {
 
   @Override
   public String toString() {
-    return "Reader - Id: "
+    return "Sensor - Id: "
         + id
         + ", Order Number: "
         + orderNumber
