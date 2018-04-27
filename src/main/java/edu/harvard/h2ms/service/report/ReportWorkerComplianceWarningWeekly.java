@@ -7,9 +7,10 @@ import org.springframework.stereotype.Component;
 public class ReportWorkerComplianceWarningWeekly extends AbstractReportWorkerComplianceWarning {
 
   long REPORTINGINTERVAL = NotificationFrequency.WEEKLY.seconds;
+  public static final String REPORT_TYPE = "complianceWarningWeekly";
 
   @Override
   public String getType() {
-    return "complianceWarningWeekly";
+    return REPORT_TYPE;
   }
 }

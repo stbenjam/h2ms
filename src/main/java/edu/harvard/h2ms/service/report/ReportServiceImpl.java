@@ -21,10 +21,8 @@ public class ReportServiceImpl implements ReportService {
   @Autowired private List<ReportWorker> reportWorkers;
 
   private static final Map<String, ReportWorker> reportWorkerCache = new HashMap<>();
-  
-  /**
-   * Initialize report worker cache
-   */
+
+  /** Initialize report worker cache */
   @PostConstruct
   public void initReportWorkerCache() {
     for (ReportWorker reportWorker : reportWorkers) {
