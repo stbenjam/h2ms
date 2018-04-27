@@ -16,6 +16,7 @@ import {LocationEditComponent} from './location-edit/location-edit.component';
 import {ForgotPasswordComponent} from './forgot-password/forgot-password.component';
 import {ResetPasswordComponent} from './reset-password/reset-password.component';
 import {UserByEmailResolverService} from './user/service/user-by-email-resolver.service';
+import {UserComponent} from './user/user.component';
 
 /**
  * The actual available routes. Which links are routed to which components.
@@ -66,6 +67,13 @@ const routes: Routes = [
     {path: 'forgot-password', component: ForgotPasswordComponent},
     {path: 'reset-password/:email/:resetToken', component: ResetPasswordComponent},
     // todo: route route to dashboard when made
+    {path: 'users',
+        component: UserComponent,
+        canActivate: [AuthGuardService],
+        resolve: {
+            usersResolver: UsersResolverService
+        }
+    },
     {path: '', redirectTo: 'reports', pathMatch: 'full'}
 ];
 
@@ -82,8 +90,8 @@ export const NAV_ITEMS: NavItem[] = [
         // new NavItem('Notifications', '/notifications'),
         // new NavItem('Sensors', '/sensors'),
         // new NavItem('RFIDs', '/rfids'),
-        // new NavItem('People', '/people'),
         new NavItem('Locations', '/locations'),
+        new NavItem('Users', '/users'),
         new NavItem('Privacy', '/privacy'),
         new NavItem('About', '/about'),
         new NavItem('Export All Observations', '/export')
