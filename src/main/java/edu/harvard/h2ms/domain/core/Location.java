@@ -94,7 +94,6 @@ public class Location {
   /** A location can optionally have sublocations. Ex. Departments/Multicampus Entities */
   @OneToMany
   @JoinColumn(name = "parent_id")
-  @ElementCollection(targetClass = Location.class)
   public Set<Location> getChildren() {
     return children;
   }

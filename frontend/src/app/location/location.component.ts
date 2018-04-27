@@ -3,8 +3,11 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '../model/location';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {HttpClient} from '@angular/common/http';
-import {getLinks} from '../api-utils';
+import {getLinks, sortArray} from '../api-utils';
 import {getId} from '../api-utils';
+import {Config} from '../config/config';
+import {ConfigService} from '../config/config.service';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
     selector: 'app-location',
@@ -23,16 +26,30 @@ export class LocationComponent implements OnInit, AfterViewInit {
     locations: Location[];
     displayedColumns = ['name', 'address', 'parent', 'buttons'];
     dataSource: MatTableDataSource<Location>;
+    config: Config;
+    locationToParentName: Observable<string>[];
 
     constructor(private actr: ActivatedRoute,
                 private router: Router,
-                private http: HttpClient) {
+                private http: HttpClient,
+                private configService: ConfigService) {
+        this.config = this.configService.getConfig();
+        this.locationToParentName = [];
     }
 
     ngOnInit() {
         const locationResolver = this.actr.snapshot.data.locationResolver;
-        this.locations = locationResolver._embedded.locations;
+        this.locations = sortArray(locationResolver._embedded.locations, 'name');
         this.dataSource = new MatTableDataSource(this.locations);
+
+        for (const location of this.locations) {
+            location.parentName = 'N/A';
+            this.http.get(this.config.getBackendUrl() + '/locations/' + location.id + '/parent').subscribe((parent: Location) => {
+                    location.parentName = parent.name;
+                    location.parent = parent;
+                }
+            );
+        }
     }
 
     edit(location: Location) {
@@ -47,11 +64,7 @@ export class LocationComponent implements OnInit, AfterViewInit {
     }
 
     getParentDisplay(location: Location) {
-        if (!location.parent) {
-            return 'N/A';
-        }
-
-        return location.parent;
+        return this.http.get(this.config.getBackendUrl() + '/locations/' + location.id + '/parent');
     }
 
     private removeLocationFromTable(location: Location) {

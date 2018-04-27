@@ -29,3 +29,18 @@ export function getId(swaggerObject): number {
     return swaggerObject.id;
 }
 
+
+export function getPayload(ls) {
+    return ls._embedded;
+}
+
+/**
+ * https://stackoverflow.com/a/8175221
+ */
+export function sortArray(array, key) {
+    return array.sort(function (a, b) {
+        const x = a[key];
+        const y = b[key];
+        return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+    });
+}

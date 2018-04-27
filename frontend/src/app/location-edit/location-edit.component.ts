@@ -6,9 +6,9 @@ import {REQUIRED_NAME, REQUIRED_NAME_ERROR_MESSAGE} from '../forms-common/form-c
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {ConfigService} from '../config/config.service';
 import {Config} from '../config/config';
-import {getLinks} from '../api-utils';
+import {getPayload, sortArray} from '../api-utils';
 import 'rxjs/add/operator/toPromise';
-import {Observable} from "rxjs/Observable";
+import {SelectLocationComponent} from '../select-location/select-location.component';
 
 /**
  * Which CRUD operation the component is being used for.
@@ -32,9 +32,10 @@ export class LocationEditComponent {
     typeFormControl = new FormControl('', [Validators.required]);
     crudOperation: CrudOperation;
     initialLocation: Location;
+    childrenLocations: Location[];
     id: number;
     config: Config;
-    @ViewChild('parentLocation') parentLocation;
+    @ViewChild('parentLocation') parentLocation: SelectLocationComponent;
 
 
     constructor(private route: ActivatedRoute,
@@ -49,6 +50,7 @@ export class LocationEditComponent {
                 const locationResolver = this.route.snapshot.data.locationResolver;
                 this.initialLocation = locationResolver._embedded.locations.find(location => location.id === this.id);
                 this.crudOperation = this.initialLocation ? CrudOperation.Update : CrudOperation.Create;
+                this.childrenLocations = [];
 
                 if (this.crudOperation === CrudOperation.Create) {
                     this.initialLocation = {
@@ -65,6 +67,11 @@ export class LocationEditComponent {
                     this.http.get(this.config.getBackendUrl() + '/locations/' + this.id + '/parent')
                         .subscribe((res: Response) => {
                             this.parentLocation.setSelectedLocation(res);
+                        });
+
+                    this.http.get(this.config.getBackendUrl() + '/locations/' + this.id + '/children')
+                        .subscribe(res => {
+                            this.childrenLocations = sortArray(getPayload(res).locations, 'name');
                         });
                 }
 
@@ -98,14 +105,7 @@ export class LocationEditComponent {
 
     private create(address: string, country: string, name: string, type: string, zip: string) {
         this.http.post<any>(this.config.getBackendUrl() + '/locations',
-            {
-                'address': address,
-                'country': country,
-                'name': name,
-                'type': type,
-                'zip': zip
-
-            }, {
+            this.getLocationBody(address, country, name, type, zip), {
                 headers: this.getJsonHeader()
             }
         ).subscribe(
@@ -117,15 +117,20 @@ export class LocationEditComponent {
         );
     }
 
+    private getLocationBody(address: string, country: string, name: string, type: string, zip: string) {
+        return {
+            'address': address,
+            'country': country,
+            'name': name,
+            'type': type,
+            'zip': zip,
+            'parent': this.parentLocation.getSelectedLocationUrl()
+        };
+    }
+
     private update(address: string, country: string, name: string, type: string, zip: string) {
-        this.http.put<any>(this.config.getBackendUrl() + '/locations/' + this.id,
-            {
-                'address': address,
-                'country': country,
-                'name': name,
-                'type': type,
-                'zip': zip
-            }, {
+        this.http.patch<any>(this.config.getBackendUrl() + '/locations/' + this.id,
+            this.getLocationBody(address, country, name, type, zip), {
                 headers: this.getJsonHeader()
             }
         ).subscribe(
@@ -141,9 +146,5 @@ export class LocationEditComponent {
         let headers = new HttpHeaders();
         headers = headers.set('Content-Type', 'application/json');
         return headers;
-    }
-
-    private selectLocationTest(location: Location) {
-        alert('Selected Location' + location.name);
     }
 }

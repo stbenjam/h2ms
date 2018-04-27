@@ -1,6 +1,6 @@
 <div class="row">
     <mat-card class="card">
-        <mat-card-title>{{crudOperation}} Location</mat-card-title>
+        <mat-card-title class="text-center">{{crudOperation}} Location</mat-card-title>
 
         <mat-card-content class="text-center">
             <mat-form-field class="col">
@@ -27,23 +27,23 @@
             </mat-form-field>
 
 
-            <h5>Located Within</h5>
+            <h5 class="location">Located Within</h5>
             <app-select-location #parentLocation></app-select-location>
 
-
-            <!--TODO Decide how I want to display this-->
-            <!--parent?: Location;-->
-            <!--children?: Array<Location>;-->
+            <h5 *ngIf="childrenLocations.length">{{ name.value }} contains the following</h5>
+            <ul *ngIf="childrenLocations.length" class="text-left">
+                <li *ngFor=" let childLocation of childrenLocations">
+                    <a href="locations/{{ childLocation.id }}/edit">
+                        {{ childLocation.name }} {{ childLocation.type }}
+                    </a>
+                </li>
+            </ul>
 
             <mat-card-actions>
                 <button mat-raised-button color="primary"
                         (click)="submit(name.value, address.value, zip.value, country.value, type.value)"
                         [disabled]="typeFormControl.invalid || nameFormControl.invalid">
                     {{crudOperation}}
-                </button>
-                <button mat-raised-button
-                        (click)="selectLocationTest(selectLocation.getSelectedLocation())">
-                    Test Select Location
                 </button>
             </mat-card-actions>
         </mat-card-content>

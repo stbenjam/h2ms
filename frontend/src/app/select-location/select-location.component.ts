@@ -1,15 +1,11 @@
-import {
-    AfterContentInit, AfterViewInit, Component, OnInit, QueryList, ViewChild,
-    ViewChildren
-} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {HttpClient} from '@angular/common/http';
 import {ConfigService} from '../config/config.service';
 import {Config} from '../config/config';
-import {getId, getLinks} from '../api-utils';
+import {getId, getPayload, sortArray} from '../api-utils';
 import {ParentLocationFinder} from '../location/get-parent-locations';
 import {Location} from '../model/location';
-import {MatSelect} from '@angular/material';
 
 @Component({
     selector: 'app-select-location',
@@ -17,11 +13,13 @@ import {MatSelect} from '@angular/material';
     styleUrls: ['./select-location.component.css']
 })
 /**
- * A component which allows you to get and set locations.
+ * A component which allows you to get and set locations. Treat this as a black box.
+ * Don't edit it unless you have to.
  */
 export class SelectLocationComponent implements OnInit {
 
     @ViewChild('topLevelLocation') topLevelLocation;
+    // TODO: Make more dynamic someday. :P
     @ViewChild('childLocation1') childLocation1;
     @ViewChild('childLocation2') childLocation2;
     @ViewChild('childLocation3') childLocation3;
@@ -54,9 +52,9 @@ export class SelectLocationComponent implements OnInit {
         return this.selectedLocations[this.selectedLocations.length - 1];
     }
 
-    public getSelectedLocationId(): number {
+    public getSelectedLocationUrl(): string {
         const selectedLocation = this.getSelectedLocation();
-        return selectedLocation ? selectedLocation.id : undefined;
+        return selectedLocation ? this.config.getBackendUrl() + '/locations/' + selectedLocation.id : undefined;
     }
 
     public setSelectedLocation(location: Location, level = 0) {
@@ -67,9 +65,6 @@ export class SelectLocationComponent implements OnInit {
 
         this.parentLocationFinder.getParentLocations(location).subscribe(
             (locations: Location[]) => {
-                console.log('Locations');
-                console.log(locations);
-
                 for (let i = 0; i < locations.length; i++) {
                     this.updateChildLocations(locations[i], i);
                 }
@@ -105,7 +100,7 @@ export class SelectLocationComponent implements OnInit {
 
         this.http.get(this.config.getBackendUrl() + '/locations/' + getId(location) + '/children')
             .subscribe((res: Response) => {
-                const locs = this.sortByKey(this.getPayload(res).locations, 'name');
+                const locs = sortArray(getPayload(res).locations, 'name');
                 this.selectedLevelsToChildLocations[level] = Observable.of(locs);
             });
     }
@@ -121,13 +116,9 @@ export class SelectLocationComponent implements OnInit {
         this.topLevelLocations = [];
         this.http.get(this.config.getBackendUrl() + '/locations/search/findTopLevel').subscribe(
             ls => {
-                this.topLevelLocations = this.sortByKey(this.getPayload(ls).locations, 'name');
+                this.topLevelLocations = sortArray(getPayload(ls).locations, 'name');
             }
         );
-    }
-
-    private getPayload(ls) {
-        return ls._embedded;
     }
 
 
@@ -154,16 +145,5 @@ export class SelectLocationComponent implements OnInit {
         }
 
         locationDropdown.value = this.selectedLocations[level].id;
-    }
-
-    /**
-     * https://stackoverflow.com/a/8175221
-     */
-    private sortByKey(array, key) {
-        return array.sort(function (a, b) {
-            const x = a[key];
-            const y = b[key];
-            return ((x < y) ? -1 : ((x > y) ? 1 : 0));
-        });
     }
 }
