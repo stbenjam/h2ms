@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import {ResourcesUser, ResourceUser, User, UserEntityService} from '../';
+import {Component, OnInit} from '@angular/core';
+import {ResourcesRole, ResourcesUser, ResourceUser, Role, User, UserEntityService} from '../';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {FormSubmissionDialogComponent} from '../dynamic-form/dynamic-form.component';
 import {DIALOG_STYLE} from '../forms-common/dialog';
-import {MatDialog, MatDialogRef} from '@angular/material';
+import {MatCheckboxChange, MatDialog, MatDialogRef} from '@angular/material';
 import {UserRegistrationService} from '../api/registration.service';
 import {AuthService} from '../auth/auth.service';
-import {Observable} from 'rxjs/Observable';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
     selector: 'app-user',
@@ -17,19 +17,23 @@ import {Observable} from 'rxjs/Observable';
 export class UserComponent implements OnInit {
     userForm: FormGroup;
     users: ResourcesUser;
+    roles: Array<Role>;
     editMode: boolean;
     user: User;
     isLoggedIn = false;
+    selectedRoles: Array<any>;
 
     constructor(private actr: ActivatedRoute,
                 private userEntityService: UserEntityService,
                 private userRegistrationService: UserRegistrationService,
                 private authService: AuthService,
+                private http: HttpClient,
                 public dialog: MatDialog) { }
 
     ngOnInit() {
 
         this.isLoggedIn = this.authService.isLoggedIn();
+        this.selectedRoles = [];
 
         this.userForm = new FormGroup({
             userSelect: new FormControl(),
@@ -49,6 +53,14 @@ export class UserComponent implements OnInit {
             ])
         });
 
+        const rolesResolver = this.actr.snapshot.data.rolesResolver;
+        if (rolesResolver._embedded && rolesResolver._embedded.roles.length > 0) {
+            this.roles = rolesResolver._embedded.roles;
+            this.roles.forEach((role) => {
+                this.userForm.addControl((role.id).toString(10), new FormControl());
+            });
+        }
+
         const usersResolver = this.actr.snapshot.data.usersResolver;
         if (usersResolver._embedded && usersResolver._embedded.users.length > 0) {
             this.users = usersResolver._embedded.users.filter((resourceUser: ResourceUser) => {
@@ -66,6 +78,17 @@ export class UserComponent implements OnInit {
             email: this.userForm.get('email').value,
             type: this.userForm.get('type').value,
         };
+
+        if (this.isLoggedIn) {
+            this.user.roles = [];
+            this.selectedRoles.forEach((role) => {
+                const roleToAdd = {
+                    id: role.id,
+                    name: role.name
+                };
+                this.user.roles.push(roleToAdd);
+            });
+        }
 
         if (this.userForm.get('middleName').value) {
             this.user.middleName = this.userForm.get('middleName').value;
@@ -100,16 +123,21 @@ export class UserComponent implements OnInit {
     }
 
     onChange(selectedUser: ResourceUser) {
-        if (selectedUser) {
-            this.editMode = true;
+        this.editMode = !!selectedUser;
+        this.resetUserFormValues();
+        if (this.editMode) {
             this.setUserFormValues(selectedUser);
-        } else {
-            this.editMode = false;
-            this.resetUserFormValues();
         }
     }
 
     private setUserFormValues(selectedUser: ResourceUser) {
+        this.http.get(selectedUser._links.roles.href.replace(/^http:/, 'https:')).subscribe((resourcesRole: ResourcesRole) => {
+            resourcesRole._embedded.roles.forEach((role) => {
+                this.selectedRoles.push(role);
+                this.userForm.get((role.id).toString(10)).setValue('checked');
+            });
+        });
+
         this.userForm.get('firstName').setValue(selectedUser.firstName);
         this.userForm.get('middleName').setValue(selectedUser.middleName);
         this.userForm.get('lastName').setValue(selectedUser.lastName);
@@ -123,16 +151,30 @@ export class UserComponent implements OnInit {
     }
 
     private resetUserFormValues() {
-        this.userForm.get('firstName').setValue('');
-        this.userForm.get('middleName').setValue('');
-        this.userForm.get('lastName').setValue('');
-        this.userForm.get('email').setValue('');
-        this.userForm.get('type').setValue('');
+        for (const name in this.userForm.controls) {
+            if ((this.editMode && name !== 'userSelect') &&
+                this.userForm.controls.hasOwnProperty(name)) {
+                this.userForm.get(name).setValue('');
+            }
+        }
         this.userForm.get('firstName').updateValueAndValidity();
         this.userForm.get('middleName').updateValueAndValidity();
         this.userForm.get('lastName').updateValueAndValidity();
         this.userForm.get('email').updateValueAndValidity();
         this.userForm.get('type').updateValueAndValidity();
+    }
+
+    checkBoxOnChange(checkBoxChange: MatCheckboxChange) {
+        const idChecked = (checkBoxChange.source.value as Role).id,
+            isSelected = this.selectedRoles.find((role) => {
+                return role.id === idChecked;
+            });
+
+        if (isSelected) {
+            this.selectedRoles.splice(this.selectedRoles.indexOf(isSelected), 1);
+        } else {
+            this.selectedRoles.push((checkBoxChange.source.value as Role));
+        }
     }
 
 }

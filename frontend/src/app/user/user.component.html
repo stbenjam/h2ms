@@ -31,6 +31,10 @@
                     <input matInput formControlName="type" required>
                     <mat-placeholder>Type</mat-placeholder>
                 </mat-form-field>
+                <div *ngIf="isLoggedIn">
+                    <mat-checkbox class="col" *ngFor="let role of roles" [value]="role" (change)="checkBoxOnChange($event)"
+                                  formControlName="{{role.id}}">{{role.name}}</mat-checkbox>
+                </div>
                 <button mat-raised-button (click)="onSubmit()" [disabled]="!userForm.valid" color="primary">
                     Save
                 </button>

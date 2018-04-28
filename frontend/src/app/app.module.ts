@@ -56,6 +56,7 @@ import { UserComponent,
 } from './user/user.component';
 import {ReportsChartService} from './reports/reports-chart.service';
 import {UserRegistrationService} from './api/registration.service';
+import {RoleEntityService} from './api/roleEntity.service';
 
 @NgModule({
     declarations: [
@@ -121,7 +122,8 @@ import {UserRegistrationService} from './api/registration.service';
         LocationEntityService,
         ReportsChartService,
         UserEntityService,
-        UserRegistrationService
+        UserRegistrationService,
+        RoleEntityService
     ],
     bootstrap: [AppComponent]
 })

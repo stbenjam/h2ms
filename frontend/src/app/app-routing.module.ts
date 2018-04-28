@@ -15,6 +15,7 @@ import {ForgotPasswordComponent} from './forgot-password/forgot-password.compone
 import {ResetPasswordComponent} from './reset-password/reset-password.component';
 import {UserByEmailResolverService} from './user/service/user-by-email-resolver.service';
 import {UserComponent} from './user/user.component';
+import {RoleResolverService} from './role/service/role-resolver.service';
 
 /**
  * The actual available routes. Which links are routed to which components.
@@ -45,7 +46,8 @@ const routes: Routes = [
     {path: 'users',
         component: UserComponent,
         resolve: {
-            usersResolver: UsersResolverService
+            usersResolver: UsersResolverService,
+            rolesResolver: RoleResolverService
         }
     },
     {path: '', redirectTo: 'reports', pathMatch: 'full'}
@@ -81,6 +83,7 @@ export const NAV_ITEMS: NavItem[] = [
         UsersResolverService,
         LocationResolverService,
         UserByEmailResolverService,
+        RoleResolverService
     ]
 })
 export class AppRoutingModule {
