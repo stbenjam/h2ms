@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import {ActivatedRouteSnapshot, RouterStateSnapshot} from '@angular/router';
-import {RoleEntityService} from '../..';
+import {RoleEntityService} from '../../index';
 
 @Injectable()
 export class UserRoleResolverService {
