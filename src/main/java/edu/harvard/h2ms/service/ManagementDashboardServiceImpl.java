@@ -4,7 +4,6 @@ import edu.harvard.h2ms.domain.admin.Email;
 import edu.harvard.h2ms.domain.core.Event;
 import edu.harvard.h2ms.repository.*;
 import java.util.*;
-import javax.activation.*;
 import javax.mail.*;
 import javax.mail.internet.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +19,8 @@ public class ManagementDashboardServiceImpl implements ManagementDashboardServic
 
   private EventRepository eventRepository;
   private LocationRepository locationRepository;
-  private ReaderRepository readerRepository;
-  private WristBandRepository wristBandRepository;
+  private SensorRepository sensorRepository;
+  private TagRepository tagRepository;
   private UserRepository userRepository;
 
   @Autowired
@@ -35,13 +34,13 @@ public class ManagementDashboardServiceImpl implements ManagementDashboardServic
   }
 
   @Autowired
-  public void setReaderRepository(ReaderRepository readerRepository) {
-    this.readerRepository = readerRepository;
+  public void setSensorRepository(SensorRepository sensorRepository) {
+    this.sensorRepository = sensorRepository;
   }
 
   @Autowired
-  public void setWristBandRepository(WristBandRepository wristBandRepository) {
-    this.wristBandRepository = wristBandRepository;
+  public void setTagRepository(TagRepository tagRepository) {
+    this.tagRepository = tagRepository;
   }
 
   // TODO add the ability to search for anything - this may be covered by tableau
