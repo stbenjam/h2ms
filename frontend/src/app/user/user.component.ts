@@ -82,11 +82,18 @@ export class UserComponent implements OnInit {
         if (this.isLoggedIn) {
             this.user.roles = [];
             this.selectedRoles.forEach((role) => {
-                const roleToAdd = {
-                    id: role.id,
-                    name: role.name
-                };
-                this.user.roles.push(roleToAdd);
+                // DEVELOPER NOTE: The code below is to be used if the API accepts a role object as part of the body in a PATCH
+                // As of now, HATEOS forces us to send the URI for the roles instead during a PATCH
+                if (!this.editMode) {
+                    const roleToAdd = {
+                        id: role.id,
+                        name: role.name
+                    };
+                    this.user.roles.push(roleToAdd);
+                } else {
+                    // user links for PATCH (edits)
+                    this.user.roles.push(role._links.self.href);
+                }
             });
         }
 
@@ -132,6 +139,7 @@ export class UserComponent implements OnInit {
     onChange(selectedUser: ResourceUser) {
         this.editMode = !!selectedUser;
         this.resetUserFormValues();
+        this.selectedRoles = [];
         if (this.editMode) {
             this.setUserFormValues(selectedUser);
         }
