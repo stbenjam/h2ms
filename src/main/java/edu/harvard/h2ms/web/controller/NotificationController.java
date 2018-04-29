@@ -4,7 +4,7 @@ import edu.harvard.h2ms.domain.core.Notification;
 import edu.harvard.h2ms.domain.core.User;
 import edu.harvard.h2ms.repository.NotificationRepository;
 import edu.harvard.h2ms.repository.UserRepository;
-import edu.harvard.h2ms.service.NotificationServiceImpl;
+import edu.harvard.h2ms.service.report.NotificationServiceImpl;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
