@@ -16,7 +16,7 @@ import {HttpClient} from '@angular/common/http';
 })
 export class UserComponent implements OnInit {
     userForm: FormGroup;
-    users: ResourcesUser;
+    users: Array<ResourceUser>;
     roles: Array<Role>;
     editMode: boolean;
     user: User;
@@ -107,7 +107,14 @@ export class UserComponent implements OnInit {
             saveObservable = this.userRegistrationService.saveNewUserUsingPOST(this.user);
         }
 
-        saveObservable.subscribe((response) => { this.openSuccessDialog(); },
+        saveObservable.subscribe((response) => {
+            this.openSuccessDialog();
+                this.userEntityService.findAllUserUsingGET(undefined, '50', undefined).subscribe( (res) => {
+                    this.users = res._embedded.users.filter((resourceUser: ResourceUser) => {
+                        return resourceUser.enabled;
+                    });
+                });
+            },
             (error) => { this.openFailureDialog(); } );
     }
 
@@ -131,7 +138,7 @@ export class UserComponent implements OnInit {
     }
 
     private setUserFormValues(selectedUser: ResourceUser) {
-        this.http.get(selectedUser._links.roles.href.replace(/^http:/, 'https:')).subscribe((resourcesRole: ResourcesRole) => {
+        this.http.get(selectedUser._links.roles.href).subscribe((resourcesRole: ResourcesRole) => {
             resourcesRole._embedded.roles.forEach((role) => {
                 this.selectedRoles.push(role);
                 this.userForm.get((role.id).toString(10)).setValue('checked');
