@@ -126,7 +126,7 @@ public class NotificationServiceImpl {
 
     // define how long to wait for each notification frequency
     if (notificationFrequency == NotificationFrequency.UNDEFINED) {
-      notificationFrequency = NotificationFrequency.HALFMINUTE;
+      notificationFrequency = NotificationFrequency.DAILY;
     }
 
     long interval = notificationFrequency.seconds;
