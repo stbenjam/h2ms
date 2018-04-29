@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Basis of trend notification emails change REPORTINGINTERVAL to change the reporting scope
@@ -43,6 +44,7 @@ public abstract class AbstractReportWorkerComplianceTrend implements ReportWorke
   }
 
   @Override
+  @Transactional
   public String createReport() {
     // Compare compliance:
     // 	now-2*interval -> now-interval, and now-interval -> now
@@ -83,8 +85,12 @@ public abstract class AbstractReportWorkerComplianceTrend implements ReportWorke
 
           Double change;
           if (previousComplianceResult > currentComplianceResult)
-            change = -(previousComplianceResult / currentComplianceResult);
-          else change = (currentComplianceResult / previousComplianceResult);
+            change =
+                -(previousComplianceResult
+                    - (previousComplianceResult / (currentComplianceResult)));
+          else
+            change =
+                (currentComplianceResult - (currentComplianceResult / previousComplianceResult));
 
           // Row Example:
           //   doctor@h2ms.org,"Washed?",65.0,60.0,-5.0
