@@ -42,7 +42,7 @@ public class NotificationController {
     String email = (String) requestParams.get("email");
     String notificationName = (String) requestParams.get("notificationName");
     String notificationInterval = (String) requestParams.get("notificaitonInterval");
-    log.info("*************shintest:" + notificationInterval);
+
     NotificationFrequency notificationFrequency =
         NotificationFrequency.getNotificationFrequency(notificationInterval);
     // define how long to wait for each notification frequency
@@ -50,7 +50,6 @@ public class NotificationController {
       notificationFrequency = NotificationFrequency.DAILY;
     }
 
-    log.info("*************shintest:" + notificationFrequency.stringRepresentation);
 
     log.debug("searching for user by email " + requestParams);
 
