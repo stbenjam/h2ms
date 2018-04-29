@@ -39,7 +39,6 @@ const routes: Routes = [
     {path: 'export', component: ExportComponent, canActivate: [AuthGuardService]},
     // TODO: route dashboard to the DashboardComponent when it is created.
     {path: 'dashboard', redirectTo: 'reports', pathMatch: 'full', canActivate: [AuthGuardService]}, // a protected page
-    // TODO: route password-recovery to the PasswordRecoveryComponent when it is created.
     {path: 'forgot-password', component: ForgotPasswordComponent},
     {path: 'reset-password/:email/:resetToken', component: ResetPasswordComponent},
     // todo: route route to dashboard when made
