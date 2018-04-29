@@ -152,9 +152,10 @@ export class UserComponent implements OnInit {
 
     private resetUserFormValues() {
         for (const name in this.userForm.controls) {
-            if ((this.editMode && name !== 'userSelect') &&
-                this.userForm.controls.hasOwnProperty(name)) {
-                this.userForm.get(name).setValue('');
+            if (this.userForm.controls.hasOwnProperty(name)) {
+                if (name !== 'userSelect') {
+                    this.userForm.get(name).setValue('');
+                }
             }
         }
         this.userForm.get('firstName').updateValueAndValidity();
