@@ -16,10 +16,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import static java.util.Arrays.asList;
+
+import com.google.common.collect.Lists;
 
 /**
  * Basis of trend notification emails change REPORTINGINTERVAL to change the reporting scope
@@ -39,67 +42,65 @@ public abstract class AbstractReportWorkerComplianceTrend implements ReportWorke
 
   @Override
   public String getType() {
-    return "abstractComplianceWarning";
+    return "abstractComplianceTrend";
   }
 
   @Override
   public String createReport() {
-    List<Event> events = new ArrayList<>();
-
-    // for all questions:
-    Map<Question, Map<User, Double>> allComplianceResult = new HashMap<>();
-    Hibernate.initialize(questionRepository);
-    for (Question question : questionRepository.findAllByAnswerType("boolean")) {
-      Map<User, Double> complianceResult = new HashMap<>();
-
-      try {
-        events = eventService.findEventsForCompliance(question);
-
-        List<Event> timedEvents = new ArrayList<>();
-
-        for (Event event : events) {
-          Date eventDate = event.getTimestamp();
-          long unixtime = eventDate.getTime();
-          long reportTime = ReportUtils.getUnixTime();
-          if ((reportTime - unixtime) < (reportTime - REPORTINGINTERVAL)) {
-            timedEvents.add(event);
-          }
-        }
-
-        // get compliance rates for all users:
-        for (User user : userRepository.findAll()) {
-          complianceResult.put(
-              user,
-              H2msRestUtils.calculateCompliance(
-                  question,
-                  timedEvents
-                      .stream()
-                      .filter(event -> event.getSubject().equals(user))
-                      .collect(Collectors.toSet())));
-        }
-
-        allComplianceResult.put(question, complianceResult);
-
-      } catch (InvalidAnswerTypeException e) {
-        log.debug("*********skipping");
-      }
-    }
-
-    // Create data for CSV-like string output
-    List<List<String>> data = new ArrayList<List<String>>();
-    List<String> row = new ArrayList<String>();
-    for (Question question : allComplianceResult.keySet()) {
-      String questionString = question.getQuestion();
-      Map<User, Double> complianceMap = allComplianceResult.get(question);
-      for (User user : complianceMap.keySet()) {
-        String userEmail = user.getEmail();
-        String complianceRate = complianceMap.get(user).toString();
-        row.add(questionString);
-        row.add(userEmail);
-        row.add(complianceRate);
-        data.add(row);
-      }
-    }
+	  // Compare compliance:
+	  // 	now-2*interval -> now-interval, and now-interval -> now
+	  Date now = new Date();
+	  Date oldStart = new Date((now.getTime() - 2*REPORTINGINTERVAL));
+	  Date curStart = new Date((now.getTime() - REPORTINGINTERVAL));
+	  
+	  List<User> users = Lists.newArrayList(userRepository.findAll());
+	  List<Question> questionsForCompliance = Lists.newArrayList(questionRepository.findAllByAnswerType("boolean"));
+	  
+	  // Create data for CSV-like string output
+	  List<List<String>> data = new ArrayList<>();  
+	  
+	  for (Question question : questionsForCompliance) {
+		  try {
+			  List<Event> oldPeriodEvents = eventService.findEventsForComplianceByDateRange(question, oldStart, curStart);
+			  List<Event> curPeriodEvents = eventService.findEventsForComplianceByDateRange(question, curStart, now);
+	
+			  for(User user : users) {			  
+				  Double previousComplianceResult = H2msRestUtils.calculateCompliance(
+						  question,
+						  oldPeriodEvents
+						  .stream()
+						  .filter(event -> event.getSubject().equals(user))
+						  .collect(Collectors.toSet()));
+				  
+				  Double currentComplianceResult = H2msRestUtils.calculateCompliance(
+						  question,
+						  curPeriodEvents
+						  .stream()
+						  .filter(event -> event.getSubject().equals(user))
+						  .collect(Collectors.toSet()));			  
+			
+				  Double delta;
+				  if(previousComplianceResult > currentComplianceResult)
+					  delta = -(previousComplianceResult / currentComplianceResult);
+				  else
+					  delta = (currentComplianceResult / previousComplianceResult);
+				 
+				// Row Example:
+				//   doctor@h2ms.org,"Washed?",65.0,60.0,-5.0
+		
+				data.add(asList(user.getEmail(),
+						question.getQuestion(),
+						previousComplianceResult.toString(),
+						currentComplianceResult.toString(),
+						delta.toString()
+						));
+				
+			  }
+		  } catch(InvalidAnswerTypeException answerType) {
+			  throw new RuntimeException(answerType.getMessage());
+		  }
+		  
+	  }
 
     return ReportUtils.writeCsvString(data);
   }
