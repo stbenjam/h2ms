@@ -2,10 +2,14 @@ package edu.harvard.h2ms.seeders;
 
 import static java.util.Arrays.asList;
 
+import edu.harvard.h2ms.domain.core.Role;
+import edu.harvard.h2ms.domain.core.User;
+import edu.harvard.h2ms.repository.RoleRepository;
+import edu.harvard.h2ms.repository.UserRepository;
+import edu.harvard.h2ms.service.utils.ReportUtils.NotificationFrequency;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -13,12 +17,6 @@ import org.springframework.context.annotation.PropertySources;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-
-import edu.harvard.h2ms.domain.core.Role;
-import edu.harvard.h2ms.domain.core.User;
-import edu.harvard.h2ms.repository.RoleRepository;
-import edu.harvard.h2ms.repository.UserRepository;
-import edu.harvard.h2ms.service.utils.ReportUtils.NotificationFrequency;
 
 @Component
 @PropertySources({
