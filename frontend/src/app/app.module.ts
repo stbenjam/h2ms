@@ -34,7 +34,7 @@ import {ConfigService} from './config/config.service';
 import {ExportComponent} from './export/export.component';
 import {TokenInterceptor} from './auth/token-interceptor.service';
 import {AuthService} from './auth/auth.service';
-import {AuthGuardService} from './auth/auth-guard.service';
+import {AuthGuardService} from './auth/guards/auth-guard.service';
 import {EventTemplateEntityService} from './api/eventTemplateEntity.service';
 import {LocationEntityService} from './api/locationEntity.service';
 import {UserEntityService} from './api/userEntity.service';
@@ -55,9 +55,10 @@ import { UserComponent,
     UserSubmissionFailureDialogComponent
 } from './user/user.component';
 import {ReportsChartService} from './reports/reports-chart.service';
-import {EventGuardService} from './auth/event-guard.service';
 import {UserRoleResolverService} from './user/service/user-role-resolver.service';
 import {RoleEntityService} from './api/roleEntity.service';
+import {EventGuardService} from './auth/guards/event-guard.service';
+import {AdminGuardService} from './auth/guards/admin-guard.service';
 
 @NgModule({
     declarations: [
@@ -124,6 +125,7 @@ import {RoleEntityService} from './api/roleEntity.service';
         ReportsChartService,
         UserEntityService,
         EventGuardService,
+        AdminGuardService,
         UserRoleResolverService,
         RoleEntityService
     ],

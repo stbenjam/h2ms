@@ -5,7 +5,7 @@ import {PrivacyComponent} from './privacy/privacy.component';
 import {EventComponent} from './event/event.component';
 import {NavItem} from './sidenav/nav-item';
 import {ExportComponent} from './export/export.component';
-import {AuthGuardService} from './auth/auth-guard.service';
+import {AuthGuardService} from './auth/guards/auth-guard.service';
 import {LocationResolverService} from './location/service/location-resolver.service';
 import {UsersResolverService} from './user/service/users-resolver.service';
 import {QuestionResolverService} from './questions/service/question-resolver.service';
@@ -14,7 +14,8 @@ import {AboutComponent} from './about/about.component';
 import {ForgotPasswordComponent} from './forgot-password/forgot-password.component';
 import {ResetPasswordComponent} from './reset-password/reset-password.component';
 import {UserByEmailResolverService} from './user/service/user-by-email-resolver.service';
-import {EventGuardService} from "./auth/event-guard.service";
+import {EventGuardService} from './auth/guards/event-guard.service';
+import {AdminGuardService} from './auth/guards/admin-guard.service';
 
 /**
  * The actual available routes. Which links are routed to which components.
@@ -34,10 +35,10 @@ const routes: Routes = [
             userByEmailResolver: UserByEmailResolverService
         }
     },
-    {path: 'reports', component: ReportsComponent, canActivate: [AuthGuardService]},
-    {path: 'export', component: ExportComponent, canActivate: [AuthGuardService]},
+    {path: 'reports', component: ReportsComponent, canActivate: [AdminGuardService]},
+    {path: 'export', component: ExportComponent, canActivate: [AdminGuardService]},
     // TODO: route dashboard to the DashboardComponent when it is created.
-    {path: 'dashboard', redirectTo: 'reports', pathMatch: 'full', canActivate: [AuthGuardService]}, // a protected page
+    {path: 'dashboard', redirectTo: 'reports', pathMatch: 'full', canActivate: [AdminGuardService]}, // a protected page
     {path: 'forgot-password', component: ForgotPasswordComponent},
     {path: 'reset-password/:email/:resetToken', component: ResetPasswordComponent},
     // todo: route route to dashboard when made
