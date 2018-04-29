@@ -55,7 +55,7 @@ import { UserComponent,
     UserSubmissionFailureDialogComponent
 } from './user/user.component';
 import {ReportsChartService} from './reports/reports-chart.service';
-import {UserRoleResolverService} from './user/service/user-role-resolver.service';
+import {UserRoleResolverService} from './user/role/user-role-resolver.service';
 import {RoleEntityService} from './api/roleEntity.service';
 import {EventGuardService} from './auth/guards/event-guard.service';
 import {AdminGuardService} from './auth/guards/admin-guard.service';
