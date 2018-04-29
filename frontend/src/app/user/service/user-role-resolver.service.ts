@@ -9,7 +9,7 @@ export class UserRoleResolverService {
     constructor(private roleEntityService: RoleEntityService) { }
 
     resolve(route: ActivatedRouteSnapshot, rstate: RouterStateSnapshot, href: string): Observable<any> {
-        return this.roleEntityService.findAllRoleUsingGET(href, '10', undefined);
+        return this.roleEntityService.findAllRoleUsingGET(href, '50', undefined);
     }
 
 }
