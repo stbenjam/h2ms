@@ -161,7 +161,7 @@ public class Notification {
     return this.emailNotificationIntervals;
   }
 
-  public void setEmailNotificationInterval(Map<String, Long> emailNotificationIntervals) {
+  public void setEmailNotificationIntervals(Map<String, Long> emailNotificationIntervals) {
     this.emailNotificationIntervals = emailNotificationIntervals;
   }
 
