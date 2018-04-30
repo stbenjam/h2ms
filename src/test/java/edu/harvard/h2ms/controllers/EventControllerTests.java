@@ -10,10 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.opencsv.CSVReader;
 import edu.harvard.h2ms.common.TestHelpers;
 import edu.harvard.h2ms.domain.core.*;
-import edu.harvard.h2ms.repository.EventRepository;
-import edu.harvard.h2ms.repository.EventTemplateRepository;
-import edu.harvard.h2ms.repository.QuestionRepository;
-import edu.harvard.h2ms.repository.UserRepository;
+import edu.harvard.h2ms.repository.*;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -68,6 +65,8 @@ public class EventControllerTests {
 
   @Autowired EventRepository eventRepository;
 
+  @Autowired RoleRepository roleRepository;
+
   /**
    * Setup prior to running unit tests
    *
@@ -81,8 +80,7 @@ public class EventControllerTests {
 
     // Sample User Data
     observer = new User("John", "Quincy", "Adams", EMAIL, PASSWORD, "Other");
-    Role role = new Role();
-    role.setName("ROLE_ADMIN");
+    Role role = roleRepository.findByName("ROLE_ADMIN");
     observer.setRoles(new HashSet<Role>(Arrays.asList(role)));
     userRepository.save(observer);
 

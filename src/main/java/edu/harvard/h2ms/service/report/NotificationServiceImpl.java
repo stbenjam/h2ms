@@ -1,8 +1,11 @@
-package edu.harvard.h2ms.service;
+package edu.harvard.h2ms.service.report;
 
 import edu.harvard.h2ms.domain.core.Notification;
 import edu.harvard.h2ms.domain.core.User;
 import edu.harvard.h2ms.repository.NotificationRepository;
+import edu.harvard.h2ms.service.EmailService;
+import edu.harvard.h2ms.service.utils.ReportUtils;
+import edu.harvard.h2ms.service.utils.ReportUtils.NotificationFrequency;
 import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,48 +19,13 @@ import org.springframework.stereotype.Service;
 @Service("notificationService")
 public class NotificationServiceImpl {
 
-  // this determines how long it takes for next notification
-  public enum NotificationFrequency {
-    HALFMINUTE("HALFMINUTE", 30L), // for testing
-    DAILY("DAILY", 86400L),
-    WEEKLY("WEEKLY", 604800L),
-    MONTHLY("MONTHLY", 2592000L),
-    UNDEFINED("UNDEFINED", 0L);
-
-    public final String stringRepresentation;
-    public final long seconds;
-
-    /**
-     * @param stringRepresentation interval representation in text
-     * @param seconds interval duration
-     */
-    NotificationFrequency(String stringRepresentation, long seconds) {
-      this.stringRepresentation = stringRepresentation;
-      this.seconds = seconds;
-    }
-
-    /**
-     * Returns interval in seconds, with UNDEFINED if string representation don't fit
-     *
-     * @param stringRepresentation
-     * @return
-     */
-    public static NotificationFrequency getNotificationFrequency(String stringRepresentation) {
-
-      for (NotificationFrequency nf : NotificationFrequency.class.getEnumConstants()) {
-        if (nf.stringRepresentation.equals(stringRepresentation)) {
-          return nf;
-        }
-      }
-      return UNDEFINED;
-    }
-  }
-
   private static final Log log = LogFactory.getLog(NotificationServiceImpl.class);
 
   @Autowired private NotificationRepository notificationRepository;
 
   @Autowired private EmailService emailService;
+
+  @Autowired private ReportService reportService;
 
   /** Polls notifications at set duration (modify fixedRate for polling frequency) */
   @Scheduled(fixedRate = 10000)
@@ -89,7 +57,11 @@ public class NotificationServiceImpl {
         message.setTo(user.getEmail());
         message.setSubject(notification.getNotificationTitle());
         String messageText = notification.getNotificationBody();
-        message.setText(messageText);
+
+        // request for report
+        String reportString = reportService.requestReport(notification.getReportType());
+
+        message.setText(messageText + reportString);
 
         // actually send the message
         emailService.sendEmail(message);
@@ -108,12 +80,6 @@ public class NotificationServiceImpl {
     }
   }
 
-  /** @return current unix time */
-  private static long getUnixTime() {
-
-    return System.currentTimeMillis() / 1000L;
-  }
-
   /**
    * Sets the user notification time to current time
    *
@@ -122,7 +88,7 @@ public class NotificationServiceImpl {
    */
   private void resetEmailLastNotifiedTime(Notification notification, User user) {
 
-    notification.setEmailLastNotifiedTime(user.getEmail(), getUnixTime());
+    notification.setEmailLastNotifiedTime(user.getEmail(), ReportUtils.getUnixTime());
     notificationRepository.save(notification);
   }
 
@@ -158,14 +124,22 @@ public class NotificationServiceImpl {
     NotificationFrequency notificationFrequency =
         NotificationFrequency.getNotificationFrequency(stringNotificationFrequency);
 
+    // if set, get notification's user interal
+    Long notificationSpecificInterval = notification.getEmailNotificationIntervals().get(userEmail);
+
     // define how long to wait for each notification frequency
     if (notificationFrequency == NotificationFrequency.UNDEFINED) {
-      notificationFrequency = notificationFrequency.HALFMINUTE;
+      notificationFrequency = NotificationFrequency.DAILY;
     }
 
     long interval = notificationFrequency.seconds;
 
-    long currentTime = getUnixTime();
+    // if notfication-specific value is found, use this instead of user default
+    if (notificationSpecificInterval != null) {
+      interval = notificationSpecificInterval.longValue();
+    }
+
+    long currentTime = ReportUtils.getUnixTime();
 
     long deltaNotificationTime = currentTime - lastNotificationTime;
 
@@ -186,6 +160,22 @@ public class NotificationServiceImpl {
   public void subscribeUserNotification(User user, Notification notification) {
 
     notification.addUser(user);
+    log.debug("subscribed:" + notification.getUser());
+    resetEmailLastNotifiedTime(notification, user);
+  }
+
+  /**
+   * Adds user to notification's subscription list, with custom interval
+   *
+   * @param user
+   * @param notification
+   */
+  public void subscribeUserNotification(
+      User user, Notification notification, Long notificationInterval) {
+
+    notification.addUser(user);
+    notification.setEmailNotificationInterval(user.getEmail(), notificationInterval);
+
     log.debug("subscribed:" + notification.getUser());
     resetEmailLastNotifiedTime(notification, user);
   }

@@ -24,7 +24,8 @@ public class Question {
 
   @NotNull @Column private Integer priority;
 
-  @ElementCollection private List<String> options;
+  @ElementCollection(fetch = FetchType.EAGER)
+  private List<String> options;
 
   @NotNull @Column private String question;
 

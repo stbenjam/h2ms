@@ -6,7 +6,7 @@ import edu.harvard.h2ms.exception.InvalidAnswerTypeException;
 import edu.harvard.h2ms.exception.InvalidTimeframeException;
 import edu.harvard.h2ms.repository.QuestionRepository;
 import edu.harvard.h2ms.service.EventService;
-import edu.harvard.h2ms.service.ReportService;
+import edu.harvard.h2ms.service.report.ReportService;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -144,7 +144,7 @@ public class EventController {
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.add("Content-Type", "text/csv; charset=utf-8");
     return new ResponseEntity<String>(
-        reportService.createEventReport(), httpHeaders, HttpStatus.OK);
+        reportService.requestReport("eventDump"), httpHeaders, HttpStatus.OK);
   }
 
   /**
