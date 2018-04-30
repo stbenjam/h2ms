@@ -1,5 +1,5 @@
 import {MediaMatcher} from '@angular/cdk/layout';
-import {ChangeDetectorRef, Component, OnChanges, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, OnDestroy} from '@angular/core';
 import {ConfigService} from './config/config.service';
 import {Config} from './config/config';
 import {NavItem} from './sidenav/nav-item';
@@ -8,7 +8,7 @@ import {Location} from '@angular/common';
 import {Title} from '@angular/platform-browser';
 import {AuthService} from './auth/auth.service';
 import {UserRoleService} from './user/service/user-role.service';
-import {ActivatedRouteSnapshot, RouterStateSnapshot} from "@angular/router";
+import {Router} from '@angular/router';
 
 @Component({
     selector: 'app-root',
@@ -20,10 +20,11 @@ import {ActivatedRouteSnapshot, RouterStateSnapshot} from "@angular/router";
  * Main component for the App. The Navbar is based on this example:
  * https://stackblitz.com/angular/ngjvmobekyl?file=app%2Fsidenav-responsive-example.css
  */
-export class AppComponent implements OnDestroy, OnChanges {
+export class AppComponent implements OnDestroy {
     mobileQuery: MediaQueryList;
     config: Config;
     navItems: NavItem[];
+    lastLocation = '/login';
 
     private _mobileQueryListener: () => void;
 
@@ -34,8 +35,7 @@ export class AppComponent implements OnDestroy, OnChanges {
                 private titleService: Title,
                 private authService: AuthService,
                 private userRoleService: UserRoleService,
-                private route: ActivatedRouteSnapshot,
-                private state: RouterStateSnapshot) {
+                private router: Router) {
         this.mobileQuery = media.matchMedia('(max-width: 1050px)');
         this._mobileQueryListener = () => changeDetectorRef.detectChanges();
         this.mobileQuery.addListener(this._mobileQueryListener);
@@ -45,18 +45,14 @@ export class AppComponent implements OnDestroy, OnChanges {
             navItem.showSubItems = navItem.isCurrentlySelected(location.path());
         }
         this.setTitle(this.config.appName);
-    }
-
-    ngOnChanges() {
-        if (this.authService.isLoggedIn()) {
-            if (this.userRoleService.hasRoles(['ROLE_ADMIN'], this.route, this.state)) {
-                this.setNavItems(NAV_ITEMS_ADMIN);
-            } else if (this.userRoleService.hasRoles(['ROLE_OBSERVER'], this.route, this.state)) {
-                this.setNavItems(NAV_ITEMS_OBSERVER);
-            } else {
-                this.setNavItems(NAV_ITEMS_USER);
+        this.router.events.subscribe((val) => {
+            if (this.lastLocation.match('/login') && !this.location.path().match('/login')) {
+                console.log('updating nav: ' + this.location.path());
+                this.updateNav();
             }
-        }
+            console.log('new old location: ' + this.location.path());
+            this.lastLocation = this.location.path();
+        });
     }
 
     isInProduction() {
@@ -83,15 +79,26 @@ export class AppComponent implements OnDestroy, OnChanges {
         this.titleService.setTitle(newTitle);
     }
 
-
     ngOnDestroy(): void {
         this.mobileQuery.removeListener(this._mobileQueryListener);
     }
 
-    public setNavItems(newNavItems: NavItem[]) {
-        this.navItems = newNavItems;
+    setNavItems(newNavItems: NavItem[]) {
         for (const navItem of this.navItems) {
             navItem.showSubItems = navItem.isCurrentlySelected(this.location.path());
+        }
+        this.navItems = newNavItems;
+    }
+
+    updateNav() {
+        if (this.authService.isLoggedIn()) {
+            if (this.userRoleService.hasRoles(['ROLE_ADMIN'])) {
+                this.setNavItems(NAV_ITEMS_ADMIN);
+            } else if (this.userRoleService.hasRoles(['ROLE_OBSERVER'])) {
+                this.setNavItems(NAV_ITEMS_OBSERVER);
+            } else {
+                this.setNavItems(NAV_ITEMS_USER);
+            }
         }
     }
 

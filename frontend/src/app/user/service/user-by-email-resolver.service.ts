@@ -1,4 +1,4 @@
-import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from '@angular/router';
+import {Resolve} from '@angular/router';
 import {Injectable} from '@angular/core';
 import {UserEntityService} from '../../index';
 import {Observable} from 'rxjs/Observable';
@@ -9,7 +9,7 @@ export class UserByEmailResolverService implements Resolve<any> {
     constructor(private userService: UserEntityService,
                 private userEmailService: UserEmailService) { }
 
-    resolve(route: ActivatedRouteSnapshot, rstate: RouterStateSnapshot): Observable<any> {
+    resolve(): Observable<any> {
         const email = this.userEmailService.getEmail();
         return this.userService.findByEmailUserUsingGET(email);
     }

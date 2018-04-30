@@ -60,6 +60,9 @@ export const NAV_ITEMS_ADMIN: NavItem[] = [
     // new NavItem('Dashboard', '/dashboard'),
     new NavItem('Reports', '/reports'),
     new NavItem('Observe', '/event'),
+    new NavItem('Privacy', '/privacy'),
+    new NavItem('About', '/about'),
+    // new NavItem('Help', '/help'),
     NavItem.createNavItemWithSubItems('Settings', [
         // new NavItem('Account', '/account'),
         // new NavItem('Notifications', '/notifications'),
@@ -68,29 +71,26 @@ export const NAV_ITEMS_ADMIN: NavItem[] = [
         new NavItem('Users', '/users'),
         // new NavItem('Locations', '/locations'),
         new NavItem('Export All Observations', '/export')
-    ]),
-    new NavItem('Privacy', '/privacy'),
-    new NavItem('About', '/about'),
-    // new NavItem('Help', '/help'),
+    ])
 ];
 
 export const NAV_ITEMS_OBSERVER: NavItem[] = [
     new NavItem('Observe', '/event'),
-    // NavItem.createNavItemWithSubItems('Settings', [
-        // new NavItem('Account', '/account'),
-    // ]),
     new NavItem('Privacy', '/privacy'),
     new NavItem('About', '/about'),
     // new NavItem('Help', '/help'),
+    // NavItem.createNavItemWithSubItems('Settings', [
+        // new NavItem('Account', '/account'),
+    // ])
 ];
 
 export const NAV_ITEMS_USER: NavItem[] = [
-    // NavItem.createNavItemWithSubItems('Settings', [
-        // new NavItem('Account', '/account'),
-    // ]),
     new NavItem('Privacy', '/privacy'),
     new NavItem('About', '/about')
     // new NavItem('Help', '/help'),
+    // NavItem.createNavItemWithSubItems('Settings', [
+        // new NavItem('Account', '/account'),
+    // ])
 ];
 
 @NgModule({

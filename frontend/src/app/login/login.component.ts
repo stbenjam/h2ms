@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../auth/auth.service';
-import {ActivatedRouteSnapshot, Router, RouterStateSnapshot} from '@angular/router';
+import {Router} from '@angular/router';
 import {ConfigService} from '../config/config.service';
 import {Config} from '../config/config';
 import {UserEmailService} from '../user/service/user-email.service';
@@ -32,9 +32,7 @@ export class LoginComponent implements OnInit {
                 private router: Router,
                 private configService: ConfigService,
                 private userEmailService: UserEmailService,
-                private userRoleService: UserRoleService,
-                private route: ActivatedRouteSnapshot,
-                private state: RouterStateSnapshot) {
+                private userRoleService: UserRoleService) {
         this.config = configService.getConfig();
     }
 
@@ -55,9 +53,9 @@ export class LoginComponent implements OnInit {
             .subscribe(
                 response => {
                     this.userEmailService.setEmail(email);
-                    if (this.userRoleService.hasRoles(['ROLE_ADMIN'], this.route, this.state)) {
+                    if (this.userRoleService.hasRoles(['ROLE_ADMIN'])) {
                         this.router.navigate(['dashboard']);
-                    } else if (this.userRoleService.hasRoles(['ROLE_OBSERVER'], this.route, this.state)) {
+                    } else if (this.userRoleService.hasRoles(['ROLE_OBSERVER'])) {
                         this.router.navigate(['event']);
                     } else {
                         this.router.navigate(['about']);
