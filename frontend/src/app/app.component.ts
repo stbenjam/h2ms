@@ -45,12 +45,10 @@ export class AppComponent implements OnDestroy {
             navItem.showSubItems = navItem.isCurrentlySelected(location.path());
         }
         this.setTitle(this.config.appName);
-        this.router.events.subscribe((val) => {
+        this.router.events.subscribe(() => {
             if (this.lastLocation.match('/login') && !this.location.path().match('/login')) {
-                console.log('updating nav: ' + this.location.path());
                 this.updateNav();
             }
-            console.log('new old location: ' + this.location.path());
             this.lastLocation = this.location.path();
         });
     }
