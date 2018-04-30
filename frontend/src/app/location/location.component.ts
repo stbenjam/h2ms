@@ -3,7 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Location} from '../model/location';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {HttpClient} from '@angular/common/http';
-import {getLinks, sortArray} from '../api-utils';
+import {getLinks, getPayload, sortArray} from '../api-utils';
 import {getId} from '../api-utils';
 import {Config} from '../config/config';
 import {ConfigService} from '../config/config.service';
@@ -57,10 +57,24 @@ export class LocationComponent implements OnInit, AfterViewInit {
     }
 
     delete(location: Location) {
-        if (confirm('Are you sure you want to delete ' + location.name)) {
-            this.http.delete(getLinks(location).self.href, undefined).subscribe();
-            this.removeLocationFromTable(location);
-        }
+        this.http.get(this.config.getBackendUrl() + '/locations/' + location.id + '/children')
+            .subscribe((res: Response) => {
+                    const children = getPayload(res).locations;
+                    let deletePrompt = 'Are you sure you want to delete ' + location.name + '?';
+
+                    if (children.length) {
+                        deletePrompt += ' Deleting ' + location.name + ' will also delete '
+                            + children.length + ' locations inside of it.';
+                    }
+
+                    if (confirm(deletePrompt)) {
+                        this.http.delete(getLinks(location).self.href, undefined).subscribe();
+                        this.removeLocationFromTable(location);
+                    }
+                }
+            );
+
+
     }
 
     getParentDisplay(location: Location) {
