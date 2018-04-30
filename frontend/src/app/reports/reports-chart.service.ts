@@ -28,7 +28,7 @@ export class ReportsChartService {
             this.makeBarChartNumObsByWeek(id, chart, data);
         } else if (grouping.match('observer')
             || grouping.match('employee type')
-            || grouping.match('all')) {
+            || grouping.match('location')) {
             this.makeBarChartNumObsByUser(id, chart, data);
         } else {
             this.makeBarChartWithoutSubgrouping(id, chart, data);
