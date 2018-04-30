@@ -13,6 +13,7 @@ import edu.harvard.h2ms.domain.core.Notification;
 import edu.harvard.h2ms.domain.core.User;
 import edu.harvard.h2ms.repository.NotificationRepository;
 import edu.harvard.h2ms.repository.UserRepository;
+import edu.harvard.h2ms.service.utils.ReportUtils.NotificationFrequency;
 import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -130,6 +131,7 @@ public class NotificationControllerTests {
     ObjectNode objectNode2 = mapper2.createObjectNode();
     objectNode2.put("notificationName", NOTIFICATION_NAME);
     objectNode2.put("email", NOTIFICATION_EMAIL);
+    objectNode2.put("notificaitonInterval", NotificationFrequency.WEEKLY.stringRepresentation);
 
     MockHttpServletResponse result2 =
         mvc.perform(
@@ -155,6 +157,11 @@ public class NotificationControllerTests {
 
     // subscriber count should be 1 now.
     assertThat(notifiedUsers1.size(), is(1));
+
+    // test ability to set user-notification pair specific interval.
+    assertThat(
+        notification1.getEmailNotificationIntervals().get(NOTIFICATION_EMAIL),
+        is(NotificationFrequency.WEEKLY.seconds));
 
     // Subscribe 2nd user
 
