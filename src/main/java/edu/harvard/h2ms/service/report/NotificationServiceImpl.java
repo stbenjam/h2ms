@@ -124,12 +124,20 @@ public class NotificationServiceImpl {
     NotificationFrequency notificationFrequency =
         NotificationFrequency.getNotificationFrequency(stringNotificationFrequency);
 
+    // if set, get notification's user interal
+    Long notificationSpecificInterval = notification.getEmailNotificationIntervals().get(userEmail);
+
     // define how long to wait for each notification frequency
     if (notificationFrequency == NotificationFrequency.UNDEFINED) {
       notificationFrequency = NotificationFrequency.DAILY;
     }
 
     long interval = notificationFrequency.seconds;
+
+    // if notfication-specific value is found, use this instead of user default
+    if (notificationSpecificInterval != null) {
+      interval = notificationSpecificInterval.longValue();
+    }
 
     long currentTime = ReportUtils.getUnixTime();
 
@@ -152,6 +160,22 @@ public class NotificationServiceImpl {
   public void subscribeUserNotification(User user, Notification notification) {
 
     notification.addUser(user);
+    log.debug("subscribed:" + notification.getUser());
+    resetEmailLastNotifiedTime(notification, user);
+  }
+
+  /**
+   * Adds user to notification's subscription list, with custom interval
+   *
+   * @param user
+   * @param notification
+   */
+  public void subscribeUserNotification(
+      User user, Notification notification, Long notificationInterval) {
+
+    notification.addUser(user);
+    notification.setEmailNotificationInterval(user.getEmail(), notificationInterval);
+
     log.debug("subscribed:" + notification.getUser());
     resetEmailLastNotifiedTime(notification, user);
   }
