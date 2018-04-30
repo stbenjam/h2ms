@@ -131,7 +131,7 @@ public class NotificationControllerTests {
     ObjectNode objectNode2 = mapper2.createObjectNode();
     objectNode2.put("notificationName", NOTIFICATION_NAME);
     objectNode2.put("email", NOTIFICATION_EMAIL);
-    objectNode2.put("notificaitonInterval", NotificationFrequency.WEEKLY.stringRepresentation);
+    objectNode2.put("notificationInterval", NotificationFrequency.WEEKLY.stringRepresentation);
 
     MockHttpServletResponse result2 =
         mvc.perform(
