@@ -49,7 +49,7 @@ const routes: Routes = [
  * Displayed in the side nav bar. Leaving future navItems commented out.
  * TODO: Uncomment relevant navItem when a new page is created.
  */
-export const NAV_ITEMS: NavItem[] = [
+export const NAV_ITEMS_ADMIN: NavItem[] = [
     // new NavItem('Dashboard', '/dashboard'),
     new NavItem('Reports', '/reports'),
     new NavItem('Observe', '/event'),
@@ -60,10 +60,29 @@ export const NAV_ITEMS: NavItem[] = [
         // new NavItem('RFIDs', '/rfids'),
         // new NavItem('People', '/people'),
         // new NavItem('Locations', '/locations'),
-        new NavItem('Privacy', '/privacy'),
-        new NavItem('About', '/about'),
         new NavItem('Export All Observations', '/export')
-    ])
+    ]),
+    new NavItem('Privacy', '/privacy'),
+    new NavItem('About', '/about'),
+    // new NavItem('Help', '/help'),
+];
+
+export const NAV_ITEMS_OBSERVER: NavItem[] = [
+    new NavItem('Observe', '/event'),
+    // NavItem.createNavItemWithSubItems('Settings', [
+        // new NavItem('Account', '/account'),
+    // ]),
+    new NavItem('Privacy', '/privacy'),
+    new NavItem('About', '/about'),
+    // new NavItem('Help', '/help'),
+];
+
+export const NAV_ITEMS_USER: NavItem[] = [
+    // NavItem.createNavItemWithSubItems('Settings', [
+        // new NavItem('Account', '/account'),
+    // ]),
+    new NavItem('Privacy', '/privacy'),
+    new NavItem('About', '/about')
     // new NavItem('Help', '/help'),
 ];
 
