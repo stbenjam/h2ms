@@ -113,6 +113,35 @@ public class EventServiceImpl implements EventService {
   }
 
   /**
+   * Retrieves a list of events for a particular boolean question, within a specified date range.
+   * Used to retrieve all events for a compliance end point to do further processing on.
+   *
+   * @param question Question to lookup events for
+   * @param start timestamp start
+   * @param end timestamp end
+   * @return List<Event> of all events with an answer to this question
+   * @throws InvalidAnswerTypeException When question is not boolean
+   */
+  @Transactional(readOnly = true)
+  public List<Event> findEventsForComplianceByDateRange(Question question, Date start, Date end)
+      throws InvalidAnswerTypeException {
+    log.debug("Found question for compliance: {}", question.toString());
+
+    if (question.getAnswerType().equals("boolean")) {
+      return eventRepository.findByEventTemplateAndTimestampAfterAndTimestampBefore(
+          question.getEventTemplate(), start, end);
+    } else {
+      // Invalid question type:
+      String message =
+          String.format(
+              "Compliance data can only be generated for a boolean question. Question is '%s.'",
+              question.getAnswerType());
+      log.error(message);
+      throw new InvalidAnswerTypeException("boolean", question.getAnswerType());
+    }
+  }
+
+  /**
    * Retrieves a list of events for a particular boolean question. Used to retrieve all events for a
    * compliance end point to do further processing on.
    *

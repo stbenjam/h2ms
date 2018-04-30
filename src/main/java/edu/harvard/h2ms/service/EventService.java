@@ -4,6 +4,7 @@ import edu.harvard.h2ms.domain.core.Event;
 import edu.harvard.h2ms.domain.core.Question;
 import edu.harvard.h2ms.exception.InvalidAnswerTypeException;
 import edu.harvard.h2ms.exception.InvalidTimeframeException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +20,9 @@ public interface EventService {
    * @throws InvalidAnswerTypeException When question is not boolean
    */
   public List<Event> findEventsForCompliance(Question question) throws InvalidAnswerTypeException;
+
+  public List<Event> findEventsForComplianceByDateRange(Question question, Date start, Date end)
+      throws InvalidAnswerTypeException;
 
   /**
    * Retrieves all events in H2MS systems and returns results grouped by a specified time frame
