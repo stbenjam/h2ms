@@ -16,7 +16,7 @@ export class EventGuardService implements CanActivate {
             this.router.navigate(['login']);
             return false;
         }
-        return this.userRoleService.hasRoles(['ROLE_ADMIN', 'ROLE_OBSERVER'], route, state).flatMap((b) => {
+        return this.userRoleService.hasRoles(['ROLE_ADMIN', 'ROLE_OBSERVER']).flatMap((b) => {
             if (!b) {
                 this.router.navigate(['about']);
             }
