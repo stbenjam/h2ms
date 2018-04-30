@@ -11,5 +11,4 @@ export class UserRoleResolverService {
     resolve(route: ActivatedRouteSnapshot, rstate: RouterStateSnapshot, href: string): Observable<any> {
         return this.roleEntityService.findAllRoleUsingGET(href, '50', undefined);
     }
-
 }
