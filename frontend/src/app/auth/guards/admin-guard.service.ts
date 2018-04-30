@@ -16,7 +16,7 @@ export class AdminGuardService implements CanActivate {
             this.router.navigate(['login']);
             return false;
         }
-        return this.userRoleService.hasRoles(['ROLE_ADMIN'], route, state).flatMap((b) => {
+        return this.userRoleService.hasRoles(['ROLE_ADMIN']).flatMap((b) => {
             if (!b) {
                 this.router.navigate(['about']);
             }

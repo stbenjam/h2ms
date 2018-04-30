@@ -11,14 +11,14 @@ export class UserRoleService {
     /**
      * determine if the current user has any role in list
      */
-    hasRoles(list: [string], route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> {
-        return this.userByEmailResolverService.resolve(route, state).flatMap((v) => {
+    hasRoles(list: [string]): Observable<boolean> {
+        return this.userByEmailResolverService.resolve().flatMap((v) => {
             const roles = v._embedded.users[0].authorities.map(r => r.authority);
             let result = false;
             list.forEach(r => {
                 result = result || roles.includes(r);
             });
-            return Observable.of(false);
+            return Observable.of(result);
         });
     }
 }
