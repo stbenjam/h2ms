@@ -58,6 +58,7 @@ public class RestConfig extends RepositoryRestConfigurerAdapter {
     config.addAllowedHeader("*");
     config.addAllowedMethod("OPTIONS");
     config.addAllowedMethod("GET");
+    config.addAllowedMethod("PATCH");
     config.addAllowedMethod("POST");
     config.addAllowedMethod("PUT");
     config.addAllowedMethod("DELETE");
