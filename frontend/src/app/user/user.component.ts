@@ -122,6 +122,8 @@ export class UserComponent implements OnInit {
                         return resourceUser.enabled;
                     });
                     this.users.sort(this.compareUsers);
+                    this.resetUserFormValues(true);
+                    this.editMode = false;
                 });
             },
             (error) => { this.openFailureDialog(); } );
@@ -140,7 +142,7 @@ export class UserComponent implements OnInit {
 
     onChange(selectedUser: ResourceUser) {
         this.editMode = !!selectedUser;
-        this.resetUserFormValues();
+        this.resetUserFormValues(false);
         this.selectedRoles = [];
         if (this.editMode) {
             this.setUserFormValues(selectedUser);
@@ -167,10 +169,10 @@ export class UserComponent implements OnInit {
         this.userForm.get('type').updateValueAndValidity();
     }
 
-    private resetUserFormValues() {
+    private resetUserFormValues(hardReset: boolean) {
         for (const name in this.userForm.controls) {
             if (this.userForm.controls.hasOwnProperty(name)) {
-                if (name !== 'userSelect') {
+                if (hardReset || name !== 'userSelect') {
                     this.userForm.get(name).setValue('');
                 }
             }
