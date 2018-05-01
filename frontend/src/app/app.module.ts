@@ -60,6 +60,7 @@ import {RoleEntityService} from './api/roleEntity.service';
 import {EventGuardService} from './auth/guards/event-guard.service';
 import {AdminGuardService} from './auth/guards/admin-guard.service';
 import {UserRoleService} from './user/service/user-role.service';
+import {UsersByEmailResolverService} from './user/service/users-by-email-resolver.service';
 
 @NgModule({
     declarations: [
@@ -129,7 +130,8 @@ import {UserRoleService} from './user/service/user-role.service';
         AdminGuardService,
         UserRoleResolverService,
         RoleEntityService,
-        UserRoleService
+        UserRoleService,
+        UsersByEmailResolverService
     ],
     bootstrap: [AppComponent]
 })

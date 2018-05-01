@@ -11,6 +11,7 @@ export class UserByEmailResolverService implements Resolve<any> {
 
     resolve(): Observable<any> {
         const email = this.userEmailService.getEmail();
-        return this.userService.findOneByEmailUserUsingGET(email);
+        // todo should use this.userService.findOneByEmailUserUsingGET()
+        return this.userService.findByEmailUserUsingGET(email);
     }
 }
