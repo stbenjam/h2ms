@@ -147,6 +147,7 @@ export class UserComponent implements OnInit {
         if (this.editMode) {
             this.setUserFormValues(selectedUser);
         }
+        this.userForm.markAsPristine();
     }
 
     private setUserFormValues(selectedUser: ResourceUser) {

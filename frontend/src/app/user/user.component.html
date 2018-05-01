@@ -36,7 +36,7 @@
                     <mat-checkbox class="col" *ngFor="let role of roles" [value]="role" (change)="checkBoxOnChange($event)"
                                   formControlName="{{role.id}}" color="primary">{{role.name}}</mat-checkbox>
                 </div>
-                <button mat-raised-button (click)="onSubmit()" [disabled]="!userForm.valid" color="primary">
+                <button mat-raised-button (click)="onSubmit()" [disabled]="!userForm.valid || !userForm.dirty" color="primary">
                     Save
                 </button>
                 <!-- TODO: enable deactivation -->
