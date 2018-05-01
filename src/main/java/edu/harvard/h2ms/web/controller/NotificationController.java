@@ -5,6 +5,7 @@ import edu.harvard.h2ms.domain.core.User;
 import edu.harvard.h2ms.repository.NotificationRepository;
 import edu.harvard.h2ms.repository.UserRepository;
 import edu.harvard.h2ms.service.report.NotificationServiceImpl;
+import edu.harvard.h2ms.service.utils.ReportUtils.NotificationFrequency;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -40,6 +41,14 @@ public class NotificationController {
 
     String email = (String) requestParams.get("email");
     String notificationName = (String) requestParams.get("notificationName");
+    String notificationInterval = (String) requestParams.get("notificationInterval");
+
+    NotificationFrequency notificationFrequency =
+        NotificationFrequency.getNotificationFrequency(notificationInterval);
+    // define how long to wait for each notification frequency
+    if (notificationFrequency == NotificationFrequency.UNDEFINED) {
+      notificationFrequency = NotificationFrequency.DAILY;
+    }
 
     log.debug("searching for user by email " + requestParams);
 
@@ -59,7 +68,8 @@ public class NotificationController {
       return new ResponseEntity<String>(MSG, HttpStatus.NOT_FOUND);
     }
 
-    notificationService.subscribeUserNotification(user, notification);
+    notificationService.subscribeUserNotification(
+        user, notification, notificationFrequency.seconds);
 
     // Prepare return message
     Map<String, String> entity = new HashMap<>();
@@ -71,7 +81,7 @@ public class NotificationController {
   }
 
   /**
-   * Subscribes user to notifications
+   * Unsubscribes user to notifications
    *
    * @param requestParams
    * @return

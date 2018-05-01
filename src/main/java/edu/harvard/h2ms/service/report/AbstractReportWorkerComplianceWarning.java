@@ -53,18 +53,9 @@ public abstract class AbstractReportWorkerComplianceWarning implements ReportWor
       Map<User, Double> complianceResult = new HashMap<>();
 
       try {
-        events = eventService.findEventsForCompliance(question);
-
-        List<Event> timedEvents = new ArrayList<>();
-
-        for (Event event : events) {
-          Date eventDate = event.getTimestamp();
-          long unixtime = eventDate.getTime();
-          long reportTime = ReportUtils.getUnixTime();
-          if ((reportTime - unixtime) < (reportTime - REPORTINGINTERVAL)) {
-            timedEvents.add(event);
-          }
-        }
+        Date end = new Date();
+        Date start = new Date(end.getTime() - REPORTINGINTERVAL);
+        events = eventService.findEventsForComplianceByDateRange(question, start, end);
 
         // get compliance rates for all users:
         for (User user : userRepository.findAll()) {
@@ -72,7 +63,7 @@ public abstract class AbstractReportWorkerComplianceWarning implements ReportWor
               user,
               H2msRestUtils.calculateCompliance(
                   question,
-                  timedEvents
+                  events
                       .stream()
                       .filter(event -> event.getSubject().equals(user))
                       .collect(Collectors.toSet())));
