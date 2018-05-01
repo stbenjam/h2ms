@@ -29,6 +29,7 @@ export interface ResourceUser {
     _links?: {
         self?: Link,
         profile?: Link,
+        roles?: Link,
         search?: Link
     };
     middleName?: string;

@@ -9,7 +9,7 @@ import {
     MatCardModule,
     MatCheckboxModule,
     MatDialogModule,
-    MatDividerModule, MatFormFieldControl,
+    MatDividerModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
@@ -55,6 +55,8 @@ import { UserComponent,
     UserSubmissionFailureDialogComponent
 } from './user/user.component';
 import {ReportsChartService} from './reports/reports-chart.service';
+import {UserRegistrationService} from './api/registration.service';
+import {RoleEntityService} from './api/roleEntity.service';
 
 @NgModule({
     declarations: [
@@ -119,7 +121,9 @@ import {ReportsChartService} from './reports/reports-chart.service';
         EventTemplateEntityService,
         LocationEntityService,
         ReportsChartService,
-        UserEntityService
+        UserEntityService,
+        UserRegistrationService,
+        RoleEntityService
     ],
     bootstrap: [AppComponent]
 })
