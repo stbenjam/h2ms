@@ -117,7 +117,8 @@ export class UserComponent implements OnInit {
 
         saveObservable.subscribe((response) => {
             this.openSuccessDialog();
-                this.userEntityService.findAllUserUsingGET(undefined, '50', undefined).subscribe( (res) => {
+            if (this.authService.isLoggedIn()) {
+                this.userEntityService.findAllUserUsingGET(undefined, '50', undefined).subscribe((res) => {
                     this.users = res._embedded.users.filter((resourceUser: ResourceUser) => {
                         return resourceUser.enabled;
                     });
@@ -125,6 +126,9 @@ export class UserComponent implements OnInit {
                     this.resetUserFormValues(true);
                     this.editMode = false;
                 });
+            } else {
+                this.resetUserFormValues(true);
+            }
             },
             (error) => { this.openFailureDialog(); } );
     }
