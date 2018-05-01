@@ -15,18 +15,18 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 /**
- * HandwashEventTemplateSeeder. This seeds the basic template for a hand washing event.
+ * BlueGloveEventTemplateSeeder. This seeds the basic template for a blue gloves observation event.
  *
  * @author stbenjam
  */
 @Component
-@Profile("!bluegloves")
-public class HandwashEventTemplateSeeder {
+@Profile("bluegloves")
+public class BlueGloveEventTemplateSeeder {
   private EventTemplateRepository eventTemplateRepository;
   private QuestionRepository questionRepository;
 
   @Autowired
-  public HandwashEventTemplateSeeder(
+  public BlueGloveEventTemplateSeeder(
       EventTemplateRepository eventTemplateRepository, QuestionRepository questionRepository) {
     this.eventTemplateRepository = eventTemplateRepository;
     this.questionRepository = questionRepository;
@@ -34,25 +34,26 @@ public class HandwashEventTemplateSeeder {
 
   @EventListener
   public void seed(ContextRefreshedEvent event) {
-    EventTemplate template = new EventTemplate("Handwashing Event");
+    EventTemplate template = new EventTemplate("Bluegloves Event");
     eventTemplateRepository.save(template);
 
     Set<Question> questions =
         ImmutableSet.<Question>of(
             new Question(
-                "Relative moment",
+                "Observation Moment",
                 "options",
-                asList("entering", "inside", "leaving"),
+                asList("leaving room", "inside room", "leaving building"),
                 true,
                 1,
                 template),
-            new Question("Washed?", "boolean", null, true, 3, template),
+            new Question("Gloves removed?", "boolean", null, false, 3, template),
+            new Question("Gloves contaminated?", "boolean", null, false, 4, template),
             new Question(
-                "Handwashing Method",
+                "Method of contamination",
                 "options",
-                asList("Soap and Water", "Alcohol"),
+                asList("Surface contact", "Multiple patient use", "Other"),
                 false,
-                4,
+                5,
                 template));
 
     questionRepository.save(questions);
