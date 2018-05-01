@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface UserService {
 
   public User findUserByEmail(String email);
-  
+
   public User findUserByResetToken(String resetToken);
 
   public User save(User user);

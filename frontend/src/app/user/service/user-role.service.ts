@@ -25,7 +25,6 @@ export class UserRoleService {
                     });
                 }
             });
-            console.log('returning response: ' + hasARoleFromList);
             return Observable.of(hasARoleFromList);
         });
     }
