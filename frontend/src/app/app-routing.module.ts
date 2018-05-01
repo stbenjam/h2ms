@@ -93,6 +93,16 @@ export const NAV_ITEMS_USER: NavItem[] = [
     // ])
 ];
 
+export const NAV_ITEMS_ANY: NavItem[] = [
+    new NavItem('Login', '/login'),
+    new NavItem('Privacy', '/privacy'),
+    new NavItem('About', '/about')
+    // new NavItem('Help', '/help'),
+    // NavItem.createNavItemWithSubItems('Settings', [
+    // new NavItem('Account', '/account'),
+    // ])
+];
+
 @NgModule({
     exports: [RouterModule],
     imports: [RouterModule.forRoot(routes)],
