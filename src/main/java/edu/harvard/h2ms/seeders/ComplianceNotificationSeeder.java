@@ -2,6 +2,8 @@ package edu.harvard.h2ms.seeders;
 
 import edu.harvard.h2ms.domain.core.Notification;
 import edu.harvard.h2ms.repository.NotificationRepository;
+import edu.harvard.h2ms.service.report.ReportWorkerComplianceTrendMonthly;
+import edu.harvard.h2ms.service.report.ReportWorkerComplianceTrendWeekly;
 import edu.harvard.h2ms.service.report.ReportWorkerComplianceWarningMonthly;
 import edu.harvard.h2ms.service.report.ReportWorkerComplianceWarningWeekly;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,16 +31,28 @@ public class ComplianceNotificationSeeder {
     notification.setName("WeeklyComplianceReport");
     notification.setReportType(ReportWorkerComplianceWarningWeekly.REPORT_TYPE);
     notification.setNotificationTitle("Weekly Compliance Notification");
-    notification.setNotificationBody("note body\n Report:\n");
-
+    notification.setNotificationBody("Report:\n");
     this.notificationRepository.save(notification);
 
-    Notification notification2 = new Notification();
-    notification2.setName("MonthlyComplianceReport");
-    notification2.setReportType(ReportWorkerComplianceWarningMonthly.REPORT_TYPE);
-    notification2.setNotificationTitle("Monthly Compliance Notification");
-    notification2.setNotificationBody("note body\n Report:\n");
+    notification = new Notification();
+    notification.setName("MonthlyComplianceReport");
+    notification.setReportType(ReportWorkerComplianceWarningMonthly.REPORT_TYPE);
+    notification.setNotificationTitle("Monthly Compliance Notification");
+    notification.setNotificationBody("Report:\n");
+    this.notificationRepository.save(notification);
 
-    this.notificationRepository.save(notification2);
+    notification = new Notification();
+    notification.setName("MonthlyTrendsReport");
+    notification.setReportType(ReportWorkerComplianceTrendMonthly.REPORT_TYPE);
+    notification.setNotificationTitle("Monthly Trends Notification");
+    notification.setNotificationBody("Report:\n");
+    this.notificationRepository.save(notification);
+
+    notification = new Notification();
+    notification.setName("WeeklyTrendsReport");
+    notification.setReportType(ReportWorkerComplianceTrendWeekly.REPORT_TYPE);
+    notification.setNotificationTitle("Weekly Trends Notification");
+    notification.setNotificationBody("Report:\n");
+    this.notificationRepository.save(notification);
   }
 }
