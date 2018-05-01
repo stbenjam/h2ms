@@ -66,6 +66,7 @@ export class UserComponent implements OnInit {
             this.users = usersResolver._embedded.users.filter((resourceUser: ResourceUser) => {
                 return resourceUser.enabled;
             });
+            this.users.sort(this.compareUsers);
         }
     }
 
@@ -120,6 +121,7 @@ export class UserComponent implements OnInit {
                     this.users = res._embedded.users.filter((resourceUser: ResourceUser) => {
                         return resourceUser.enabled;
                     });
+                    this.users.sort(this.compareUsers);
                 });
             },
             (error) => { this.openFailureDialog(); } );
@@ -191,6 +193,13 @@ export class UserComponent implements OnInit {
         } else {
             this.selectedRoles.push((checkBoxChange.source.value as Role));
         }
+    }
+
+    compareUsers(user1: User, user2: User): number {
+        const user1String = user1.lastName + user1.firstName + user1.middleName + user1.id,
+            user2String = user2.lastName + user2.firstName + user2.middleName + user2.id;
+
+        return user1String.localeCompare(user2String);
     }
 
 }
