@@ -32,6 +32,7 @@
                     <mat-placeholder>Type</mat-placeholder>
                 </mat-form-field>
                 <div *ngIf="isLoggedIn">
+                    <mat-card-content><strong>Roles</strong></mat-card-content>
                     <mat-checkbox class="col" *ngFor="let role of roles" [value]="role" (change)="checkBoxOnChange($event)"
                                   formControlName="{{role.id}}" color="primary">{{role.name}}</mat-checkbox>
                 </div>
