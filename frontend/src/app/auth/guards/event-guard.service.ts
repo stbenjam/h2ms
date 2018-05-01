@@ -12,15 +12,16 @@ export class EventGuardService implements CanActivate {
                 private userRoleService: UserRoleService) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-        if (!this.authService.isLoggedIn()) {
+        const isLoggedIn = this.authService.isLoggedIn();
+        if (!isLoggedIn) {
             this.router.navigate(['login']);
-            return false;
+            return isLoggedIn;
         }
-        return this.userRoleService.hasRoles(['ROLE_ADMIN', 'ROLE_OBSERVER']).flatMap((b) => {
-            if (!b) {
+        return this.userRoleService.hasRoles(['ROLE_ADMIN', 'ROLE_OBSERVER']).flatMap((hasObserverRole) => {
+            if (!hasObserverRole) {
                 this.router.navigate(['about']);
             }
-            return Observable.of(b);
+            return Observable.of(hasObserverRole);
         });
     }
 }

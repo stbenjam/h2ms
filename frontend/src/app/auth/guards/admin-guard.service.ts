@@ -12,15 +12,16 @@ export class AdminGuardService implements CanActivate {
                 private userRoleService: UserRoleService) { }
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-        if (!this.authService.isLoggedIn()) {
+        const isLoggedIn = this.authService.isLoggedIn();
+        if (!isLoggedIn) {
             this.router.navigate(['login']);
-            return false;
+            return isLoggedIn;
         }
-        return this.userRoleService.hasRoles(['ROLE_ADMIN']).flatMap((b) => {
-            if (!b) {
+        return this.userRoleService.hasRoles(['ROLE_ADMIN']).flatMap((hasAdminRole) => {
+            if (!hasAdminRole) {
                 this.router.navigate(['about']);
             }
-            return Observable.of(b);
+            return Observable.of(hasAdminRole);
         });
     }
 }
