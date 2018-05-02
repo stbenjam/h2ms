@@ -25,7 +25,6 @@ export class UserRoleCheckService {
             const authorities = user.authorities.map((auth) => {
                 return auth.authority;
             });
-            console.log('authorities: ' + authorities);
             return Observable.of(authorities);
         });
     }
