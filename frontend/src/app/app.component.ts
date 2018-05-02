@@ -89,17 +89,19 @@ export class AppComponent implements OnDestroy {
     }
 
     updateNav() {
-        this.userRoleCheckService.getRoles().subscribe((roles) => {
-            if (roles.includes('ROLE_ADMIN')) {
-                this.setNavItems(NAV_ITEMS_ADMIN);
-            } else if (roles.includes('ROLE_OBSERVER')) {
-                this.setNavItems(NAV_ITEMS_OBSERVER);
-            } else if (roles.includes('ROLE_USER')) {
-                this.setNavItems(NAV_ITEMS_USER);
-            } else {
-                this.setNavItems(NAV_ITEMS_ANY);
-            }
-        });
+        if (this.authService.isLoggedIn()) {
+            this.userRoleCheckService.getRoles().subscribe((roles) => {
+                if (roles.includes('ROLE_ADMIN')) {
+                    this.setNavItems(NAV_ITEMS_ADMIN);
+                } else if (roles.includes('ROLE_OBSERVER')) {
+                    this.setNavItems(NAV_ITEMS_OBSERVER);
+                } else if (roles.includes('ROLE_USER')) {
+                    this.setNavItems(NAV_ITEMS_USER);
+                } else {
+                    this.setNavItems(NAV_ITEMS_ANY);
+                }
+            });
+        }
     }
 
 }
