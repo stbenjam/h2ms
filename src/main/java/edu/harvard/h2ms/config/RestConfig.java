@@ -60,6 +60,7 @@ public class RestConfig extends RepositoryRestConfigurerAdapter {
     config.addAllowedMethod("GET");
     config.addAllowedMethod("PATCH");
     config.addAllowedMethod("POST");
+    config.addAllowedMethod("PATCH");
     config.addAllowedMethod("PUT");
     config.addAllowedMethod("DELETE");
     source.registerCorsConfiguration("/**", config);

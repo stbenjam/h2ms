@@ -16,6 +16,8 @@ import {ResetPasswordComponent} from './reset-password/reset-password.component'
 import {UserByEmailResolverService} from './user/service/user-by-email-resolver.service';
 import {EventGuardService} from './auth/guards/event-guard.service';
 import {AdminGuardService} from './auth/guards/admin-guard.service';
+import {UserComponent} from './user/user.component';
+import {RoleResolverService} from './role/service/role-resolver.service';
 
 /**
  * The actual available routes. Which links are routed to which components.
@@ -42,6 +44,13 @@ const routes: Routes = [
     {path: 'forgot-password', component: ForgotPasswordComponent},
     {path: 'reset-password/:email/:resetToken', component: ResetPasswordComponent},
     // todo: route route to dashboard when made
+    {path: 'users',
+        component: UserComponent,
+        resolve: {
+            usersResolver: UsersResolverService,
+            rolesResolver: RoleResolverService
+        }
+    },
     {path: '', redirectTo: 'reports', pathMatch: 'full'}
 ];
 
@@ -104,6 +113,7 @@ export const NAV_ITEMS_ANY: NavItem[] = [
         UsersResolverService,
         LocationResolverService,
         UserByEmailResolverService,
+        RoleResolverService
     ]
 })
 export class AppRoutingModule {

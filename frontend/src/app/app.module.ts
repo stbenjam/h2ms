@@ -9,7 +9,7 @@ import {
     MatCardModule,
     MatCheckboxModule,
     MatDialogModule,
-    MatDividerModule, MatFormFieldControl,
+    MatDividerModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
@@ -61,6 +61,8 @@ import {EventGuardService} from './auth/guards/event-guard.service';
 import {AdminGuardService} from './auth/guards/admin-guard.service';
 import {UserRoleService} from './user/service/user-role.service';
 import {UsersByEmailResolverService} from './user/service/users-by-email-resolver.service';
+import {UserRegistrationService} from './api/registration.service';
+import {RoleEntityService} from './api/roleEntity.service';
 
 @NgModule({
     declarations: [
@@ -132,6 +134,8 @@ import {UsersByEmailResolverService} from './user/service/users-by-email-resolve
         RoleEntityService,
         UserRoleService,
         UsersByEmailResolverService
+        UserRegistrationService,
+        RoleEntityService
     ],
     bootstrap: [AppComponent]
 })
