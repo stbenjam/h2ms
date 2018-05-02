@@ -11,7 +11,7 @@ import {
     REQUIRED_PASSWORD_ERROR_MESSAGE
 } from '../forms-common/form-controls';
 import {FormControl} from '@angular/forms';
-import {UserRoleService} from '../user/service/user-role.service';
+import {UserRoleCheckService} from '../user/service/user-role-check.service';
 
 @Component({
     selector: 'app-login',
@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
                 private router: Router,
                 private configService: ConfigService,
                 private userEmailService: UserEmailService,
-                private userRoleService: UserRoleService) {
+                private userRoleCheckService: UserRoleCheckService) {
         this.config = configService.getConfig();
     }
 
@@ -53,9 +53,9 @@ export class LoginComponent implements OnInit {
             .subscribe(
                 response => {
                     this.userEmailService.setEmail(email);
-                    if (this.userRoleService.hasRoles(['ROLE_ADMIN'])) {
+                    if (this.userRoleCheckService.hasRoles(['ROLE_ADMIN'])) {
                         this.router.navigate(['dashboard']);
-                    } else if (this.userRoleService.hasRoles(['ROLE_OBSERVER'])) {
+                    } else if (this.userRoleCheckService.hasRoles(['ROLE_OBSERVER'])) {
                         this.router.navigate(['event']);
                     } else {
                         this.router.navigate(['about']);

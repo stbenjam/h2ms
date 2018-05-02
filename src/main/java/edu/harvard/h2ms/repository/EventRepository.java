@@ -12,7 +12,9 @@ public interface EventRepository extends PagingAndSortingRepository<Event, Long>
   List<Event> findByEventTemplate(@Param("eventTemplate") EventTemplate eventTemplate);
 
   List<Event> findByEventTemplateAndTimestampAfterAndTimestampBefore(
-		  @Param("eventTemplate") EventTemplate eventTemplate, @Param("after") Date after, @Param("before") Date before);
+      @Param("eventTemplate") EventTemplate eventTemplate,
+      @Param("after") Date after,
+      @Param("before") Date before);
 
   Long countByObserver(@Param("observer") User observer);
 }

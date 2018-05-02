@@ -57,11 +57,11 @@ import { UserComponent,
 import {ReportsChartService} from './reports/reports-chart.service';
 import {UserRegistrationService} from './api/registration.service';
 import {RoleEntityService} from './api/roleEntity.service';
-import {UserRoleService} from './user/service/user-role.service';
-import {UsersByEmailResolverService} from "./user/service/users-by-email-resolver.service";
-import {AdminGuardService} from "./auth/guards/admin-guard.service";
-import {EventGuardService} from "./auth/guards/event-guard.service";
+import {UsersByEmailResolverService} from './user/service/users-by-email-resolver.service';
+import {AdminGuardService} from './auth/guards/admin-guard.service';
+import {EventGuardService} from './auth/guards/event-guard.service';
 import { NotFoundComponent } from './not-found/not-found.component';
+import {UserRoleCheckService} from './user/service/user-role-check.service';
 
 @NgModule({
     declarations: [
@@ -132,7 +132,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
         UserEntityService,
         UserRegistrationService,
         RoleEntityService,
-        UserRoleService,
+        UserRoleCheckService,
         UsersByEmailResolverService
     ],
     bootstrap: [AppComponent]

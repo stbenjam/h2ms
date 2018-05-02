@@ -7,8 +7,8 @@ import {NAV_ITEMS_ADMIN, NAV_ITEMS_ANY, NAV_ITEMS_OBSERVER, NAV_ITEMS_USER} from
 import {Location} from '@angular/common';
 import {Title} from '@angular/platform-browser';
 import {AuthService} from './auth/auth.service';
-import {UserRoleService} from './user/service/user-role.service';
 import {Router} from '@angular/router';
+import {UserRoleCheckService} from './user/service/user-role-check.service';
 
 @Component({
     selector: 'app-root',
@@ -34,8 +34,8 @@ export class AppComponent implements OnDestroy {
                 private configService: ConfigService,
                 private titleService: Title,
                 private authService: AuthService,
-                private userRoleService: UserRoleService,
-                private router: Router) {
+                private router: Router,
+                private userRoleCheckService: UserRoleCheckService) {
         this.mobileQuery = media.matchMedia('(max-width: 1050px)');
         this._mobileQueryListener = () => changeDetectorRef.detectChanges();
         this.mobileQuery.addListener(this._mobileQueryListener);
@@ -89,21 +89,17 @@ export class AppComponent implements OnDestroy {
     }
 
     updateNav() {
-        if (this.authService.isLoggedIn()) {
-            if (this.userRoleService.hasRoles(['ROLE_ADMIN'])) {
-                console.log('swapping in nav for ' + 'ROLE_ADMIN');
+        this.userRoleCheckService.getRoles().subscribe((roles) => {
+            if (roles.includes('ROLE_ADMIN')) {
                 this.setNavItems(NAV_ITEMS_ADMIN);
-            } else if (this.userRoleService.hasRoles(['ROLE_OBSERVER'])) {
-                console.log('swapping in nav for ' + 'ROLE_OBSERVER');
+            } else if (roles.includes('ROLE_OBSERVER')) {
                 this.setNavItems(NAV_ITEMS_OBSERVER);
-            } else if (this.userRoleService.hasRoles(['ROLE_USER'])) {
-                console.log('swapping in nav for ' + 'ROLE_USER');
+            } else if (roles.includes('ROLE_USER')) {
                 this.setNavItems(NAV_ITEMS_USER);
             } else {
-                console.log('swapping in nav for ' + 'NAV_ITEMS_ANY');
                 this.setNavItems(NAV_ITEMS_ANY);
             }
-        }
+        });
     }
 
 }
