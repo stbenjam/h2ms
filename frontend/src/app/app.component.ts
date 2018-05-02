@@ -91,12 +91,16 @@ export class AppComponent implements OnDestroy {
     updateNav() {
         if (this.authService.isLoggedIn()) {
             if (this.userRoleService.hasRoles(['ROLE_ADMIN'])) {
+                console.log('swapping in nav for ' + 'ROLE_ADMIN');
                 this.setNavItems(NAV_ITEMS_ADMIN);
             } else if (this.userRoleService.hasRoles(['ROLE_OBSERVER'])) {
+                console.log('swapping in nav for ' + 'ROLE_OBSERVER');
                 this.setNavItems(NAV_ITEMS_OBSERVER);
             } else if (this.userRoleService.hasRoles(['ROLE_USER'])) {
+                console.log('swapping in nav for ' + 'ROLE_USER');
                 this.setNavItems(NAV_ITEMS_USER);
             } else {
+                console.log('swapping in nav for ' + 'NAV_ITEMS_ANY');
                 this.setNavItems(NAV_ITEMS_ANY);
             }
         }

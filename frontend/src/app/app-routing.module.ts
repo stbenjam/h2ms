@@ -19,6 +19,7 @@ import {RoleResolverService} from './role/service/role-resolver.service';
 import {AdminGuardService} from './auth/guards/admin-guard.service';
 import {EventGuardService} from './auth/guards/event-guard.service';
 import {NotFoundComponent} from './not-found/not-found.component';
+import {UsersByEmailResolverService} from "./user/service/users-by-email-resolver.service";
 
 /**
  * The actual available routes. Which links are routed to which components.
@@ -36,7 +37,7 @@ const routes: Routes = [
             locationResolver: LocationResolverService,
             usersResolver: UsersResolverService,
             questionResolver: QuestionResolverService,
-            userByEmailResolver: UserByEmailResolverService
+            userByEmailResolver: UsersByEmailResolverService
         }
     },
     {path: 'reports', component: ReportsComponent, canActivate: [AdminGuardService]},
