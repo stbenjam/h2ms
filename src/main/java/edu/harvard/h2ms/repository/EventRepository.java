@@ -6,12 +6,13 @@ import edu.harvard.h2ms.domain.core.User;
 import java.util.Date;
 import java.util.List;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 
 public interface EventRepository extends PagingAndSortingRepository<Event, Long> {
-  List<Event> findByEventTemplate(EventTemplate eventTemplate);
+  List<Event> findByEventTemplate(@Param("eventTemplate") EventTemplate eventTemplate);
 
   List<Event> findByEventTemplateAndTimestampAfterAndTimestampBefore(
-      EventTemplate eventTemplate, Date after, Date before);
+		  @Param("eventTemplate") EventTemplate eventTemplate, @Param("after") Date after, @Param("before") Date before);
 
-  Long countByObserver(User observer);
+  Long countByObserver(@Param("observer") User observer);
 }
