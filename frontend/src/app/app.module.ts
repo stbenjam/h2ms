@@ -55,6 +55,12 @@ import { UserComponent,
     UserSubmissionFailureDialogComponent
 } from './user/user.component';
 import {ReportsChartService} from './reports/reports-chart.service';
+import {UserRoleResolverService} from './user/service/user-role-resolver.service';
+import {RoleEntityService} from './api/roleEntity.service';
+import {EventGuardService} from './auth/guards/event-guard.service';
+import {AdminGuardService} from './auth/guards/admin-guard.service';
+import {UserRoleService} from './user/service/user-role.service';
+import {UsersByEmailResolverService} from './user/service/users-by-email-resolver.service';
 import {UserRegistrationService} from './api/registration.service';
 import {RoleEntityService} from './api/roleEntity.service';
 import {UsersByEmailResolverService} from './user/service/users-by-email-resolver.service';
@@ -130,6 +136,12 @@ import {UserRoleCheckService} from './user/service/user-role-check.service';
         LocationEntityService,
         ReportsChartService,
         UserEntityService,
+        EventGuardService,
+        AdminGuardService,
+        UserRoleResolverService,
+        RoleEntityService,
+        UserRoleService,
+        UsersByEmailResolverService
         UserRegistrationService,
         RoleEntityService,
         UserRoleCheckService,
