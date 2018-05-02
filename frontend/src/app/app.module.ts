@@ -34,7 +34,7 @@ import {ConfigService} from './config/config.service';
 import {ExportComponent} from './export/export.component';
 import {TokenInterceptor} from './auth/token-interceptor.service';
 import {AuthService} from './auth/auth.service';
-import {AuthGuardService} from './auth/auth-guard.service';
+import {AuthGuardService} from './auth/guards/auth-guard.service';
 import {EventTemplateEntityService} from './api/eventTemplateEntity.service';
 import {LocationEntityService} from './api/locationEntity.service';
 import {UserEntityService} from './api/userEntity.service';
@@ -55,8 +55,15 @@ import { UserComponent,
     UserSubmissionFailureDialogComponent
 } from './user/user.component';
 import {ReportsChartService} from './reports/reports-chart.service';
-import {UserRegistrationService} from './api/registration.service';
+import {UserRoleResolverService} from './user/service/user-role-resolver.service';
 import {RoleEntityService} from './api/roleEntity.service';
+import {EventGuardService} from './auth/guards/event-guard.service';
+import {AdminGuardService} from './auth/guards/admin-guard.service';
+import {UserRoleService} from './user/service/user-role.service';
+import {UserRegistrationService} from './api/registration.service';
+import {UsersByEmailResolverService} from './user/service/users-by-email-resolver.service';
+import { NotFoundComponent } from './not-found/not-found.component';
+import {UserRoleCheckService} from './user/service/user-role-check.service';
 
 @NgModule({
     declarations: [
@@ -76,7 +83,8 @@ import {RoleEntityService} from './api/roleEntity.service';
         ResetPasswordComponent,
         UserComponent,
         UserSubmissionSuccessDialogComponent,
-        UserSubmissionFailureDialogComponent
+        UserSubmissionFailureDialogComponent,
+        NotFoundComponent
     ],
     imports: [
         BrowserModule,
@@ -112,6 +120,8 @@ import {RoleEntityService} from './api/roleEntity.service';
         ConfigService,
         AuthService,
         AuthGuardService,
+        AdminGuardService,
+        EventGuardService,
         UserEmailService, {
             provide: HTTP_INTERCEPTORS,
             useClass: TokenInterceptor,
@@ -122,8 +132,13 @@ import {RoleEntityService} from './api/roleEntity.service';
         LocationEntityService,
         ReportsChartService,
         UserEntityService,
+        UserRoleResolverService,
+        RoleEntityService,
+        UserRoleService,
         UserRegistrationService,
-        RoleEntityService
+        RoleEntityService,
+        UserRoleCheckService,
+        UsersByEmailResolverService
     ],
     bootstrap: [AppComponent]
 })

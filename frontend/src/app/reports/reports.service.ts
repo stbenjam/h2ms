@@ -32,7 +32,7 @@ export class ReportsService {
             {
                 name: 'Location',
                 disabled: true,
-                groupings: [{value: 'hospital', viewValue: 'Hospital', disabled: true}]
+                groupings: [{value: 'location', viewValue: 'All', disabled: true}]
             }
         ]
     }];
@@ -142,7 +142,7 @@ export class ReportsService {
                                 {value: 'employee type', viewValue: 'Employee type', disabled: false}]},
                 {name: 'Location',
                     disabled: false,
-                    groupings: [{value: 'hospital', viewValue: 'Hospital', disabled: false}]}
+                    groupings: [{value: 'location', viewValue: 'All', disabled: false}]}
             ]});
             }
         );
@@ -189,7 +189,7 @@ export class ReportsService {
         } else if (grouping.value.match('year') || grouping.value.match('quarter')
             || grouping.value.match('month') || grouping.value.match('week')) {
             return '/events/compliance/' + chart.id + '/' + grouping.value;
-        } else if (grouping.value.match('hospital')) {
+        } else if (grouping.value.match('location')) {
             return '/events/compliance/' + chart.id + '/location';
         } else {
             return undefined;
