@@ -10,8 +10,8 @@ import * as gloves from './gloves-config';
  */
 @Injectable()
 export class ConfigService {
-    useH2MSConfig = true;
-    useLocalConfig = false;
+    useH2MSConfig = false;
+    useLocalConfig = true;
     config: Config;
 
     constructor() {
@@ -44,7 +44,7 @@ export class ConfigService {
     private updateConfig() {
         if (this.useLocalConfig && this.useH2MSConfig) {
             this.config.setConfig(h2msLocal.CONFIG);
-        } else if (this.useLocalConfig) {
+        } else if (!this.useH2MSConfig && this.useLocalConfig) {
             this.config.setConfig(glovesLocal.CONFIG);
         } else if (this.useH2MSConfig) {
             this.config.setConfig(h2ms.CONFIG);
