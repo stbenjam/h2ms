@@ -11,4 +11,4 @@ export const CONFIG: Config = new Config(
     '/assets/images/logos/h2ms-logo.png',
     'https://bluegloves.h2ms.org',
     443,
-    [{id: 3, displayName: "Gloves removed?"}]); // todo: add gloves favicon and logo
+    [{id: '3', displayName: 'Gloves removed?'}]); // todo: add gloves favicon and logo
