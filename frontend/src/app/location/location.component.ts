@@ -60,15 +60,13 @@ export class LocationComponent implements OnInit, AfterViewInit {
         this.http.get(this.config.getBackendUrl() + '/locations/' + location.id + '/children')
             .subscribe((res: Response) => {
                     const children = getPayload(res).locations;
-                    let deletePrompt = 'Are you sure you want to delete ' + location.name + '?';
-
-                let hasChildren = children.length;
-                if (hasChildren) {
-                    deletePrompt += location.name + ' has ' + children.length + ' locations inside of it. ' +
-                        'They must be deleted first before ' + location.name + ' can be deleted.';
+                if (children.length) {
+                    alert(location.name + ' has ' + children.length + ' locations inside of it. ' +
+                        'They must be deleted first before ' + location.name + ' can be deleted.');
+                    return;
                     }
 
-                if (confirm(deletePrompt) && !hasChildren) {
+                if (confirm('Are you sure you want to delete ' + location.name + '?')) {
                         this.http.delete(getLinks(location).self.href, undefined).subscribe();
                         this.removeLocationFromTable(location);
                     }
