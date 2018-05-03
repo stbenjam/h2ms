@@ -1,9 +1,10 @@
-import {Config, ConfigQuestion} from './config';
+import {Config} from './config';
 
 /**
  * Configuration for Hand Hygiene app.
  */
-export const CONFIG: Config = new Config('H2MS',
+export const CONFIG: Config = new Config(
+    'H2MS',
     'https://test.h2ms.org',
     443,
     '/assets/images/banners/h2ms-banner.png',

@@ -41,7 +41,7 @@ public class NotificationController {
 
     String email = (String) requestParams.get("email");
     String notificationName = (String) requestParams.get("notificationName");
-    String notificationInterval = (String) requestParams.get("notificaitonInterval");
+    String notificationInterval = (String) requestParams.get("notificationInterval");
 
     NotificationFrequency notificationFrequency =
         NotificationFrequency.getNotificationFrequency(notificationInterval);

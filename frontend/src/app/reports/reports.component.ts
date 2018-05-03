@@ -73,9 +73,9 @@ export class ReportsComponent implements OnInit {
                             this.emptyJSONReturned = false;
                             this.reportsChartService.makeBarChart(this.chartName,
                                 this.selectedChart.value, this.selectedGrouping.value, response);
-                            this.chartTitle = this.selectedChart.viewValue + ' grouped by '
-                                + this.selectedGrouping.value;
                         }
+                        this.chartTitle = this.selectedChart.viewValue + ' grouped by '
+                            + this.selectedGrouping.value;
                     },
                     error => {
                         if (error.status === 401) {

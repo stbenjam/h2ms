@@ -7,6 +7,8 @@ import edu.harvard.h2ms.repository.UserRepository;
 import edu.harvard.h2ms.service.EmailService;
 import edu.harvard.h2ms.service.UserService;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -21,6 +23,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -147,7 +150,10 @@ public class PasswordController {
    * <p>*****************************************
    */
   @RequestMapping(value = "/newuser/email", method = RequestMethod.POST)
-  public ResponseEntity<?> registerUserByEmail(@RequestBody User user) {
+  public ResponseEntity<?> registerUserByEmail(
+      @RequestHeader(value = "Referer", required = false, defaultValue = "https://test.h2ms.org")
+          String referer,
+      @RequestBody User user) {
 
     // User created will need verification
     user.setVerified(false);
@@ -158,13 +164,13 @@ public class PasswordController {
     // TODO: user password can't be set
     user.setPassword(token);
     if (userRepository.findByEmail(user.getEmail()) != null) {
-      final String MSG = "user email already taken";
+      final String MSG = "User email already taken";
       log.info(MSG);
       return new ResponseEntity<String>(MSG, HttpStatus.CONFLICT);
     }
 
     if (user.getType() == adminUserType) {
-      final String MSG = "admin user cannot be created using standard email registration";
+      final String MSG = "Admin user cannot be created using standard email registration";
       log.info(MSG);
       return new ResponseEntity<String>(MSG, HttpStatus.FORBIDDEN);
     }
@@ -175,6 +181,18 @@ public class PasswordController {
     // TODO: is there a password policy?
     userRepository.save(user);
 
+    URL ref;
+    try {
+      ref = new URL(referer);
+    } catch (MalformedURLException e) {
+      throw new RuntimeException(e.getMessage());
+    }
+
+    String url =
+        String.format(
+            "%s://%s:%d/reset-password/%s",
+            ref.getProtocol(), ref.getHost(), ref.getPort(), user.getEmail());
+
     SimpleMailMessage message = new SimpleMailMessage();
 
     /** user email address * */
@@ -183,8 +201,12 @@ public class PasswordController {
     /** uncomment for quick test: * */
     // message.setTo("my.email.address@gmail.com");
 
-    message.setSubject("h2msreset token - new user registration");
-    message.setText("please use the password reset token: " + user.getResetToken());
+    message.setSubject("H2MS: New User Registration");
+    message.setText(
+        "Please visit the following url to verify your account:"
+            + url
+            + "/"
+            + user.getResetToken());
 
     // actually send the message
     emailService.sendEmail(message);
@@ -192,7 +214,7 @@ public class PasswordController {
     // Save user
     userService.save(user);
     Map<String, String> entity = new HashMap<>();
-    entity.put("action", "user password reset");
+    entity.put("action", "User password reset");
 
     return new ResponseEntity<Object>(entity, HttpStatus.OK);
   }

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {Config} from './config';
 import * as h2ms from './h2ms-config';
 import * as h2msLocal from './local-h2ms-config';
-import * as glovesLocal from './local-h2ms-config';
+import * as glovesLocal from './local-gloves-config';
 import * as gloves from './gloves-config';
 
 /**

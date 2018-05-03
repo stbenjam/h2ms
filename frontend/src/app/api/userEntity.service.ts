@@ -298,11 +298,11 @@ export class UserEntityService {
      *
      * @param param0 param0
      */
-    public findOneByEmailUserUsingGET(param0?: string): Observable<ResourceUser> {
+    public findOneByEmailUserUsingGET(email?: string): Observable<ResourceUser> {
 
         let queryParameters = new HttpParams({encoder: new CustomHttpUrlEncodingCodec()});
-        if (param0 !== undefined) {
-            queryParameters = queryParameters.set('param0', <any>param0);
+        if (email !== undefined) {
+            queryParameters = queryParameters.set('email', <any>email);
         }
 
         let headers = this.defaultHeaders;
