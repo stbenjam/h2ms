@@ -5,7 +5,7 @@ import {PrivacyComponent} from './privacy/privacy.component';
 import {EventComponent} from './event/event.component';
 import {NavItem} from './sidenav/nav-item';
 import {ExportComponent} from './export/export.component';
-import {AuthGuardService} from './auth/auth-guard.service';
+import {AuthGuardService} from './auth/guards/auth-guard.service';
 import {LocationResolverService} from './location/service/location-resolver.service';
 import {UsersResolverService} from './user/service/users-resolver.service';
 import {QuestionResolverService} from './questions/service/question-resolver.service';
@@ -16,7 +16,12 @@ import {LocationEditComponent} from './location-edit/location-edit.component';
 import {ForgotPasswordComponent} from './forgot-password/forgot-password.component';
 import {ResetPasswordComponent} from './reset-password/reset-password.component';
 import {UserByEmailResolverService} from './user/service/user-by-email-resolver.service';
+import {EventGuardService} from './auth/guards/event-guard.service';
+import {AdminGuardService} from './auth/guards/admin-guard.service';
 import {UserComponent} from './user/user.component';
+import {RoleResolverService} from './role/service/role-resolver.service';
+import {NotFoundComponent} from './not-found/not-found.component';
+import {UsersByEmailResolverService} from './user/service/users-by-email-resolver.service';
 
 /**
  * The actual available routes. Which links are routed to which components.
@@ -25,15 +30,16 @@ const routes: Routes = [
     {path: 'login', component: LoginComponent},
     {path: 'privacy', component: PrivacyComponent},
     {path: 'about', component: AboutComponent},
+    {path: 'error', component: NotFoundComponent},
     {
         path: 'event',
         component: EventComponent,
-        canActivate: [AuthGuardService],
+        canActivate: [EventGuardService],
         resolve: {
             locationResolver: LocationResolverService,
             usersResolver: UsersResolverService,
             questionResolver: QuestionResolverService,
-            userByEmailResolver: UserByEmailResolverService
+            userByEmailResolver: UsersByEmailResolverService
         }
     },
     {path: 'reports', component: ReportsComponent, canActivate: [AuthGuardService]},
@@ -62,29 +68,34 @@ const routes: Routes = [
             locationResolver: LocationResolverService
         }
     },
-    // TODO: route dashboard to the DashboardComponent when it is created.
-    {path: 'dashboard', redirectTo: 'reports', pathMatch: 'full', canActivate: [AuthGuardService]}, // a protected page
+    {path: 'reports', component: ReportsComponent, canActivate: [AdminGuardService]},
+    {path: 'export', component: ExportComponent, canActivate: [AdminGuardService]},
+    {path: 'dashboard', redirectTo: 'reports', pathMatch: 'full', canActivate: [AdminGuardService]}, // a protected page
     {path: 'forgot-password', component: ForgotPasswordComponent},
     {path: 'reset-password/:email/:resetToken', component: ResetPasswordComponent},
     // todo: route route to dashboard when made
     {path: 'users',
         component: UserComponent,
-        canActivate: [AuthGuardService],
         resolve: {
-            usersResolver: UsersResolverService
+            usersResolver: UsersResolverService,
+            rolesResolver: RoleResolverService
         }
     },
-    {path: '', redirectTo: 'reports', pathMatch: 'full'}
+    {path: '', redirectTo: 'reports', pathMatch: 'full'},
+    {path: '**', redirectTo: 'error', pathMatch: 'full'}
 ];
 
 /**
  * Displayed in the side nav bar. Leaving future navItems commented out.
  * TODO: Uncomment relevant navItem when a new page is created.
  */
-export const NAV_ITEMS: NavItem[] = [
+export const NAV_ITEMS_ADMIN: NavItem[] = [
     // new NavItem('Dashboard', '/dashboard'),
     new NavItem('Reports', '/reports'),
     new NavItem('Observe', '/event'),
+    new NavItem('Privacy', '/privacy'),
+    new NavItem('About', '/about'),
+    // new NavItem('Help', '/help'),
     NavItem.createNavItemWithSubItems('Settings', [
         // new NavItem('Account', '/account'),
         // new NavItem('Notifications', '/notifications'),
@@ -92,11 +103,37 @@ export const NAV_ITEMS: NavItem[] = [
         // new NavItem('RFIDs', '/rfids'),
         new NavItem('Locations', '/locations'),
         new NavItem('Users', '/users'),
-        new NavItem('Privacy', '/privacy'),
-        new NavItem('About', '/about'),
         new NavItem('Export All Observations', '/export')
     ])
+];
+
+export const NAV_ITEMS_OBSERVER: NavItem[] = [
+    new NavItem('Observe', '/event'),
+    new NavItem('Privacy', '/privacy'),
+    new NavItem('About', '/about'),
     // new NavItem('Help', '/help'),
+    // NavItem.createNavItemWithSubItems('Settings', [
+        // new NavItem('Account', '/account'),
+    // ])
+];
+
+export const NAV_ITEMS_USER: NavItem[] = [
+    new NavItem('Privacy', '/privacy'),
+    new NavItem('About', '/about')
+    // new NavItem('Help', '/help'),
+    // NavItem.createNavItemWithSubItems('Settings', [
+        // new NavItem('Account', '/account'),
+    // ])
+];
+
+export const NAV_ITEMS_ANY: NavItem[] = [
+    new NavItem('Login', '/login'),
+    new NavItem('Privacy', '/privacy'),
+    new NavItem('About', '/about')
+    // new NavItem('Help', '/help'),
+    // NavItem.createNavItemWithSubItems('Settings', [
+    // new NavItem('Account', '/account'),
+    // ])
 ];
 
 @NgModule({
@@ -107,6 +144,7 @@ export const NAV_ITEMS: NavItem[] = [
         UsersResolverService,
         LocationResolverService,
         UserByEmailResolverService,
+        RoleResolverService
     ]
 })
 export class AppRoutingModule {

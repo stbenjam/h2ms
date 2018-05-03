@@ -3,7 +3,8 @@ import {Config} from './config';
 /**
  * Configuration for Blue Gloves app.
  */
-export const CONFIG: Config = new Config('Blue Gloves 4 All',
+export const CONFIG: Config = new Config(
+    'Blue Gloves 4 All',
     'www.gloveygloversonsgloveemporium.org',
     80,
     '/assets/images/banners/gloves-banner.png',

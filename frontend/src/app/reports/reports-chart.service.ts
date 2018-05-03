@@ -1,13 +1,9 @@
 import {Injectable} from '@angular/core';
 import * as c3 from 'c3';
 import * as d3 from 'd3';
-import {ChartAPI} from 'c3';
 
 @Injectable()
 export class ReportsChartService {
-
-
-    chart: ChartAPI;
 
     /**
      * a helper function to convert a number to its ordinal (1st, 2nd, etc.) string value
@@ -32,7 +28,7 @@ export class ReportsChartService {
             this.makeBarChartNumObsByWeek(id, chart, data);
         } else if (grouping.match('observer')
             || grouping.match('employee type')
-            || grouping.match('hospital')) {
+            || grouping.match('location')) {
             this.makeBarChartNumObsByUser(id, chart, data);
         } else {
             this.makeBarChartWithoutSubgrouping(id, chart, data);
