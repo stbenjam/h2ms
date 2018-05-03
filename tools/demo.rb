@@ -27,8 +27,14 @@ OAUTH_SECRET = 'secret'.freeze
 ]
 
 @users = [
-  { firstName: 'Ben', lastName: 'Jenkins', email: 'bjenkins@h2ms.org', roles: 'ROLE_OBSERVER', password: 'password', type: 'Infection Prevention Nurse' },
-  { firstName: 'Wes', lastName: 'Skillern', email: 'wskillern@h2ms.org', roles: 'ROLE_USER', password: 'password', type: 'ER Doctor' }
+  { firstName: 'Medical Student', lastName: 'Subject', email: 'medical_student@h2ms.org', roles: 'ROLE_USER', password: 'password', type: 'Medical Student' },
+  { firstName: 'Pharmacist', lastName: 'Subject', email: 'pharmacist@h2ms.org', roles: 'ROLE_USER', password: 'password', type: 'Pharmacist' },
+  { firstName: 'Resident', lastName: 'Subject', email: 'resident@h2ms.org', roles: 'ROLE_USER', password: 'password', type: 'Resident' },
+  { firstName: 'Surgeon', lastName: 'Subject', email: 'surgeon@h2ms.org', roles: 'ROLE_USER', password: 'password', type: 'Surgeon' },
+
+  { lastName: 'Observer', firstName: '1', email: 'observer1@h2ms.org', roles: 'ROLE_OBSERVER', password: 'password', type: 'Observer' },
+  { lastName: 'Observer', firstName: '2', email: 'observer2@h2ms.org', roles: 'ROLE_OBSERVER', password: 'password', type: 'Observer' },
+  { lastName: 'Observer', firstName: '3', email: 'observer3@h2ms.org', roles: 'ROLE_OBSERVER', password: 'password', type: 'Observer' }
 ]
 
 @options = {}
@@ -171,7 +177,7 @@ def answer(question)
   when 'options'
     answer['value'] = question['options'].sample
   when 'boolean'
-    answer['value'] = %w(true false).sample
+    answer['value'] = %w(true true true true false).sample
   end
 
   answer
