@@ -50,7 +50,6 @@ public class NotificationController {
       notificationFrequency = NotificationFrequency.DAILY;
     }
 
-
     log.debug("searching for user by email " + requestParams);
 
     User user = userRepository.findByEmail(email);
