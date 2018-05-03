@@ -64,7 +64,7 @@ export class LocationComponent implements OnInit, AfterViewInit {
 
                 let hasChildren = children.length;
                 if (hasChildren) {
-                    // This location has X locations inside of it. They must be deleted first before this location can be deleted.
+                    // This location has X locations inside of it.  They must be deleted first before this location can be deleted.
                     deletePrompt += location.name + ' has ' + children.length + ' locations inside of it. ' +
                         'They must be deleted first before ' + location.name + ' can be deleted.';
                     }
