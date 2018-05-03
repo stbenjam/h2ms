@@ -1,7 +1,12 @@
 import {FormControl, Validators} from '@angular/forms';
 
 export const REQUIRED_EMAIL = new FormControl('', [Validators.required, Validators.email]);
+export const REQUIRED_NAME = new FormControl('', [Validators.required]);
 export const REQUIRED_PASSWORD = new FormControl('', [Validators.required]);
+
+export function REQUIRED_NAME_ERROR_MESSAGE() {
+    return REQUIRED_EMAIL.hasError('required') ? 'You must enter a value' : '';
+}
 
 export function REQUIRED_EMAIL_ERROR_MESSAGE() {
     return REQUIRED_EMAIL.hasError('required') ? 'You must enter a value' :

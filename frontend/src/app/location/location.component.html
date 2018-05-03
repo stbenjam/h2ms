@@ -1,0 +1,76 @@
+<div class="row">
+    <mat-card class="card">
+        <mat-card-content>
+            <mat-card-title class="text-center">Locations</mat-card-title>
+            <div class="example-header">
+                <mat-form-field>
+                    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search">
+                </mat-form-field>
+            </div>
+
+
+            <div class="example-container mat-elevation-z8">
+                <mat-table [dataSource]="dataSource" matSort>
+
+                    <ng-container matColumnDef="name">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Name</mat-header-cell>
+                        <mat-cell *matCellDef="let location">
+                            <a href="/locations/{{location.id}}/edit"> {{location.name}} </a>
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="address">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Address
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let location"> {{location.address}}</mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="parent">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header> Located Within
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let location">
+                            <a href="/locations/{{location.parent.id}}/edit"
+                               *ngIf="location.parent">
+                                {{ location.parentName }}
+                            </a>
+                            <ng-template [ngIf]="!location.parent">
+                                {{ location.parentName }}
+                            </ng-template>
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="buttons">
+                        <mat-header-cell *matHeaderCellDef mat-sort-header>
+                        </mat-header-cell>
+                        <mat-cell *matCellDef="let location" class="text-right">
+
+                            <button (click)="edit(location)" mat-icon-button color="primary">
+                                <i class="material-icons">edit</i>
+                            </button>
+                            <button mat-icon-button (click)="delete(location)">
+                                <i class="material-icons">delete</i>
+                            </button>
+                        </mat-cell>
+                    </ng-container>
+
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;">
+                    </mat-row>
+                </mat-table>
+
+                <mat-paginator [pageSizeOptions]="[10, 25, 100]"></mat-paginator>
+            </div>
+
+            <div class="text-right div-under-table">
+                <a href="/locations/create">
+                    <button mat-raised-button color="primary">
+                        Add Location
+                    </button>
+                </a>
+            </div>
+
+        </mat-card-content>
+    </mat-card>
+</div>
+
+

@@ -1,0 +1,77 @@
+<mat-form-field class="col">
+    <mat-select #topLevelLocation placeholder="Located Within"
+                (change)="updateChildLocationsFromId(topLevelLocation.value, 0)">
+        <mat-option>--</mat-option>
+        <mat-option *ngFor="let location of topLevelLocations" [value]="location.id">
+            {{ location.name }}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+
+
+<mat-form-field
+        [hidden]="! ((selectedLevelsToChildLocations[0] | async) && (selectedLevelsToChildLocations[0] | async).length)"
+        class="col">
+    <mat-select #childLocation1 placeholder="Located Within"
+                (change)="updateChildLocationsFromId(childLocation1.value, 1)">
+        <mat-option>--</mat-option>
+        <mat-option *ngFor="let child of (selectedLevelsToChildLocations[0] | async)"
+                    [value]="child.id">
+            {{ child.name }}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+
+<mat-form-field
+        [hidden]="! ((selectedLevelsToChildLocations[1] | async) && (selectedLevelsToChildLocations[1] | async).length)"
+        class="col">
+    <mat-select #childLocation2 placeholder="Located Within"
+                (change)="updateChildLocationsFromId(childLocation2.value, 2)">
+        <mat-option>--</mat-option>
+        <mat-option *ngFor="let child of (selectedLevelsToChildLocations[1] | async)"
+                    [value]="child.id">
+            {{ child.name }}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+
+<mat-form-field
+        [hidden]="! ((selectedLevelsToChildLocations[2] | async) && (selectedLevelsToChildLocations[2] | async).length)"
+        class="col">
+    <mat-select #childLocation3 placeholder="Located Within"
+                (change)="updateChildLocationsFromId(childLocation3.value, 3)">
+        <mat-option>--</mat-option>
+        <mat-option *ngFor="let child of (selectedLevelsToChildLocations[2] | async)"
+                    [value]="child.id">
+            {{ child.name }}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+
+<mat-form-field
+        [hidden]="! ((selectedLevelsToChildLocations[3] | async) && (selectedLevelsToChildLocations[3] | async).length)"
+        class="col">
+    <mat-select #childLocation4 placeholder="Located Within"
+                (change)="updateChildLocationsFromId(childLocation4.value, 4)">
+        <mat-option>--</mat-option>
+        <mat-option *ngFor="let child of (selectedLevelsToChildLocations[3] | async)"
+                    [value]="child.id">
+            {{ child.name }}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+
+<mat-form-field
+        [hidden]="! ((selectedLevelsToChildLocations[4] | async) && (selectedLevelsToChildLocations[4] | async).length)"
+        class="col">
+    <mat-select #childLocation5 placeholder="Located Within"
+                (change)="updateChildLocationsFromId(childLocation5.value, 5)">
+        <mat-option>--</mat-option>
+        <mat-option *ngFor="let child of (selectedLevelsToChildLocations[4] | async)"
+                    [value]="child.id">
+            {{ child.name }}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+
+

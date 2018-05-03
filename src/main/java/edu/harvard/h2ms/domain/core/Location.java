@@ -28,7 +28,7 @@ public class Location {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(final Long id) {
     this.id = id;
   }
 
@@ -37,7 +37,7 @@ public class Location {
     return name;
   }
 
-  public void setName(String name) {
+  public void setName(final String name) {
     this.name = name;
   }
 
@@ -46,7 +46,7 @@ public class Location {
     return type;
   }
 
-  public void setType(String type) {
+  public void setType(final String type) {
     this.type = type;
   }
 
@@ -55,7 +55,7 @@ public class Location {
     return address;
   }
 
-  public void setAddress(String address) {
+  public void setAddress(final String address) {
     this.address = address;
   }
 
@@ -64,7 +64,7 @@ public class Location {
     return country;
   }
 
-  public void setCountry(String country) {
+  public void setCountry(final String country) {
     this.country = country;
   }
 
@@ -73,7 +73,7 @@ public class Location {
     return zip;
   }
 
-  public void setZip(String zip) {
+  public void setZip(final String zip) {
     this.zip = zip;
   }
 
@@ -87,19 +87,18 @@ public class Location {
     return parent;
   }
 
-  public void setParent(Location parent) {
+  public void setParent(final Location parent) {
     this.parent = parent;
   }
 
   /** A location can optionally have sublocations. Ex. Departments/Multicampus Entities */
   @OneToMany
-  @JoinColumn(name = "parent")
-  @ElementCollection(targetClass = Location.class)
+  @JoinColumn(name = "parent_id")
   public Set<Location> getChildren() {
     return children;
   }
 
-  public void setChildren(Set<Location> children) {
+  public void setChildren(final Set<Location> children) {
     this.children = children;
   }
 

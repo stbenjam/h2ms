@@ -1,0 +1,56 @@
+<div class="row">
+    <mat-card class="card">
+        <mat-card-title class="text-center">{{crudOperation}} Location</mat-card-title>
+
+        <mat-card-content class="text-center">
+            <mat-form-field class="col">
+                <input matInput #name placeholder="Name" required [formControl]="nameFormControl">
+                <mat-error *ngIf="nameFormControl.invalid">{{nameErrorMessage()}}</mat-error>
+            </mat-form-field>
+
+            <mat-form-field class="col">
+                <input matInput #address placeholder="Address" [value]="initialLocation.address">
+            </mat-form-field>
+
+            <mat-form-field class="col">
+                <input matInput #zip placeholder="Zip Code" [value]="initialLocation.zip">
+            </mat-form-field>
+
+            <mat-form-field class="col">
+                <input matInput #country placeholder="Country" [value]="initialLocation.country">
+            </mat-form-field>
+
+            <mat-form-field class="col" hintLabel="Examples: 'Hospital' or 'Ward'">
+                <input matInput #type placeholder="Location Type" [formControl]="typeFormControl"
+                       required>
+                <mat-error *ngIf="typeFormControl.invalid">{{typeErrorMessage()}}</mat-error>
+            </mat-form-field>
+
+
+            <h5 class="location">Located Within</h5>
+            <app-select-location #parentLocation></app-select-location>
+
+            <h5 *ngIf="childrenLocations.length">{{ name.value }} contains the following</h5>
+            <ul *ngIf="childrenLocations.length" class="text-left">
+                <li *ngFor=" let childLocation of childrenLocations">
+                    <a href="locations/{{ childLocation.id }}/edit">
+                        {{ childLocation.name }} {{ childLocation.type }}
+                    </a>
+                </li>
+            </ul>
+
+            <mat-card-actions>
+                <button mat-raised-button color="primary"
+                        (click)="submit(name.value, address.value, zip.value, country.value, type.value)"
+                        [disabled]="typeFormControl.invalid || nameFormControl.invalid">
+                    {{crudOperation}}
+                </button>
+                <a href="/locations">
+                    <button mat-raised-button>
+                        Cancel
+                    </button>
+                </a>
+            </mat-card-actions>
+        </mat-card-content>
+    </mat-card>
+</div>
