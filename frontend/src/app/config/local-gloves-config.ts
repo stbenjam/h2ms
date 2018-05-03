@@ -11,4 +11,4 @@ export const CONFIG: Config = new Config(
     '/assets/images/logos/h2ms-logo.png',
     'http://localhost',
     8080,
-    [{id: null, displayName: null}]); // todo: add gloves favicon and logo
+    [{id: 3, displayName: "Gloves removed?"}]); // todo: add gloves favicon and logo
